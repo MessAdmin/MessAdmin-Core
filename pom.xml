@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- - - - - - - - - - -->
+	<!-- POM Relationships -->
+	<!-- - - - - - - - - - -->
+
+	<!-- Coordinates -->
+	<!-- Notice no groupId or version. They were inherited from parent-->
+	<artifactId>MessAdmin-Core</artifactId>
+
+	<!-- Inheritance -->
+	<parent>
+		<groupId>net.sourceforge.messadmin</groupId>
+		<artifactId>MessAdmin</artifactId>
+		<version>5.3</version>
+	</parent>
+
+	<!-- Dependencies -->
+	<dependencies>
+		<!-- Compile-time dependencies (default scope) -->
+		<!-- Provided dependencies -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+		</dependency>
+		<!-- Run-time dependencies -->
+		<!-- Test-time dependencies -->
+	</dependencies>
+
+	<!-- - - - - - - - - - - -->
+	<!-- Project Information -->
+	<!-- - - - - - - - - - - -->
+
+	<!-- While this should be inherited, Maven seems to choke if absent when building the MANIFEST.MF... -->
+	<name>${project.artifactId}</name>
+
+	<!-- - - - - - - -  -->
+	<!-- Build Settings -->
+	<!-- - - - - - - -  -->
+
+	<packaging>jar</packaging>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<!-- Copy web resources in /META-INF/resources/ for Servlet 3 containers -->
+				<targetPath>META-INF/resources</targetPath>
+				<directory>../MessAdmin-AdminWebApp/src/main/webapp</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>MessAdmin/**</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+</project>

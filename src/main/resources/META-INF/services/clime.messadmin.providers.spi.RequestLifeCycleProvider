@@ -1,0 +1,5 @@
+# Providers for request events
+clime.messadmin.providers.lifecycle.KnownThreadLocalsCleaner
+clime.messadmin.providers.user.AcegiUserName
+clime.messadmin.providers.user.SpringSecurity2UserName
+clime.messadmin.providers.user.SpringSecurity3UserName

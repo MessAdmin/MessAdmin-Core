@@ -1,0 +1,6 @@
+# Providers for application data
+clime.messadmin.admin.actions.RemoveServletContextAttribute
+clime.messadmin.providers.userdata.ServletContextInitParametersProvider
+clime.messadmin.providers.userdata.ClassLoaderDisplayer
+clime.messadmin.providers.userdata.resourcebrowser.ResourceBrowser
+clime.messadmin.providers.userdata.resourcebrowser.JNDIBrowser

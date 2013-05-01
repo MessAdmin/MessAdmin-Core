@@ -1,0 +1,2 @@
+# Providers for computing the size of an object
+clime.messadmin.providers.sizeof.NoopProvider

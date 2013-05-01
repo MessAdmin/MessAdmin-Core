@@ -1,0 +1,2 @@
+# Providers for computing if a given object is Serializable
+clime.messadmin.providers.serializable.MaybeSerializableProvider

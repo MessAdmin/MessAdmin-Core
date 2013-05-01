@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE taglib
+	PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
+	"http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+<taglib>
+	<tlib-version>1.0</tlib-version>
+	<jsp-version>1.2</jsp-version>
+	<short-name>core</short-name>
+	<uri>http://messadmin.sf.net/core</uri>
+	<description>
+		The CORE JSP tag library provides a subset of tags similar to
+		the JSTL Core library.
+	</description>
+
+	<!-- Non-JSTL tags -->
+
+	<tag>
+		<name>sizeof</name>
+		<tag-class>clime.messadmin.taglib.SizeofTag</tag-class>
+		<body-content>empty</body-content>
+		<description>Prints the size of the object, in bytes</description>
+		<attribute>
+			<name>id</name>
+			<required>no</required>
+			<rtexprvalue>yes</rtexprvalue>
+			<description>
+				pageContext.findAttribute() object id to compute size of
+			</description>
+		</attribute>
+		<attribute>
+			<name>object</name>
+			<required>no</required>
+			<rtexprvalue>yes</rtexprvalue>
+			<description>
+				object to compute size of
+			</description>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>notSerializable</name>
+		<tag-class>clime.messadmin.taglib.NotSerializableTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>Includes this tag body if the object is serializable</description>
+		<attribute>
+			<name>id</name>
+			<required>no</required>
+			<rtexprvalue>yes</rtexprvalue>
+			<description>
+				pageContext.findAttribute() object id to compute the serializable state
+			</description>
+		</attribute>
+		<attribute>
+			<name>object</name>
+			<required>no</required>
+			<rtexprvalue>yes</rtexprvalue>
+			<description>
+				object to compute the serializable state
+			</description>
+		</attribute>
+	</tag>
+
+	<!-- JSTL-Core tags -->
+
+	<tag>
+		<name>if</name>
+		<tag-class>clime.messadmin.taglib.core.IfTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>
+			Simple conditional tag, which evalutes its body if the
+			supplied condition is true and optionally exposes a Boolean
+			scripting variable representing the evaluation of this
+			condition
+		</description>
+		<attribute>
+			<name>test</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>boolean</type>
+			<description>
+				The test condition that determines whether or
+				not the body content should be processed.
+			</description>
+		</attribute>
+		<attribute>
+			<name>var</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<description>
+				Name of the exported scoped variable for the
+				resulting value of the test condition. The type
+				of the scoped variable is Boolean.
+			</description>
+		</attribute>
+		<attribute>
+			<name>scope</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<description>Scope for var.</description>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>forEach</name>
+		<tag-class>clime.messadmin.taglib.core.ForEachTag</tag-class>
+		<!--tei-class>org.apache.taglibs.standard.tei.ForEachTEI</tei-class-->
+		<body-content>JSP</body-content>
+		<description>
+			The basic iteration tag, accepting many different collection
+			types and supporting subsetting and other functionality
+		</description>
+		<attribute>
+			<name>items</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Object</type>
+			<description>Collection of items to iterate over.</description>
+		</attribute>
+		<attribute>
+			<name>begin</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>int</type>
+			<description>
+				If items specified:
+				Iteration begins at the item located at the specified index.
+				First item of the collection has index 0.
+				If items not specified:
+				Iteration begins with index set at the value specified.
+			</description>
+		</attribute>
+		<attribute>
+			<name>end</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>int</type>
+			<description>
+				If items specified:
+				Iteration ends at the item located at the
+				specified index (inclusive).
+				If items not specified:
+				Iteration ends when index reaches the value specified.
+			</description>
+		</attribute>
+		<attribute>
+			<name>step</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>int</type>
+			<description>
+				Iteration will only process every step items of
+				the collection, starting with the first one.
+			</description>
+		</attribute>
+		<attribute>
+			<name>var</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<description>
+				Name of the exported scoped variable for the
+				current item of the iteration. This scoped
+				variable has nested visibility. Its type depends
+				on the object of the underlying collection.
+			</description>
+		</attribute>
+		<attribute>
+			<name>varStatus</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<description>
+				Name of the exported scoped variable for the
+				status of the iteration. Object exported is of type
+				javax.servlet.jsp.jstl.core.LoopTagStatus. This scoped variable has nested
+				visibility.
+			</description>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>out</name>
+		<tag-class>clime.messadmin.taglib.core.OutTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>
+			Like &lt;%= ... &gt;, but for expressions.
+		</description>
+		<attribute>
+			<name>value</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Expression to be evaluated.</description>
+		</attribute>
+		<attribute>
+			<name>default</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Default value if the resulting value is null.
+			</description>
+		</attribute>
+		<attribute>
+			<name>escapeXml</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Determines whether characters
+				&lt;,&gt;,&amp;,&#039;,&#034; in the resulting string
+				should be converted to their corresponding character
+				entity codes. Default value is true.
+			</description>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>outWithClass</name>
+		<tag-class>clime.messadmin.taglib.core.OutWithClassTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>
+			Same as out, but surround printed value with class name in span title.
+		</description>
+		<attribute>
+			<name>value</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Expression to be evaluated.</description>
+		</attribute>
+		<attribute>
+			<name>default</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Default value if the resulting value is null.
+			</description>
+		</attribute>
+		<attribute>
+			<name>escapeXml</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Determines whether characters
+				&lt;,&gt;,&amp;,&#039;,&#034; in the resulting string
+				should be converted to their corresponding character
+				entity codes. Default value is true.
+			</description>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>url</name>
+		<tag-class>clime.messadmin.taglib.core.UrlTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>
+			Creates a URL with optional query parameters.
+		</description>
+		<attribute>
+			<name>var</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<description>
+				Name of the exported scoped variable for the processed
+				url. The type of the scoped variable is String.
+			</description>
+		</attribute>
+		<attribute>
+			<name>scope</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<description>Scope for var.</description>
+		</attribute>
+		<attribute>
+			<name>value</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>URL to be processed.</description>
+		</attribute>
+		<attribute>
+			<name>context</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Name of the context when specifying a relative URL
+				resource that belongs to a foreign context.
+			</description>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>param</name>
+		<tag-class>clime.messadmin.taglib.core.ParamTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>
+			Adds a parameter to a containing 'import' tag's URL.
+		</description>
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Name of the query string parameter.</description>
+		</attribute>
+		<attribute>
+			<name>value</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Value of the parameter.</description>
+		</attribute>
+	</tag>
+
+</taglib>

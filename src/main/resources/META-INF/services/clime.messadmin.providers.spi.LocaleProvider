@@ -1,0 +1,6 @@
+# Providers for guessing the java.util.Locale from the HttpSession
+clime.messadmin.providers.locale.KnownLocations
+clime.messadmin.providers.locale.JSTLProvider
+clime.messadmin.providers.locale.ReflectionTapestryProvider
+clime.messadmin.providers.locale.AttributesIterator
+clime.messadmin.providers.locale.JBossSeamProvider

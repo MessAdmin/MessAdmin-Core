@@ -1,0 +1,3 @@
+# Providers for application events
+clime.messadmin.providers.lifecycle.EvilSingletonsUnregisterer
+clime.messadmin.admin.AdminActionsInitializer

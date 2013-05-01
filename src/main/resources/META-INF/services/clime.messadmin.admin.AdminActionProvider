@@ -1,0 +1,24 @@
+## Providers for admin actions
+# Server-level
+clime.messadmin.admin.actions.ServerInfos
+clime.messadmin.admin.actions.WebAppsList
+clime.messadmin.providers.userdata.ThreadsDumper
+clime.messadmin.profiler.ProfilerAction
+# Application-level
+clime.messadmin.admin.actions.SessionsList
+clime.messadmin.admin.actions.WebAppStats
+clime.messadmin.admin.actions.InjectApplication
+clime.messadmin.admin.actions.InjectApplications
+clime.messadmin.admin.actions.RemoveServletContextAttribute
+clime.messadmin.admin.actions.InjectSessions
+clime.messadmin.admin.actions.InvalidateSessions
+# Session-level
+clime.messadmin.admin.actions.SessionDetail
+clime.messadmin.admin.actions.RemoveSessionAttribute
+clime.messadmin.admin.actions.SetSessionMaxInactiveInterval
+# Miscellaneous
+clime.messadmin.providers.userdata.resourcebrowser.ResourceBrowser
+clime.messadmin.providers.userdata.resourcebrowser.JNDIBrowser
+clime.messadmin.admin.actions.ReloadServerDataProvider
+clime.messadmin.admin.actions.ReloadApplicationDataProvider
+clime.messadmin.admin.actions.ReloadSessionDataProvider

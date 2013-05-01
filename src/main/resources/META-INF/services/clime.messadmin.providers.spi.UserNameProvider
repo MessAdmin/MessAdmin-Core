@@ -1,0 +1,5 @@
+# Providers for guessing the user name from the HttpSession
+clime.messadmin.providers.user.KnownLocations
+clime.messadmin.providers.user.AttributesIterator
+clime.messadmin.providers.user.HttpRequestRemoteUser
+clime.messadmin.providers.user.JBossSeamProvider

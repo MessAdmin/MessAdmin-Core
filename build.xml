@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<project name="MessAdmin-Core" default="jar">
+	<description>
+		MessAdmin-Core
+	</description>
+
+	<property file="build.properties"/>
+
+	<property file="../build-common.properties"/>
+	<import file="../build-common.xml"/>
+
+	<!-- - - - - - - - - - - - - - - - - - 
+		 target: compile
+		 - - - - - - - - - - - - - - - - - -->
+	<target name="compile" depends="MessAdmin-common-build.compile">
+		<!-- Copy web resources in /META-INF/resources/ for Servlet 3 containers -->
+		<copy todir="${build.classes.dir}/META-INF/resources/" preservelastmodified="true">
+			<fileset dir="../MessAdmin-AdminWebApp/src/main/webapp/" includes="MessAdmin/"/>
+		</copy>
+	</target>
+
+	<!-- - - - - - - - - - - - - - - - - - 
+		 target: init
+		 - - - - - - - - - - - - - - - - - -->
+	<target name="init" depends="MessAdmin-common-build.init">
+		<splash showduration="0"/>
+	</target>
+
+</project>

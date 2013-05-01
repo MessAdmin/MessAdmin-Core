@@ -1,0 +1,4 @@
+# Providers displayer for server data
+clime.messadmin.providers.userdata.SystemPropertiesProvider
+clime.messadmin.providers.userdata.SystemEnvironmentProvider
+clime.messadmin.providers.userdata.ThreadsDumper

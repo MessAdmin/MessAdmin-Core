@@ -1,0 +1,3 @@
+# Providers for display format
+clime.messadmin.providers.displayformat.HTMLFormatProvider
+clime.messadmin.providers.displayformat.TextFormatProvider
