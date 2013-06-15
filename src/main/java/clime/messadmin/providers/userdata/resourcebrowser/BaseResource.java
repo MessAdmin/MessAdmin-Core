@@ -32,9 +32,9 @@ public abstract class BaseResource {
 		// Requires javax.activation or Java 6
 		try {
 			Class fileTypeMapClass = Class.forName("javax.activation.FileTypeMap");//$NON-NLS-1$
-			Method getDefaultFileTypeMap = fileTypeMapClass.getMethod("getDefaultFileTypeMap", null);//$NON-NLS-1$
-			fileTypeMap_defaultInstance = getDefaultFileTypeMap.invoke(null, null);
-			fileTypeMap_getContentType = fileTypeMapClass.getMethod("getContentType", new Class[] {String.class});//$NON-NLS-1$
+			Method getDefaultFileTypeMap = fileTypeMapClass.getMethod("getDefaultFileTypeMap");//$NON-NLS-1$
+			fileTypeMap_defaultInstance = getDefaultFileTypeMap.invoke(null);
+			fileTypeMap_getContentType = fileTypeMapClass.getMethod("getContentType", String.class);//$NON-NLS-1$
 		} catch (RuntimeException rte) {
 		} catch (Exception e) {
 		}
@@ -62,6 +62,7 @@ public abstract class BaseResource {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean equals(Object obj) {
 		if (! (obj instanceof BaseResource)) {
 			return false;
@@ -70,6 +71,7 @@ public abstract class BaseResource {
 		return resourcePath == other.resourcePath || (resourcePath != null && resourcePath.equals(other.resourcePath));
 	}
 	/** {@inheritDoc} */
+	@Override
 	public int hashCode() {
 		return resourcePath == null ? 0 : resourcePath.hashCode();
 	}
@@ -224,34 +226,6 @@ public abstract class BaseResource {
 	 */
 	public boolean renameTo(String newName) throws IOException {
 		return false;
-	}
-
-
-	private static final Collection compressableMimeType = Arrays.asList(new String[] {
-			//"text/*",
-			"application/xhtml+xml",
-			"application/xml",
-			"application/xslt+xml",
-			"application/rss+xml",
-			"application/atom+xml",
-			"application/rdf+xml",
-			"application/javascript",
-			"application/ecmascript",
-			"application/json",
-			"image/bmp",
-			"image/svg+xml"
-			// + all fonts except in WOFF format
-	});
-	protected boolean isCompressableMimeType(String mimeType) {
-		mimeType = mimeType.toLowerCase();
-		return
-			// enable compression for text files
-			mimeType.startsWith("text/")
-			// enable compression for "binary" text files and known compressable binaries
-			|| compressableMimeType.contains(mimeType)
-			// fall back to enable compression for unknown types (e.g. log files with no extensions...)
-			// all non-compressable types like audio, video, images, pdf, flash... are thus excluded
-			|| DEFAULT_MIME_TYPE.equals(mimeType);
 	}
 
 

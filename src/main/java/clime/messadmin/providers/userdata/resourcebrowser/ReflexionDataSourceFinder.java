@@ -22,6 +22,7 @@ class ReflexionDataSourceFinder {
 		public int numActive, maxActive;
 		public int numIdle, minIdle, maxIdle;
 		/** {@inheritDoc} */
+		@Override
 		public String toString() {
 			StringBuilder desc = new StringBuilder(256);
 			desc.append("DataSource[");
@@ -59,25 +60,25 @@ class ReflexionDataSourceFinder {
 		Class clazz = obj.getClass();
 		DataSourceConfiguration result = null;
 		try {
-			Method driverClassName = clazz.getMethod(getDriverClassName, null);
-			Method url       = clazz.getMethod(getUrl, null);
-			Method username  = clazz.getMethod(getUsername, null);
-			Method closed    = clazz.getMethod(isClosed, null);
-			Method numActive = clazz.getMethod(getNumActive, null);
-			Method maxActive = clazz.getMethod(getMaxActive, null);
-			Method minIdle   = clazz.getMethod(getMinIdle, null);
-			Method numIdle   = clazz.getMethod(getNumIdle, null);
-			Method maxIdle   = clazz.getMethod(getMaxIdle, null);
+			Method driverClassName = clazz.getMethod(getDriverClassName);
+			Method url       = clazz.getMethod(getUrl);
+			Method username  = clazz.getMethod(getUsername);
+			Method closed    = clazz.getMethod(isClosed);
+			Method numActive = clazz.getMethod(getNumActive);
+			Method maxActive = clazz.getMethod(getMaxActive);
+			Method minIdle   = clazz.getMethod(getMinIdle);
+			Method numIdle   = clazz.getMethod(getNumIdle);
+			Method maxIdle   = clazz.getMethod(getMaxIdle);
 			DataSourceConfiguration config = new DataSourceConfiguration();
-			config.driverClassName = (String) driverClassName.invoke(obj, null);
-			config.url = (String) url.invoke(obj, null);
-			config.userName = (String) username.invoke(obj, null);
-			config.closed = ((Boolean) closed.invoke(obj, null)).booleanValue();
-			config.numActive = ((Integer) numActive.invoke(obj, null)).intValue();
-			config.maxActive = ((Integer) maxActive.invoke(obj, null)).intValue();
-			config.minIdle = ((Integer) minIdle.invoke(obj, null)).intValue();
-			config.numIdle = ((Integer) numIdle.invoke(obj, null)).intValue();
-			config.maxIdle = ((Integer) maxIdle.invoke(obj, null)).intValue();
+			config.driverClassName = (String) driverClassName.invoke(obj);
+			config.url = (String) url.invoke(obj);
+			config.userName = (String) username.invoke(obj);
+			config.closed = ((Boolean) closed.invoke(obj)).booleanValue();
+			config.numActive = ((Integer) numActive.invoke(obj)).intValue();
+			config.maxActive = ((Integer) maxActive.invoke(obj)).intValue();
+			config.minIdle = ((Integer) minIdle.invoke(obj)).intValue();
+			config.numIdle = ((Integer) numIdle.invoke(obj)).intValue();
+			config.maxIdle = ((Integer) maxIdle.invoke(obj)).intValue();
 			result = config;
 		} catch (SecurityException ignore) {
 		} catch (NoSuchMethodException ignore) {

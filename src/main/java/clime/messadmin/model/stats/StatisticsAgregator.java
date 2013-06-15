@@ -26,11 +26,13 @@ public class StatisticsAgregator extends MinMaxTracker implements Serializable, 
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void registerValue(long value) {
 		registerValue(value, System.currentTimeMillis());
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void registerValue(long value, long currentTimeMillis) {
 		total += value;
 		sumOfSquares += value * value;
@@ -60,6 +62,7 @@ public class StatisticsAgregator extends MinMaxTracker implements Serializable, 
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected StringBuffer toStringBuffer() {
 		StringBuffer buffer = super.toStringBuffer().append(',');
 		buffer.append("total=").append(getTotal()).append(',');//$NON-NLS-1$
@@ -69,6 +72,7 @@ public class StatisticsAgregator extends MinMaxTracker implements Serializable, 
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void validateObject() throws InvalidObjectException {
 		super.validateObject();
 		if (sumOfSquares < 0) {

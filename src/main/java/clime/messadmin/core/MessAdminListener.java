@@ -49,9 +49,7 @@ public class MessAdminListener implements HttpSessionListener, HttpSessionActiva
 		Application app = Server.getInstance().getApplication(se.getSession().getServletContext());
 		app.sessionCreated(se);
 		ClassLoader cl = app.getApplicationInfo().getClassLoader();
-		Iterator iter = ProviderUtils.getProviders(SessionLifeCycleProvider.class, cl).iterator();
-		while (iter.hasNext()) {
-			SessionLifeCycleProvider lc = (SessionLifeCycleProvider) iter.next();
+		for (SessionLifeCycleProvider lc : ProviderUtils.getProviders(SessionLifeCycleProvider.class, cl)) {
 			try {
 				lc.sessionCreated(se.getSession());
 			} catch (RuntimeException rte) {
@@ -64,11 +62,9 @@ public class MessAdminListener implements HttpSessionListener, HttpSessionActiva
 	 */
 	public void sessionDestroyed(final HttpSessionEvent se) {
 		ClassLoader cl = Server.getInstance().getApplication(se.getSession().getServletContext()).getApplicationInfo().getClassLoader();
-		List providers = new ArrayList(ProviderUtils.getProviders(SessionLifeCycleProvider.class, cl));
+		List<SessionLifeCycleProvider> providers = new ArrayList<SessionLifeCycleProvider>(ProviderUtils.getProviders(SessionLifeCycleProvider.class, cl));
 		Collections.reverse(providers);
-		Iterator iter = providers.iterator();
-		while (iter.hasNext()) {
-			SessionLifeCycleProvider lc = (SessionLifeCycleProvider) iter.next();
+		for (SessionLifeCycleProvider lc : providers) {
 			try {
 				lc.sessionDestroyed(se.getSession());
 			} catch (RuntimeException rte) {
@@ -82,11 +78,9 @@ public class MessAdminListener implements HttpSessionListener, HttpSessionActiva
 	 */
 	public void sessionWillPassivate(final HttpSessionEvent se) {
 		ClassLoader cl = Server.getInstance().getApplication(se.getSession().getServletContext()).getApplicationInfo().getClassLoader();
-		List providers = new ArrayList(ProviderUtils.getProviders(SessionLifeCycleProvider.class, cl));
+		List<SessionLifeCycleProvider> providers = new ArrayList<SessionLifeCycleProvider>(ProviderUtils.getProviders(SessionLifeCycleProvider.class, cl));
 		Collections.reverse(providers);
-		Iterator iter = providers.iterator();
-		while (iter.hasNext()) {
-			SessionLifeCycleProvider lc = (SessionLifeCycleProvider) iter.next();
+		for (SessionLifeCycleProvider lc : providers) {
 			try {
 				lc.sessionWillPassivate(se.getSession());
 			} catch (RuntimeException rte) {
@@ -102,9 +96,7 @@ public class MessAdminListener implements HttpSessionListener, HttpSessionActiva
 		Application app = Server.getInstance().getApplication(se.getSession().getServletContext());
 		app.sessionDidActivate(se);
 		ClassLoader cl = app.getApplicationInfo().getClassLoader();
-		Iterator iter = ProviderUtils.getProviders(SessionLifeCycleProvider.class, cl).iterator();
-		while (iter.hasNext()) {
-			SessionLifeCycleProvider lc = (SessionLifeCycleProvider) iter.next();
+		for (SessionLifeCycleProvider lc : ProviderUtils.getProviders(SessionLifeCycleProvider.class, cl)) {
 			try {
 				lc.sessionDidActivate(se.getSession());
 			} catch (RuntimeException rte) {
@@ -131,9 +123,7 @@ public class MessAdminListener implements HttpSessionListener, HttpSessionActiva
 		//
 		Server.getInstance().contextInitialized(sce);
 		ClassLoader cl = Server.getInstance().getApplication(sce.getServletContext()).getApplicationInfo().getClassLoader();
-		Iterator iter = ProviderUtils.getProviders(ApplicationLifeCycleProvider.class, cl).iterator();
-		while (iter.hasNext()) {
-			ApplicationLifeCycleProvider lc = (ApplicationLifeCycleProvider) iter.next();
+		for (ApplicationLifeCycleProvider lc : ProviderUtils.getProviders(ApplicationLifeCycleProvider.class, cl)) {
 			try {
 				lc.contextInitialized(sce.getServletContext());
 			} catch (RuntimeException rte) {
@@ -146,11 +136,9 @@ public class MessAdminListener implements HttpSessionListener, HttpSessionActiva
 	 */
 	public void contextDestroyed(final ServletContextEvent sce) {
 		ClassLoader cl = Server.getInstance().getApplication(sce.getServletContext()).getApplicationInfo().getClassLoader();
-		List providers = new ArrayList(ProviderUtils.getProviders(ApplicationLifeCycleProvider.class, cl));
+		List<ApplicationLifeCycleProvider> providers = new ArrayList<ApplicationLifeCycleProvider>(ProviderUtils.getProviders(ApplicationLifeCycleProvider.class, cl));
 		Collections.reverse(providers);
-		Iterator iter = providers.iterator();
-		while (iter.hasNext()) {
-			ApplicationLifeCycleProvider lc = (ApplicationLifeCycleProvider) iter.next();
+		for (ApplicationLifeCycleProvider lc : providers) {
 			try {
 				lc.contextDestroyed(sce.getServletContext());
 			} catch (RuntimeException rte) {

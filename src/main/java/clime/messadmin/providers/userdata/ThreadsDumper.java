@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.Array;
-import java.lang.reflect.Method;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -31,19 +30,6 @@ public class ThreadsDumper extends BaseAdminActionProvider implements ServerData
 	private static final String BUNDLE_NAME = ThreadsDumper.class.getName();
 	public static final String ACTION_ID = "dumpThreads";//$NON-NLS-1$
 
-	private static Method getAllStackTrace;
-	private static Method getStackTrace;
-
-	static {
-		// @since 1.5
-		try {
-			getAllStackTrace = Thread.class.getMethod("getAllStackTraces");//$NON-NLS-1$
-			getStackTrace = Thread.class.getMethod("getStackTrace");//$NON-NLS-1$
-		} catch (SecurityException e) {
-		} catch (NoSuchMethodException e) {
-		}
-	}
-
 	/**
 	 *
 	 */
@@ -60,10 +46,6 @@ public class ThreadsDumper extends BaseAdminActionProvider implements ServerData
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		setNoCache(response);
-		if (getAllStackTrace == null) {
-			response.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "Java 5 required");
-			return;
-		}
 		response.setContentType("text/plain;charset=UTF-8");//$NON-NLS-1$
 		PrintWriter out = response.getWriter();
 		out.println(
@@ -161,7 +143,7 @@ public class ThreadsDumper extends BaseAdminActionProvider implements ServerData
 		}
 
 		// thread dump & CPU profiler
-		if (getAllStackTrace != null) {
+		{
 			buffer.append("[ ");
 			buffer.append("<a href=\"?").append(ACTION_PARAMETER_NAME).append('=').append(getActionID()).append("\" target=\"_blank\">");
 			buffer.append(I18NSupport.getLocalizedMessage(BUNDLE_NAME, "thread_dump"));//$NON-NLS-1$
@@ -175,9 +157,7 @@ public class ThreadsDumper extends BaseAdminActionProvider implements ServerData
 		// default UncaughtExceptionHandler
 		UncaughtExceptionHandler defaultUncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
 		if (defaultUncaughtExceptionHandler != null) {
-			if (getAllStackTrace != null) {// pretty bit of vertical space...
-				buffer.append("<br/>\n");
-			}
+			buffer.append("<br/>\n");// pretty bit of vertical space...
 			buffer.append(I18NSupport.getLocalizedMessage(BUNDLE_NAME, "thread_default_uncaught_exception_handler",//$NON-NLS-1$
 					new Object[] {StringUtils.escapeXml(defaultUncaughtExceptionHandler.toString())}));
 			buffer.append("<br/>\n");

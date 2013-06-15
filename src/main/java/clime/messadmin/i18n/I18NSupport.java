@@ -17,7 +17,7 @@ import clime.messadmin.utils.StackIntrospector;
  * @since 4.1
  */
 public class I18NSupport {
-	private static final ThreadLocal/*<Locale>*/ adminLocale = new ThreadLocal/*<Locale>*/();
+	private static final ThreadLocal<Locale> adminLocale = new ThreadLocal<Locale>();
 	/**
 	 * Default Locale to use for the administration application, if none is requested: {@value}
 	 */
@@ -32,7 +32,7 @@ public class I18NSupport {
 	}
 
 	public static Locale getAdminLocale() {
-		Locale locale = (Locale) adminLocale.get();
+		Locale locale = adminLocale.get();
 		return locale != null ? locale : DEFAULT_ADMIN_LOCALE;
 	}
 
@@ -185,7 +185,7 @@ public class I18NSupport {
 	 *
 	 * @return the localized message corresponding to the given key
 	 */
-	public static String getLocalizedMessage(String baseName, Locale locale, ClassLoader cl, String key, Object[] args) {
+	public static String getLocalizedMessage(String baseName, Locale locale, ClassLoader cl, String key, Object... args) {
 		String message = MessageTag.UNDEFINED_KEY + key + MessageTag.UNDEFINED_KEY;
 		if (baseName == null) {
 			baseName = StackIntrospector.getCallerClass().getName();
@@ -212,48 +212,48 @@ public class I18NSupport {
 		return message;
 	}
 	public static String getLocalizedMessage(String baseName, Locale locale, ClassLoader cl, String key) {
-		return getLocalizedMessage(baseName, locale, cl, key, null);
+		return getLocalizedMessage(baseName, locale, cl, key, (Object[])null);
 	}
-	public static String getLocalizedMessage(String baseName, Locale locale, String key, Object[] args) {
+	public static String getLocalizedMessage(String baseName, Locale locale, String key, Object... args) {
 		return getLocalizedMessage(baseName, locale, null, key, args);
 	}
 	public static String getLocalizedMessage(String baseName, Locale locale, String key) {
-		return getLocalizedMessage(baseName, locale, null, key, null);
+		return getLocalizedMessage(baseName, locale, null, key, (Object[])null);
 	}
-	public static String getLocalizedMessage(String baseName, ClassLoader cl, String key, Object[] args) {
+	public static String getLocalizedMessage(String baseName, ClassLoader cl, String key, Object... args) {
 		return getLocalizedMessage(baseName, getAdminLocale(), cl, key, args);
 	}
 	public static String getLocalizedMessage(String baseName, ClassLoader cl, String key) {
-		return getLocalizedMessage(baseName, getAdminLocale(), cl, key, null);
+		return getLocalizedMessage(baseName, getAdminLocale(), cl, key, (Object[])null);
 	}
-	public static String getLocalizedMessage(Locale locale, ClassLoader cl, String key, Object[] args) {
+	public static String getLocalizedMessage(Locale locale, ClassLoader cl, String key, Object... args) {
 		return getLocalizedMessage(StackIntrospector.getCallerClass().getName(), locale, cl, key, args);
 	}
 	public static String getLocalizedMessage(Locale locale, ClassLoader cl, String key) {
-		return getLocalizedMessage(StackIntrospector.getCallerClass().getName(), locale, cl, key, null);
+		return getLocalizedMessage(StackIntrospector.getCallerClass().getName(), locale, cl, key, (Object[])null);
 	}
-	public static String getLocalizedMessage(String baseName, String key, Object[] args) {
+	public static String getLocalizedMessage(String baseName, String key, Object... args) {
 		return getLocalizedMessage(baseName, getAdminLocale(), null, key, args);
 	}
 	public static String getLocalizedMessage(String baseName, String key) {
-		return getLocalizedMessage(baseName, getAdminLocale(), null, key, null);
+		return getLocalizedMessage(baseName, getAdminLocale(), null, key, (Object[])null);
 	}
-	public static String getLocalizedMessage(Locale locale, String key, Object[] args) {
+	public static String getLocalizedMessage(Locale locale, String key, Object... args) {
 		return getLocalizedMessage(StackIntrospector.getCallerClass().getName(), locale, null, key, args);
 	}
 	public static String getLocalizedMessage(Locale locale, String key) {
-		return getLocalizedMessage(StackIntrospector.getCallerClass().getName(), locale, null, key, null);
+		return getLocalizedMessage(StackIntrospector.getCallerClass().getName(), locale, null, key, (Object[])null);
 	}
-	public static String getLocalizedMessage(ClassLoader cl, String key, Object[] args) {
+	public static String getLocalizedMessage(ClassLoader cl, String key, Object... args) {
 		return getLocalizedMessage(StackIntrospector.getCallerClass().getName(), getAdminLocale(), cl, key, args);
 	}
 	public static String getLocalizedMessage(ClassLoader cl, String key) {
-		return getLocalizedMessage(StackIntrospector.getCallerClass().getName(), getAdminLocale(), cl, key, null);
+		return getLocalizedMessage(StackIntrospector.getCallerClass().getName(), getAdminLocale(), cl, key, (Object[])null);
 	}
-	public static String getLocalizedMessage(String key, Object[] args) {
+	public static String getLocalizedMessage(String key, Object... args) {
 		return getLocalizedMessage(StackIntrospector.getCallerClass().getName(), getAdminLocale(), null, key, args);
 	}
 	public static String getLocalizedMessage(String key) {
-		return getLocalizedMessage(StackIntrospector.getCallerClass().getName(), getAdminLocale(), null, key, null);
+		return getLocalizedMessage(StackIntrospector.getCallerClass().getName(), getAdminLocale(), null, key, (Object[])null);
 	}
 }

@@ -31,6 +31,7 @@ public class ServerInfos extends BaseAdminActionProvider implements AdminActionP
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if (METHOD_POST.equals(request.getMethod())) {
 			sendRedirect(request, response);

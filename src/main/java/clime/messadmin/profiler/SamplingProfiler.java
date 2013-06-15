@@ -48,7 +48,7 @@ public class SamplingProfiler implements java.io.Closeable {
 	 */
 	private int minCount = 0;
 	/**
-	 * Total number of {@code StackTraceElement} analysed
+	 * Total number of {@code StackTraceElement} analyzed
 	 * (i.e. after ignoring {@link #ignoredThreads} and {@link #ignoredPackagesInStackTrace})
 	 */
 	private long totalStackTracesAnalysed = 0;
@@ -86,8 +86,7 @@ public class SamplingProfiler implements java.io.Closeable {
 				continue;
 			}
 			boolean skip = false;
-			for (int i = 0; i < elements.length; ++i) {
-				StackTraceElement element = elements[i];
+			for (StackTraceElement element : elements) {
 				if (startsWith(element.getClassName() + '#' + element.getMethodName(), ignoredPackagesInStackTrace)) {
 					skip = true;
 					break;
@@ -102,8 +101,7 @@ public class SamplingProfiler implements java.io.Closeable {
 	}
 
 	private boolean startsWith(String str, Collection<String> matches) {
-		for (Iterator iter = matches.iterator(); iter.hasNext();) {
-			String match = (String) iter.next();
+		for (String match : matches) {
 			if (str.startsWith(match)) {
 				return true;
 			}
@@ -166,8 +164,7 @@ public class SamplingProfiler implements java.io.Closeable {
 		int printCount = 0;
 		boolean shouldStop = false;
 		Integer lastCount = null;
-		for (int i = 0; i < sortedTraces.length; ++i) {
-			Map.Entry/*<String, Integer>*/ entry = sortedTraces[i];
+		for (Map.Entry<String, Integer> entry : sortedTraces) {
 			if (shouldStop && ! entry.getValue().equals(lastCount)) {
 				// stop at lastCount boundary
 				break;
@@ -177,7 +174,7 @@ public class SamplingProfiler implements java.io.Closeable {
 					shouldStop = true;
 				}
 			}
-			lastCount = (Integer) entry.getValue();
+			lastCount = entry.getValue();
 			Double percent = new Double(lastCount.intValue() / Math.max(totalStackTracesAnalysed, 1.0));
 			out.println(I18NSupport.getLocalizedMessage(BUNDLE_NAME, "stacktrace.dump",//$NON-NLS-1$
 					new Object[] {lastCount, percent, entry.getKey()})

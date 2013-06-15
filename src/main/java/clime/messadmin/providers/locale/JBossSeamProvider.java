@@ -8,7 +8,7 @@ import javax.servlet.http.HttpSession;
 import clime.messadmin.providers.spi.LocaleProvider;
 
 /**
- * Note: this provider implementation uses reflexion, to avoid linking against Seam libs.
+ * Note: this provider implementation uses reflection, to avoid linking against Seam libs.
  * 
  * @author @author C&eacute;drik LIME
  * @since 4.1
@@ -34,8 +34,8 @@ public class JBossSeamProvider implements LocaleProvider {
 		Object identity = httpSession.getAttribute(SEAM_LOCALE_KEY);
 		if (identity != null) {
 			try {
-				Method getLocaleMethod = identity.getClass().getMethod("getLocale", null);//$NON-NLS-1$
-				return (Locale) getLocaleMethod.invoke(identity, null);
+				Method getLocaleMethod = identity.getClass().getMethod("getLocale");//$NON-NLS-1$
+				return (Locale) getLocaleMethod.invoke(identity);
 			} catch (Exception e) {
 				// not a chance...
 			}

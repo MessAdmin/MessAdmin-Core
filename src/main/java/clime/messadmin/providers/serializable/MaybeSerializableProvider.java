@@ -15,7 +15,7 @@ import clime.messadmin.providers.spi.SerializableProvider;
  * Determines if an object is serializable by lookup if it implements java.io.Serializable.
  * While this implementation is quick, it may not be accurate:
  * <ul>
- *   <li>a return value of true does not waranty that such an object is really serializable.</li>
+ *   <li>a return value of true does not warranty that such an object is really serializable.</li>
  *   <li>a return value of false is a 100% warranty that the object is not serializable.</li>
  * </ul>
  * This implementation recurses into Collections and Arrays, but does not reflect into objects.
@@ -45,7 +45,7 @@ public class MaybeSerializableProvider implements SerializableProvider {
 	 * Determines if an object is serializable by lookup if it implements java.io.Serializable.
 	 * While this implementation is quick, it may not be accurate:
 	 * <ul>
-	 *   <li>a return value of true does not waranty that such an object is really serializable.</li>
+	 *   <li>a return value of true does not warranty that such an object is really serializable.</li>
 	 *   <li>a return value of false is a 100% warranty that the object is not serializable.</li>
 	 * </ul>
 	 * This implementation recurses into Collections and Arrays, but does not reflect into objects.
@@ -85,9 +85,7 @@ public class MaybeSerializableProvider implements SerializableProvider {
 		// Collection: each member of the collection must be Serializable
 		if (o instanceof Collection) {
 			try {
-				Iterator iter = ((Collection) o).iterator();
-				while (iter.hasNext()) {
-					Object oo = iter.next();
+				for (Object oo : (Collection) o) {
 					if (! isMaybeSerializable(oo, visitedObjects)) {
 						return false;
 					}
@@ -128,9 +126,7 @@ public class MaybeSerializableProvider implements SerializableProvider {
 //				return false;
 //			}
 			// Array type is not Serializable, but maybe all entries are. We need to check.
-			Object[] array = (Object[]) o;
-			for (int i = 0; i < array.length; ++i) {
-				Object object = array[i];
+			for (Object object : (Object[]) o) {
 				if (! isMaybeSerializable(object, visitedObjects)) {
 					return false;
 				}

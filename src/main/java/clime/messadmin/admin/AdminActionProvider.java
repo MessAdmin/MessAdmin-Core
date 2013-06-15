@@ -47,9 +47,9 @@ public interface AdminActionProvider extends BaseProvider, Servlet {
 				cl = Server.getInstance().getApplication(context).getApplicationInfo().getClassLoader();
 			}
 
-			Iterator iter = ProviderUtils.getProviders(AdminActionProvider.class, cl).iterator();
+			Iterator<AdminActionProvider> iter = ProviderUtils.getProviders(AdminActionProvider.class, cl).iterator();
 			while (iter.hasNext()) {
-				AdminActionProvider provider = (AdminActionProvider) iter.next();
+				AdminActionProvider provider = iter.next();
 				if (action.equalsIgnoreCase(provider.getActionID())) {
 					return provider;
 				}

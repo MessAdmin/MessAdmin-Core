@@ -4,7 +4,6 @@
 package clime.messadmin.admin.actions;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -43,7 +42,7 @@ public class ReloadDataProviderHelper {
 		return scope;
 	}
 
-	public static /*<T extends DisplayProvider> T*/DisplayProvider getDisplayProvider(Class/*<T>*/ providerClass, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public static <T extends DisplayProvider> T getDisplayProvider(Class<T> providerClass, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String providerId = request.getParameter(PARAM_PROVIDER);
 		if (StringUtils.isBlank(providerId)) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, StringUtils.escapeXml(providerId));
@@ -57,9 +56,8 @@ public class ReloadDataProviderHelper {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, StringUtils.escapeXml(scope));
 			return null;
 		}
-		List providers = ProviderUtils.getProviders(providerClass);
-		for (Iterator iter = providers.iterator(); iter.hasNext();) {
-			DisplayProvider provider = (DisplayProvider) iter.next();
+		List<T> providers = ProviderUtils.getProviders(providerClass);
+		for (T provider : providers) {
 			if (providerId.equals(DisplayProvider.Util.getId(provider))) {
 				return provider;
 			}

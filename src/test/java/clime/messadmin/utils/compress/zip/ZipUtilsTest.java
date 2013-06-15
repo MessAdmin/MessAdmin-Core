@@ -40,6 +40,7 @@ public class ZipUtilsTest extends BaseCompressionTest {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		src = new File("C:\\temp\\test");
@@ -52,6 +53,7 @@ public class ZipUtilsTest extends BaseCompressionTest {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected void tearDown() throws Exception {
 		dst.delete();
 		super.tearDown();
@@ -131,8 +133,8 @@ public class ZipUtilsTest extends BaseCompressionTest {
 	private static void compare(File src, File zip) throws IOException, AssertionError {
 		// 1. check all ZIP files are identical to source
 		ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zip));
-		Set zipVisitedFiles = new HashSet();
-		Set zipVisitedDirectories = new HashSet();
+		Set<String> zipVisitedFiles = new HashSet<String>();
+		Set<String> zipVisitedDirectories = new HashSet<String>();
 		File parent = src.getParentFile();
 		try {
 			ZipEntry zipEntry = zipIn.getNextEntry();
@@ -157,7 +159,7 @@ public class ZipUtilsTest extends BaseCompressionTest {
 		compareFilesExistence(src, zipVisitedFiles, zipVisitedDirectories);
 	}
 
-	private static void compareFilesExistence(File src, Set zipVisitedFiles, Set zipVisitedDirectories) throws AssertionError {
+	private static void compareFilesExistence(File src, Set<String> zipVisitedFiles, Set<String> zipVisitedDirectories) throws AssertionError {
 		if (src.isFile() && src.canRead()) {
 			if (! zipVisitedFiles.contains(src.getPath())) {
 				throw new AssertionError("Source file absent from ZIP archive: " + src.getPath());

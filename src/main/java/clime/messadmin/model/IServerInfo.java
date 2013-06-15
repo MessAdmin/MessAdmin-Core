@@ -62,7 +62,7 @@ public interface IServerInfo {
 	 * @since 1.5
 	 * @see System#getenv()
 	 */
-	Map/*<String,String>*/ getSystemEnv();
+	Map<String,String> getSystemEnv();
 
 	/*
 	String getServerInfo();

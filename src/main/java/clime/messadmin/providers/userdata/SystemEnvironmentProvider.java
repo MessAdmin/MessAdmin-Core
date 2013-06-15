@@ -3,10 +3,8 @@
  */
 package clime.messadmin.providers.userdata;
 
-import java.lang.reflect.Method;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -21,16 +19,6 @@ import clime.messadmin.providers.spi.ServerDataProvider;
 public class SystemEnvironmentProvider extends BaseTabularServerDataProvider
 		implements ServerDataProvider {
 	private static final String BUNDLE_NAME = SystemEnvironmentProvider.class.getName();
-	private static Method getenv = null;
-
-	static {
-		// @since 1.5
-		try {
-			getenv = System.class.getMethod("getenv", null);//$NON-NLS-1$
-		} catch (SecurityException e) {
-		} catch (NoSuchMethodException e) {
-		}
-	}
 
 	/**
 	 * 
@@ -42,6 +30,7 @@ public class SystemEnvironmentProvider extends BaseTabularServerDataProvider
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public String[] getServerTabularDataLabels() {
 		String name = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.name");//$NON-NLS-1$
 		String value = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.value");//$NON-NLS-1$
@@ -51,6 +40,7 @@ public class SystemEnvironmentProvider extends BaseTabularServerDataProvider
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected String getTableCaption(String[] labels, Object[][] values) {
 		NumberFormat numberFormatter = NumberFormat.getNumberInstance(I18NSupport.getAdminLocale());
 		String caption = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "table.caption", new Object[] {numberFormatter.format(values.length)});//$NON-NLS-1$
@@ -60,12 +50,11 @@ public class SystemEnvironmentProvider extends BaseTabularServerDataProvider
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public Object[][] getServerTabularData() {
-		Map sysProps = Server.getInstance().getServerInfo().getSystemEnv();
+		Map<String, String> sysProps = Server.getInstance().getServerInfo().getSystemEnv();
 		List resultList = new ArrayList(sysProps.size());
-		Iterator iter = sysProps.entrySet().iterator();
-		while (iter.hasNext()) {
-			Map.Entry prop = (Map.Entry) iter.next();
+		for (Map.Entry<String, String> prop : sysProps.entrySet()) {
 			resultList.add(new Object[] {
 				prop.getKey(),
 				prop.getValue()
@@ -79,7 +68,7 @@ public class SystemEnvironmentProvider extends BaseTabularServerDataProvider
 	 * {@inheritDoc}
 	 */
 	public String getServerDataTitle() {
-		return getenv != null ? I18NSupport.getLocalizedMessage(BUNDLE_NAME, "title") : null;//$NON-NLS-1$
+		return I18NSupport.getLocalizedMessage(BUNDLE_NAME, "title");//$NON-NLS-1$
 	}
 
 	/**

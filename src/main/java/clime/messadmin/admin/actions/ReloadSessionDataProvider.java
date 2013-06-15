@@ -36,9 +36,10 @@ public class ReloadSessionDataProvider extends BaseAdminActionWithContextAndSess
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void serviceWithContextAndSession(HttpServletRequest request, HttpServletResponse response, String context, String sessionId) throws ServletException,IOException {
 		String scope = ReloadDataProviderHelper.getScope(request, response);
-		SessionDataProvider provider = (SessionDataProvider) ReloadDataProviderHelper.getDisplayProvider(SessionDataProvider.class, request, response);
+		SessionDataProvider provider = ReloadDataProviderHelper.getDisplayProvider(SessionDataProvider.class, request, response);
 		if (scope == null || provider == null) {
 			return;
 		}

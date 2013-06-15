@@ -3,7 +3,6 @@ package clime.messadmin.filter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.Filter;
@@ -192,10 +191,8 @@ public class MessAdminFilter implements Filter {
 			httpRequest.setAttribute(NULL_SESSION_REQUEST_KEY, Boolean.TRUE);
 		}
 		// pre-request plugin
-		List requestProviders = ProviderUtils.getProviders(RequestLifeCycleProvider.class);
-		Iterator iter = requestProviders.iterator();
-		while (iter.hasNext()) {
-			RequestLifeCycleProvider lc = (RequestLifeCycleProvider) iter.next();
+		List<RequestLifeCycleProvider> requestProviders = ProviderUtils.getProviders(RequestLifeCycleProvider.class);
+		for (RequestLifeCycleProvider lc : requestProviders) {
 			try {
 				lc.requestInitialized(httpRequest, httpResponse, servletContext);
 			} catch (RuntimeException rte) {
@@ -224,11 +221,9 @@ public class MessAdminFilter implements Filter {
 		MessAdminThreadLocal.stop();
 		Server.getInstance().requestDestroyed(httpRequest, httpResponse, servletContext);
 		// post-request plugin
-		List requestProviders = new ArrayList(ProviderUtils.getProviders(RequestLifeCycleProvider.class));
+		List<RequestLifeCycleProvider> requestProviders = new ArrayList<RequestLifeCycleProvider>(ProviderUtils.getProviders(RequestLifeCycleProvider.class));
 		Collections.reverse(requestProviders);
-		Iterator iter = requestProviders.iterator();
-		while (iter.hasNext()) {
-			RequestLifeCycleProvider lc = (RequestLifeCycleProvider) iter.next();
+		for (RequestLifeCycleProvider lc : requestProviders) {
 			try {
 				lc.requestDestroyed(httpRequest, httpResponse, servletContext);
 			} catch (RuntimeException rte) {
@@ -241,9 +236,7 @@ public class MessAdminFilter implements Filter {
 		// config can be null if the server is shutting down. We need to prevent a potential NPE here.
 		if (config != null) {
 			Server.getInstance().requestException(e, request, response, config.getServletContext());
-			Iterator iter = ProviderUtils.getProviders(RequestExceptionProvider.class).iterator();
-			while (iter.hasNext()) {
-				RequestExceptionProvider lc = (RequestExceptionProvider) iter.next();
+			for (RequestExceptionProvider lc : ProviderUtils.getProviders(RequestExceptionProvider.class)) {
 				try {
 					lc.requestException(e, request, response, config.getServletContext());
 				} catch (RuntimeException rte) {

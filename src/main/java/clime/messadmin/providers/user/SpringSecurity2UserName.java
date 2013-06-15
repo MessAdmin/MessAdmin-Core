@@ -25,15 +25,19 @@ public class SpringSecurity2UserName extends AcegiUserName implements RequestLif
 		super();
 	}
 
+	@Override
 	protected String getSecurityContextHolderClassName() {
 		return "org.springframework.security.context.SecurityContextHolder";//$NON-NLS-1$
 	}
+	@Override
 	protected String getSecurityContextClassName() {
 		return "org.springframework.security.context.SecurityContext";//$NON-NLS-1$
 	}
+	@Override
 	protected String getAuthenticationClassName() {
 		return "org.springframework.security.Authentication";//$NON-NLS-1$
 	}
+	@Override
 	protected String getUserDetailsClassName() {
 		return "org.springframework.security.userdetails.UserDetails";//$NON-NLS-1$
 	}
@@ -41,6 +45,7 @@ public class SpringSecurity2UserName extends AcegiUserName implements RequestLif
 	/**
 	 * @see clime.messadmin.providers.spi.BaseProvider#getPriority()
 	 */
+	@Override
 	public int getPriority() {
 		return 49;
 	}
@@ -48,6 +53,7 @@ public class SpringSecurity2UserName extends AcegiUserName implements RequestLif
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void requestInitialized(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) {
 		/*
 		Object obj = org.springframework.security.context.SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -63,6 +69,7 @@ public class SpringSecurity2UserName extends AcegiUserName implements RequestLif
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void requestDestroyed(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) {
 		super.requestDestroyed(request, response, servletContext);
 	}

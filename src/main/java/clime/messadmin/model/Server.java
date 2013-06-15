@@ -6,7 +6,6 @@ package clime.messadmin.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -249,9 +248,7 @@ public class Server implements ServletContextListener, IRequestListener {
 		}
 		isInitialized = true;
 		// Put Server-specific actions here
-		Iterator iter = ProviderUtils.getProviders(ServerLifeCycleProvider.class).iterator();
-		while (iter.hasNext()) {
-			ServerLifeCycleProvider lc = (ServerLifeCycleProvider) iter.next();
+		for (ServerLifeCycleProvider lc : ProviderUtils.getProviders(ServerLifeCycleProvider.class)) {
 			try {
 				lc.serverInitialized();
 			} catch (RuntimeException rte) {
@@ -268,11 +265,9 @@ public class Server implements ServletContextListener, IRequestListener {
 			return;
 		}
 		isInitialized = false;
-		List providers = new ArrayList(ProviderUtils.getProviders(ServerLifeCycleProvider.class));
+		List<ServerLifeCycleProvider> providers = new ArrayList<ServerLifeCycleProvider>(ProviderUtils.getProviders(ServerLifeCycleProvider.class));
 		Collections.reverse(providers);
-		Iterator iter = providers.iterator();
-		while (iter.hasNext()) {
-			ServerLifeCycleProvider lc = (ServerLifeCycleProvider) iter.next();
+		for (ServerLifeCycleProvider lc : providers) {
 			try {
 				lc.serverDestroyed();
 			} catch (RuntimeException rte) {

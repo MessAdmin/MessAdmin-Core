@@ -60,7 +60,7 @@ public final class JMX {
 		} catch (NoSuchMethodException e) {
 		}
 		try {
-			Class UnixOperatingSystemMXBean = Class.forName("com.sun.management.UnixOperatingSystemMXBean");//$NON-NLS-1$
+			Class<?> UnixOperatingSystemMXBean = Class.forName("com.sun.management.UnixOperatingSystemMXBean");//$NON-NLS-1$
 			OperatingSystemMXBean_getOpenFileDescriptorCount = UnixOperatingSystemMXBean.getMethod("getOpenFileDescriptorCount");//$NON-NLS-1$
 			OperatingSystemMXBean_getMaxFileDescriptorCount = UnixOperatingSystemMXBean.getMethod("getMaxFileDescriptorCount");//$NON-NLS-1$
 		} catch (LinkageError e) {

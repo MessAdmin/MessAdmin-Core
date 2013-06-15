@@ -33,8 +33,8 @@ public class JBossSeamProvider implements UserNameProvider {
 		Object identity = httpSession.getAttribute(SEAM_IDENTITY_KEY);
 		if (identity != null) {
 			try {
-				Method getUserNameMethod = identity.getClass().getMethod("getUsername", null);//$NON-NLS-1$
-				return getUserNameMethod.invoke(identity, null);
+				Method getUserNameMethod = identity.getClass().getMethod("getUsername");//$NON-NLS-1$
+				return getUserNameMethod.invoke(identity);
 			} catch (Exception e) {
 				// not a chance...
 			}

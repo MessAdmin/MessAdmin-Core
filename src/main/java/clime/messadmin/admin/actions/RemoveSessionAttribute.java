@@ -5,6 +5,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -49,6 +50,7 @@ public class RemoveSessionAttribute extends BaseAdminActionWithContextAndSession
 		return ID;
 	}
 
+	@Override
 	public int getPriority() {
 		return helper.getPriority();
 	}
@@ -64,6 +66,7 @@ public class RemoveSessionAttribute extends BaseAdminActionWithContextAndSession
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void serviceWithContextAndSession(HttpServletRequest request, HttpServletResponse response, String context, String sessionId) throws ServletException, IOException {
 		String name = request.getParameter(PARAM_ATTRIBUTE_NAME);
 		boolean removed = MessAdmin.removeSessionAttribute(context, sessionId, name);
@@ -100,6 +103,7 @@ public class RemoveSessionAttribute extends BaseAdminActionWithContextAndSession
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public String getTableCaption(HttpSession session, String[] labels, RowIterator values) {
 			if (values == null || values.getNRows() < 0) {
 				return "";//$NON-NLS-1$
@@ -111,6 +115,7 @@ public class RemoveSessionAttribute extends BaseAdminActionWithContextAndSession
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public String[] getSessionTabularDataLabels(HttpSession session) {
 			return new String[] {
 					I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.remove"),//$NON-NLS-1$
@@ -121,6 +126,7 @@ public class RemoveSessionAttribute extends BaseAdminActionWithContextAndSession
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public RowIterator getSessionRowIterator(HttpSession session) {
 			return new SessionAttributesIterator(session);
 		}
@@ -145,8 +151,9 @@ public class RemoveSessionAttribute extends BaseAdminActionWithContextAndSession
 			}
 
 			/** {@inheritDoc} */
+			@Override
 			public int getNRows() {
-				ArrayList list = Collections.list(session.getAttributeNames());
+				List<?> list = Collections.list(session.getAttributeNames());
 				return list.size();
 			}
 
@@ -156,6 +163,7 @@ public class RemoveSessionAttribute extends BaseAdminActionWithContextAndSession
 			}
 
 			/** {@inheritDoc} */
+			@Override
 			public String getRowStyle() {
 				boolean isSerializable = SerializableProvider.Util.isSerializable(currentValue, cl);
 				if (! isSerializable) {
@@ -166,6 +174,7 @@ public class RemoveSessionAttribute extends BaseAdminActionWithContextAndSession
 			}
 
 			/** {@inheritDoc} */
+			@Override
 			public String getCellStyle(int cellNumber, Object value) {
 				if (cellNumber == 0) {
 					return "text-align: center;";

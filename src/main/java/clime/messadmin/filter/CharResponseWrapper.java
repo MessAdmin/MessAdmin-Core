@@ -27,7 +27,7 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 		}
 
 		/** {@inheritDoc} */
-//	  @Override
+		@Override
 		public void write(int b) {
 			outstream.write(b);
 		}
@@ -37,7 +37,7 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 	}
 
 	/** {@inheritDoc} */
-//  @Override
+	@Override
 	public String toString() {
 		return output.toString();
 	}
@@ -52,7 +52,7 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 	}
 
 	/** {@inheritDoc} */
-//  @Override
+	@Override
 	public synchronized PrintWriter getWriter() {
 		if (stream != null) {
 			throw new IllegalStateException("getOutputStream() has already been called for this response");//$NON-NLS-1$
@@ -64,7 +64,7 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 	}
 
 	/** {@inheritDoc} */
-//  @Override
+	@Override
 	public synchronized ServletOutputStream getOutputStream() {
 		if (writer != null) {
 			throw new IllegalStateException("getWriter() has already been called for this response");//$NON-NLS-1$

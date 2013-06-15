@@ -6,14 +6,16 @@ package clime.messadmin.providers;
 import java.util.Iterator;
 import java.util.List;
 
+import clime.messadmin.providers.spi.BaseProvider;
+
 import junit.framework.TestCase;
 
 /**
  * @author C&eacute;drik LIME
  */
 public abstract class BaseProviderTest extends TestCase {
-	protected List providers;
-	protected Iterator providersIterator;
+	protected List<? extends BaseProvider> providers;
+	protected Iterator<? extends BaseProvider> providersIterator;
 
 	/**
 	 * Constructor for SizeOfTest.
@@ -30,6 +32,7 @@ public abstract class BaseProviderTest extends TestCase {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		providers = ProviderUtils.getProviders(getProviderClass());
@@ -39,12 +42,13 @@ public abstract class BaseProviderTest extends TestCase {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected void tearDown() throws Exception {
 		providersIterator = null;
 		providers = null;
 		super.tearDown();
 	}
 
-	protected abstract Class getProviderClass();
+	protected abstract Class<? extends BaseProvider> getProviderClass();
 
 }

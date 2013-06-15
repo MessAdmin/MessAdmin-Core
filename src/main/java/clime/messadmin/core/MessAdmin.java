@@ -83,9 +83,9 @@ public class MessAdmin {
 	 * @return number of modified sessions
 	 */
 	public static int injectAllSessions(String context, String message) {
-		Set/*<String>*/ activeSessionIds = Server.getInstance().getApplication(context).getActiveSessionsIds();
+		Set<String> activeSessionIds = Server.getInstance().getApplication(context).getActiveSessionsIds();
 		String[] sessionIds = new String[activeSessionIds.size()];
-		sessionIds = (String[]) activeSessionIds.toArray(sessionIds);
+		sessionIds = activeSessionIds.toArray(sessionIds);
 		return injectSessions(context, sessionIds, message);
 	}
 
@@ -101,8 +101,7 @@ public class MessAdmin {
 		}
 		int nbAffectedSessions = 0;
 		Application application = Server.getInstance().getApplication(context);
-		for (int i = 0; i < sessionIds.length; ++i) {
-			String sessionId = sessionIds[i];
+		for (String sessionId : sessionIds) {
 			Session session = application.getSession(sessionId);
 			if (null == session) {
 				// Shouldn't happen, but let's play nice...
@@ -128,8 +127,7 @@ public class MessAdmin {
 		}
 		int nbAffectedSessions = 0;
 		Application application = Server.getInstance().getApplication(context);
-		for (int i = 0; i < sessionIds.length; ++i) {
-			String sessionId = sessionIds[i];
+		for (String sessionId : sessionIds) {
 			Session session = application.getSession(sessionId);
 			if (null == session) {
 				// Shouldn't happen, but let's play nice...

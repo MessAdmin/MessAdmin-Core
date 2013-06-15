@@ -21,12 +21,12 @@ public class ProviderUtils {
 	 * This is a cache of Providers, keyed by its Interface, and by a ClassLoader.
 	 * This enables different WebApps (different ClassLoaders) to have their own set of plugins (same Interface).
 	 */
-	private static final Map/*<ClassLoader, Map<Class, List<? extends BaseProvider>>>*/ PROVIDERS_CACHE = new SoftHashMap();//FIXME do we need soft values too?
-	private static final Comparator priorityComparator = new Comparator() {
+	private static final Map<ClassLoader, Map<Class<? extends BaseProvider>, List<? extends BaseProvider>>> PROVIDERS_CACHE = new SoftHashMap();//FIXME do we need soft values too?
+	private static final Comparator<BaseProvider> priorityComparator = new Comparator<BaseProvider>() {
 		/** {@inheritDoc} */
-		public int compare(Object o1, Object o2) {
-			int p1 = ((BaseProvider)o1).getPriority();
-			int p2 = ((BaseProvider)o2).getPriority();
+		public int compare(BaseProvider o1, BaseProvider o2) {
+			int p1 = o1.getPriority();
+			int p2 = o2.getPriority();
 			return (p1 < p2) ? -1 : (p1 == p2) ? 0 :  1;
 		}
 	};
@@ -44,48 +44,47 @@ public class ProviderUtils {
 	 * @param clazz
 	 * @return list of providers for clazz, sorted by priority
 	 */
-	public static /*<T extends BaseProvider>*/ List/*<T>*/ getProviders(final Class/*<T>*/ clazz) {
+	public static <T extends BaseProvider> List<T> getProviders(final Class<T> clazz) {
 		return getProviders(clazz, Thread.currentThread().getContextClassLoader());
 	}
-	public static /*<T extends BaseProvider>*/ List/*<T>*/ getProviders(final Class/*<T>*/ clazz, ClassLoader classLoader) {
+	public static <T extends BaseProvider> List<T> getProviders(final Class<T> clazz, ClassLoader classLoader) {
 		if (classLoader == null) {
 			classLoader = Thread.currentThread().getContextClassLoader();
 		}
-		Map providersByInterface = (Map) PROVIDERS_CACHE.get(classLoader);
+		Map<Class<? extends BaseProvider>, List<? extends BaseProvider>> providersByInterface = PROVIDERS_CACHE.get(classLoader);
 		if (providersByInterface == null) {
 			fillProvidersCache(clazz, classLoader);
-			providersByInterface = (Map) PROVIDERS_CACHE.get(classLoader);
+			providersByInterface = PROVIDERS_CACHE.get(classLoader);
 		}
 
-		List providers = (List) providersByInterface.get(clazz);
+		List<? extends BaseProvider> providers = providersByInterface.get(clazz);
 		if (providers == null) {
 			fillProvidersCache(clazz, classLoader);
-			providers = (List) providersByInterface.get(clazz);
+			providers = providersByInterface.get(clazz);
 		}
-		return providers;
+		return (List<T>) providers;
 	}
 
 	/**
 	 * @param clazz
 	 */
-	private static synchronized void fillProvidersCache(final Class/*<? extends BaseProvider>*/ clazz, final ClassLoader classLoader) {
-		Map/*<Class, List<? extends BaseProvider>>*/ providersByInterface = (Map) PROVIDERS_CACHE.get(classLoader);
+	private static synchronized void fillProvidersCache(final Class<? extends BaseProvider> clazz, final ClassLoader classLoader) {
+		Map<Class<? extends BaseProvider>, List<? extends BaseProvider>> providersByInterface = PROVIDERS_CACHE.get(classLoader);
 		if (providersByInterface == null) {
-			providersByInterface = new SoftHashMap/*<Class, List<? extends BaseProvider>>*/();
+			providersByInterface = new SoftHashMap/*<Class<? extends BaseProvider>, List<? extends BaseProvider>>*/();
 			// put resulting Map in cache as *last operation* (after filling said Map)
 			PROVIDERS_CACHE.put(classLoader, providersByInterface);
 		}
 
-		List/*<? extends BaseProvider>*/ providers = (List) providersByInterface.get(clazz);
-		if (providers == null) {
-			providers = new ArrayList/*<? extends BaseProvider>*/();
-			Iterator ps = Service.providers(clazz, classLoader);
+		if (providersByInterface.get(clazz) == null) {
+			List<BaseProvider> providers = new ArrayList<BaseProvider>();
+			Iterator<? extends BaseProvider> ps = Service.providers(clazz, classLoader);
 			if (! ps.hasNext() && classLoader != clazz.getClassLoader()) {
 				ps = Service.providers(clazz, clazz.getClassLoader());
 			}
 			while (ps.hasNext()) {
 				try {
-					BaseProvider provider = (BaseProvider) ps.next();
+					BaseProvider provider = ps.next();
 					providers.add(provider);
 				} catch (RuntimeException rte) {
 					// error while fetching provider; skipping
@@ -141,6 +140,7 @@ public class ProviderUtils {
 	 * finalization.
 	 * @see java.lang.Object#finalize()
 	 */
+	@Override
 	protected void finalize() throws Throwable {
 		reload();
 		super.finalize();

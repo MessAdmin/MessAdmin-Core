@@ -4,9 +4,9 @@
 package clime.messadmin.providers.userdata;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 
@@ -30,6 +30,7 @@ public class ServletContextInitParametersProvider extends
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected String getTableCaption(ServletContext context, String[] labels, RowIterator values) {
 		if (values == null || values.getNRows() == 0) {
 			return "";//$NON-NLS-1$
@@ -41,6 +42,7 @@ public class ServletContextInitParametersProvider extends
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String[] getApplicationTabularDataLabels(ServletContext context) {
 		String name = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.name");//$NON-NLS-1$
 		String value = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.value");//$NON-NLS-1$
@@ -48,6 +50,7 @@ public class ServletContextInitParametersProvider extends
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public RowIterator getApplicationRowIterator(ServletContext context) {
 		RowIterator result = new ServletContextInitParametersIterator(context);
 		if (result.getNRows() == 0) {
@@ -79,8 +82,9 @@ public class ServletContextInitParametersProvider extends
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public int getNRows() {
-			ArrayList list = Collections.list(context.getInitParameterNames());
+			List<?> list = Collections.list(context.getInitParameterNames());
 			return list.size();
 		}
 
@@ -90,6 +94,7 @@ public class ServletContextInitParametersProvider extends
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public String getCellStyle(int cellNumber, Object value) {
 			if (cellNumber == 0) {
 				return "text-align: center;";

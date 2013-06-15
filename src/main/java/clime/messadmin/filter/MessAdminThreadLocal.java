@@ -3,8 +3,9 @@
  */
 package clime.messadmin.filter;
 
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
+
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 /**
  * ThreadLocal containing some interesting data for internal usage.
@@ -60,7 +61,7 @@ public class MessAdminThreadLocal {
 		try {
 			//return (int) (getStopTime().getTime() - getStartTime().getTime()); // NTP is prone to time correction, so don't use System.currentTimeMillis()
 			long diffNano = stopTimeNano.get() - startTimeNano.get();
-			return (int) TimeUnit.NANOSECONDS.toMillis(diffNano);
+			return (int) NANOSECONDS.toMillis(diffNano);
 		} catch (NullPointerException npe) {
 			// Workaround for bug of BEA Weblogic 8.1.5 / Java 1.4.2_05 / XP
 			//e.printStackTrace();

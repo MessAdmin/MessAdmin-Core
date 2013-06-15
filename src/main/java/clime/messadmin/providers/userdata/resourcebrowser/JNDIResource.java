@@ -35,10 +35,10 @@ import clime.messadmin.utils.Charsets;
  */
 //
 class JNDIResource extends BaseResource {
-	private static final Set/*<Class>*/ ALLOWED_TYPES;
+	private static final Set<Class> ALLOWED_TYPES;
 
 	static {
-		Set allowedTypes = new HashSet();
+		Set<Class> allowedTypes = new HashSet<Class>();
 		allowedTypes.addAll(Arrays.asList(new Class[] {
 				java.lang.Character.class, java.lang.String.class,
 				java.lang.Boolean.class, java.lang.Byte.class, java.lang.Short.class, java.lang.Integer.class, java.lang.Long.class,
@@ -60,13 +60,14 @@ class JNDIResource extends BaseResource {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Collection/*<JNDIResource>*/ getChildResources(ServletContext servletContext) {
 		List result = new ArrayList();
-		NamingEnumeration enumeration = null;
+		NamingEnumeration<NameClassPair> enumeration = null;
 		try {
 			enumeration = jndiContext.list(resourcePath);
 			while (enumeration.hasMore()) {
-				NameClassPair nameClassPair = (NameClassPair) enumeration.next();
+				NameClassPair nameClassPair = enumeration.next();
 				String name = nameClassPair.getName();
 				if (nameClassPair.isRelative()) {
 					//name = context.composeName(name, context.getNameInNamespace());
@@ -91,6 +92,7 @@ class JNDIResource extends BaseResource {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected BaseResource getParentDirectoryInternal() {
 		if (! isDirectory()) {
 			throw new IllegalArgumentException("Not a directory: " + resourcePath);
@@ -110,6 +112,7 @@ class JNDIResource extends BaseResource {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getFileName() {
 		String result = resourcePath;
 		int slashIndex = result.lastIndexOf("/");//$NON-NLS-1$
@@ -120,18 +123,20 @@ class JNDIResource extends BaseResource {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public BaseResource getCanonicalResource() {
 		return this;
 	}
 
 	private boolean isFile = false;
 	/** {@inheritDoc} */
+	@Override
 	public boolean isFile() {
 		return isFile;
 	}
 	private boolean isFileInternal() {
 		boolean isFile = false;
-		NamingEnumeration enumeration = null;
+		NamingEnumeration<NameClassPair> enumeration = null;
 		try {
 			enumeration = jndiContext.list(resourcePath);
 			isFile = ! enumeration.hasMore();
@@ -146,17 +151,20 @@ class JNDIResource extends BaseResource {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean isDirectory() {
 		return ! isFile();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean isHidden() {
 		return false;
 	}
 
 	private Boolean canRead = null;
 	/** {@inheritDoc} */
+	@Override
 	public boolean canRead() {
 		if (canRead == null) {
 			if (isDirectory()) {
@@ -178,23 +186,28 @@ class JNDIResource extends BaseResource {
 		return canRead.booleanValue();
 	}
 	/** {@inheritDoc} */
+	@Override
 	public boolean canWrite() {
 		return false;
 	}
 	/** {@inheritDoc} */
+	@Override
 	public boolean canDelete() {
 		return false;
 	}
 	/** {@inheritDoc} */
+	@Override
 	public boolean canRename() {
 		return false;
 	}
 	/** {@inheritDoc} */
+	@Override
 	public boolean canCompress() {
 		return false;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public InputStream getResourceAsStream(ServletContext servletContext) {
 		if (! canRead()) {
 			return null;
@@ -216,11 +229,13 @@ class JNDIResource extends BaseResource {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected URL getURL(ServletContext context) {
 		return null;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public long getContentLength(ServletContext context) {
 		URLConnection connection = getURLConnection(context);
 		if (connection != null) {
@@ -230,6 +245,7 @@ class JNDIResource extends BaseResource {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public long getLastModified(ServletContext context) {
 		URLConnection connection = getURLConnection(context);
 		if (connection != null) {
@@ -239,12 +255,13 @@ class JNDIResource extends BaseResource {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getContentType(ServletContext context) {
 		return "text/plain";//$NON-NLS-1$
 	}
 
 
-	protected void closeQuietly(NamingEnumeration enumeration) {
+	protected <T> void closeQuietly(NamingEnumeration<T> enumeration) {
 		if (enumeration != null) {
 			try {
 				enumeration.close();

@@ -3,8 +3,6 @@
  */
 package clime.messadmin.providers.spi;
 
-import java.util.Iterator;
-
 import clime.messadmin.providers.ProviderUtils;
 
 /**
@@ -13,9 +11,7 @@ import clime.messadmin.providers.ProviderUtils;
 public interface SerializableProvider extends BaseProvider {
 	public static class Util {
 		public static boolean isSerializable(Object obj, ClassLoader cl) {
-			Iterator iter = ProviderUtils.getProviders(SerializableProvider.class, cl).iterator();
-			while (iter.hasNext()) {
-				SerializableProvider sp = (SerializableProvider) iter.next();
+			for (SerializableProvider sp : ProviderUtils.getProviders(SerializableProvider.class, cl)) {
 				try {
 					return sp.isSerializable(obj);
 				} catch (RuntimeException rte) {

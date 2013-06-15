@@ -1,7 +1,6 @@
 package clime.messadmin.admin;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -35,6 +34,7 @@ import clime.messadmin.taglib.jstl.fmt.LocalizationContext;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			process(request, response);
@@ -44,6 +44,7 @@ import clime.messadmin.taglib.jstl.fmt.LocalizationContext;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			process(request, response);
@@ -95,7 +96,7 @@ import clime.messadmin.taglib.jstl.fmt.LocalizationContext;
 		I18NSupport.setAdminLocale(response.getLocale()); // necessary for plugins
 
 		response.setHeader("X-FRAME-OPTIONS", "SAMEORIGIN");// IE8+: prevent clickjacking attacks on the Admin Console
-		response.setHeader("X-UA-Compatible", "IE=edge,chrome=1");// Google Chrome Frame for those poor IE users
+		response.setHeader("X-UA-Compatible", "IE=edge");// IE
 
 		if (displayActionProvider.preService(request, response)) {
 			displayActionProvider.service(request, response);
@@ -104,11 +105,13 @@ import clime.messadmin.taglib.jstl.fmt.LocalizationContext;
 
 
 	/** {@inheritDoc} */
+	@Override
 	public String getServletInfo() {
-		return "MessAdminServlet, copyright (c) 2005--2012 Cédrik LIME";
+		return "MessAdminServlet, copyright (c) 2005--2013 Cédrik LIME";
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void init() throws ServletException {
 		super.init();
 		String initAuthorizationPassword = getServletConfig().getInitParameter("AuthorizationPassword");//$NON-NLS-1$
@@ -116,23 +119,18 @@ import clime.messadmin.taglib.jstl.fmt.LocalizationContext;
 			authorizationPassword = initAuthorizationPassword;
 		}
 		// Initialize all known (from this webapp's point of view) providers
-		Iterator iter = ProviderUtils.getProviders(DisplayFormatProvider.class).iterator();
-		while (iter.hasNext()) {
-			DisplayFormatProvider provider = (DisplayFormatProvider) iter.next();
+		for (DisplayFormatProvider provider : ProviderUtils.getProviders(DisplayFormatProvider.class)) {
 			provider.init(getServletConfig());
 		}
-		iter = ProviderUtils.getProviders(AdminActionProvider.class).iterator();
-		while (iter.hasNext()) {
-			AdminActionProvider provider = (AdminActionProvider) iter.next();
+		for (AdminActionProvider provider : ProviderUtils.getProviders(AdminActionProvider.class)) {
 			provider.init(getServletConfig());
 		}
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void destroy() {
-		Iterator iter = ProviderUtils.getProviders(AdminActionProvider.class).iterator();
-		while (iter.hasNext()) {
-			AdminActionProvider provider = (AdminActionProvider) iter.next();
+		for (AdminActionProvider provider : ProviderUtils.getProviders(AdminActionProvider.class)) {
 			provider.destroy();
 		}
 		super.destroy();

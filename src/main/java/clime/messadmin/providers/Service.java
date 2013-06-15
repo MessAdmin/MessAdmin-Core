@@ -22,24 +22,24 @@ import clime.messadmin.utils.Charsets;
 
 /**
  * From JDK 1.3.1 / 1.4.2 / 1.5.0
- * see http://java.sun.com/j2se/1.5.0/docs/guide/jar/jar.html#Service%20Provider
+ * see http://docs.oracle.com/javase/1.5.0/docs/guide/jar/jar.html#Service%20Provider
  *
  * see javax.imageio.spi.ServiceRegistry (Java 1.4+)
  * see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4640520
- * see http://java.sun.com/javase/6/docs/api/java/util/ServiceLoader.html (Java 6)
+ * see http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html (Java 6)
  * @author C&eacute;drik LIME
  */
 public final class Service {
 
 	// Private inner class implementing fully-lazy provider lookup
 	//
-	private static class LazyIterator implements Iterator {
+	private static class LazyIterator<S> implements Iterator<S> {
 
-		Class service;
+		Class<S> service;
 		ClassLoader loader;
-		Enumeration/*<URL>*/ configs = null;
-		Iterator/*<String>*/ pending = null;
-		Set returned = new TreeSet();
+		Enumeration<URL> configs = null;
+		Iterator<String> pending = null;
+		Set<String> returned = new TreeSet<String>();
 		String nextName = null;
 
 		/** {@inheritDoc} */
@@ -63,22 +63,22 @@ public final class Service {
 				if (!configs.hasMoreElements()) {
 					return false;
 				}
-				pending = Service.parse(service, (URL) configs.nextElement(), returned);
+				pending = Service.parse(service, configs.nextElement(), returned);
 			}
 
-			nextName = (String) pending.next();
+			nextName = pending.next();
 			return true;
 		}
 
 		/** {@inheritDoc} */
-		public Object next() throws ServiceConfigurationError {
+		public S next() throws ServiceConfigurationError {
 			if (!hasNext()) {
 				throw new NoSuchElementException();
 			}
 			String cn = nextName;
 			nextName = null;
 			try {
-				return Class.forName(cn, true, loader).newInstance();
+				return (S) Class.forName(cn, true, loader).newInstance();
 			} catch (ClassNotFoundException cnfe) {
 				Service.fail(service, "Provider " + cn + " not found");
 			} catch (Exception e) {
@@ -93,7 +93,7 @@ public final class Service {
 			throw new UnsupportedOperationException();
 		}
 
-		private LazyIterator(Class service, ClassLoader loader) {
+		private LazyIterator(Class<S> service, ClassLoader loader) {
 			this.service = service;
 			this.loader = loader;
 		}
@@ -105,18 +105,18 @@ public final class Service {
 	private Service() {
 	}
 
-	protected static void fail(Class service, String msg) throws ServiceConfigurationError {
+	protected static void fail(Class<?> service, String msg) throws ServiceConfigurationError {
 		throw new ServiceConfigurationError(service.getName() + ": " + msg);
 	}
 
-	protected static void fail(Class service, URL url, int line, String msg) throws ServiceConfigurationError {
+	protected static void fail(Class<?> service, URL url, int line, String msg) throws ServiceConfigurationError {
 		fail(service, url + ":" + line + ": " + msg);
 	}
 
 	/**
 	 * @since 1.4
 	 */
-	protected static void fail(Class service, String msg, Throwable cause) throws ServiceConfigurationError {
+	protected static void fail(Class<?> service, String msg, Throwable cause) throws ServiceConfigurationError {
 		ServiceConfigurationError sce = new ServiceConfigurationError(
 				service.getName() + ": " + msg, cause);
 		throw sce;
@@ -125,8 +125,8 @@ public final class Service {
 	// Parse a single line from the given configuration file, adding the name
 	// on the line to the names list.
 	//
-	private static int parseLine(Class service, URL url,
-			BufferedReader r, int lc, List names, Set providers)
+	private static int parseLine(Class<?> service, URL url,
+			BufferedReader r, int lc, List<String> names, Set<String> providers)
 			throws IOException, ServiceConfigurationError {
 		String ln = r.readLine();
 		if (ln == null) {
@@ -177,10 +177,10 @@ public final class Service {
 	//         If an I/O error occurs while reading from the given URL, or
 	//         if a configuration-file format error is detected
 	//
-	protected static Iterator parse(Class service, URL url, Set providers) throws ServiceConfigurationError {
+	protected static Iterator<String> parse(Class<?> service, URL url, Set<String> providers) throws ServiceConfigurationError {
 		InputStream in = null;
 		BufferedReader r = null;
-		ArrayList names = new ArrayList();
+		List<String> names = new ArrayList<String>();
 		try {
 			in = url.openStream();
 			r = new BufferedReader(new InputStreamReader(in, Charsets.UTF_8));//$NON-NLS-1$
@@ -212,7 +212,7 @@ public final class Service {
 	 * @return An iterator that lazily locates and instantiates providers for this service
 	 * @throws ServiceConfigurationError
 	 */
-	public static Iterator providers(Class service, ClassLoader loader) throws ServiceConfigurationError {
+	public static <S> Iterator<S> providers(Class<S> service, ClassLoader loader) throws ServiceConfigurationError {
 		return new LazyIterator(service, loader);
 	}
 
@@ -234,7 +234,7 @@ public final class Service {
 	 * @return An iterator that lazily locates and instantiates providers for this service
 	 * @throws ServiceConfigurationError
 	 */
-	public static Iterator providers(Class service) throws ServiceConfigurationError {
+	public static <S> Iterator<S> providers(Class<S> service) throws ServiceConfigurationError {
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		return providers(service, cl);
 	}
@@ -261,7 +261,7 @@ public final class Service {
 	 * @return An iterator that lazily locates and instantiates providers for this service
 	 * @throws ServiceConfigurationError
 	 */
-	public static Iterator installedProviders(Class service) throws ServiceConfigurationError {
+	public static <S> Iterator<S> installedProviders(Class<S> service) throws ServiceConfigurationError {
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		ClassLoader extClassLoader = null;
 		for (; cl != null; cl = cl.getParent()) {

@@ -70,8 +70,8 @@ public class EvilSingletonsUnregisterer implements ApplicationLifeCycleProvider 
 				// If the given classloader is the same as the classloader of FileCleaner, this means that the lib
 				// has been deployed inside the war, so the thread should be stopped and all resources released.
 				// If the classloader is different, then the thread is owned by the container, so don't stop it.
-				Method ewfMethod = fileCleanerClass.getMethod("exitWhenFinished", null);//$NON-NLS-1$
-				ewfMethod.invoke(null, null);
+				Method ewfMethod = fileCleanerClass.getMethod("exitWhenFinished");//$NON-NLS-1$
+				ewfMethod.invoke(null);
 			}
 		} catch (Throwable ignore) {
 		}
@@ -109,7 +109,7 @@ public class EvilSingletonsUnregisterer implements ApplicationLifeCycleProvider 
 			Class cdClass = thisClassLoader.loadClass("ch.qos.logback.classic.selector.servlet.ContextDetachingSCL");//$NON-NLS-1$
 			Object instance = cdClass.newInstance();
 			Method destroyMethod = cdClass.getMethod("contextDestroyed", new Class[] {ServletContextEvent.class});//$NON-NLS-1$
-			destroyMethod.invoke(instance, new Object[] {new ServletContextEvent(servletContext)});
+			destroyMethod.invoke(instance, new ServletContextEvent(servletContext));
 		} catch (Throwable ignore) {
 		}
 
@@ -117,8 +117,8 @@ public class EvilSingletonsUnregisterer implements ApplicationLifeCycleProvider 
 		// org.apache.log4j.LogManager.shutdown();
 		try {
 			Class lmClass = thisClassLoader.loadClass("org.apache.log4j.LogManager");//$NON-NLS-1$
-			Method shutdownMethod = lmClass.getMethod("shutdown", null);//$NON-NLS-1$
-			shutdownMethod.invoke(null, null);
+			Method shutdownMethod = lmClass.getMethod("shutdown");//$NON-NLS-1$
+			shutdownMethod.invoke(null);
 		} catch (Throwable ignore) {
 		}
 
@@ -232,7 +232,7 @@ public class EvilSingletonsUnregisterer implements ApplicationLifeCycleProvider 
 			// the URL is well-formed
 			// The setDefaultUseCaches should have been static...
 			// http://bugs.sun.com/view_bug.do?bug_id=4528126
-			URL url = new URL("jar:file://dummy.jar!/");
+			URL url = new URL("jar:file://dummy.jar!/");//$NON-NLS-1$
 			URLConnection uConn = url.openConnection();
 			uConn.setDefaultUseCaches(false);
 		} catch (MalformedURLException ignore) {

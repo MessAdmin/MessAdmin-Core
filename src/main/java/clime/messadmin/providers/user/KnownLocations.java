@@ -16,7 +16,7 @@ public class KnownLocations implements UserNameProvider {
 	 * The session attributes key under which the user
 	 * name is stored, if any.
 	 * 
-	 * Lower and upper-case strings will be dynamically generated. Put mid-capitalised strings here!
+	 * Lower and upper-case strings will be dynamically generated. Put mid-capitalized strings here!
 	 */
 	private static final String[] USER_TEST_ATTRIBUTES = new String[] {
 		"Login", "User", "userName", "UserName", "Utilisateur" };

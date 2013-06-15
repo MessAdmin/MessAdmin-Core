@@ -56,11 +56,13 @@ public abstract class BaseAdminActionProvider extends HttpServlet implements Adm
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		super.service(request, response);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void log(String message) {
 		if (DEBUG) {
 			getServletContext().log(getServletName() + ": " + message);//$NON-NLS-1$
@@ -68,6 +70,7 @@ public abstract class BaseAdminActionProvider extends HttpServlet implements Adm
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void log(String message, Throwable t) {
 		if (DEBUG) {
 			getServletContext().log(getServletName() + ": " + message, t);//$NON-NLS-1$

@@ -15,9 +15,9 @@ public interface SizeOfProvider extends BaseProvider {
 	public static class Util {
 		public static long getObjectSize(Object objectToSize, ClassLoader cl) {
 	        long currentItemSize = -1;
-	        Iterator iterProv = ProviderUtils.getProviders(SizeOfProvider.class, cl).iterator();
+	        Iterator<SizeOfProvider> iterProv = ProviderUtils.getProviders(SizeOfProvider.class, cl).iterator();
 	        while (currentItemSize < 0 && iterProv.hasNext()) {
-				SizeOfProvider provider = (SizeOfProvider) iterProv.next();
+				SizeOfProvider provider = iterProv.next();
 				try {
 					currentItemSize = provider.sizeof(objectToSize);
 				} catch (RuntimeException rte) {

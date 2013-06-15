@@ -78,11 +78,13 @@ public final class IPComparator implements Comparator, Serializable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean equals(Object obj) {
 		return super.equals(obj) || (obj != null && obj.getClass() == this.getClass());
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int hashCode() {
 		return 151815300;
 	}

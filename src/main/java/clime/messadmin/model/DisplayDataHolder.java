@@ -36,10 +36,12 @@ public abstract class DisplayDataHolder {
 			this.e = e;
 		}
 		/** {@inheritDoc} */
+		@Override
 		public String getTitle() {
 			return displayProvider.getClass().getName();
 		}
 		/** {@inheritDoc} */
+		@Override
 		public String getXHTMLData() {
 			return e.toString();
 		}
@@ -50,6 +52,7 @@ public abstract class DisplayDataHolder {
 			super(dp);
 		}
 		/** {@inheritDoc} */
+		@Override
 		public String getTitle() {
 			try {
 				return ((ServerDataProvider)displayProvider).getServerDataTitle();
@@ -58,6 +61,7 @@ public abstract class DisplayDataHolder {
 			}
 		}
 		/** {@inheritDoc} */
+		@Override
 		public String getXHTMLData() {
 			try {
 				return ((ServerDataProvider)displayProvider).getXHTMLServerData();
@@ -74,6 +78,7 @@ public abstract class DisplayDataHolder {
 			this.servletContext = sc;
 		}
 		/** {@inheritDoc} */
+		@Override
 		public String getTitle() {
 			try {
 				return ((ApplicationDataProvider)displayProvider).getApplicationDataTitle(servletContext);
@@ -82,6 +87,7 @@ public abstract class DisplayDataHolder {
 			}
 		}
 		/** {@inheritDoc} */
+		@Override
 		public String getXHTMLData() {
 			try {
 				return ((ApplicationDataProvider)displayProvider).getXHTMLApplicationData(servletContext);
@@ -98,6 +104,7 @@ public abstract class DisplayDataHolder {
 			this.session = session;
 		}
 		/** {@inheritDoc} */
+		@Override
 		public String getTitle() {
 			try {
 				return ((SessionDataProvider)displayProvider).getSessionDataTitle(session);
@@ -106,6 +113,7 @@ public abstract class DisplayDataHolder {
 			}
 		}
 		/** {@inheritDoc} */
+		@Override
 		public String getXHTMLData() {
 			try {
 				return ((SessionDataProvider)displayProvider).getXHTMLSessionData(session);

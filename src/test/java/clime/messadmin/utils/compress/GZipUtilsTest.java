@@ -37,6 +37,7 @@ public class GZipUtilsTest extends BaseCompressionTest {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		src = new File("C:\\temp\\test.dat");
@@ -50,6 +51,7 @@ public class GZipUtilsTest extends BaseCompressionTest {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected void tearDown() throws Exception {
 		dst.delete();
 		super.tearDown();

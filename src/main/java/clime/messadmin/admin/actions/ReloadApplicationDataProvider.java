@@ -34,9 +34,10 @@ public class ReloadApplicationDataProvider extends BaseAdminActionWithContext
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void serviceWithContext(HttpServletRequest request, HttpServletResponse response, String context) throws ServletException, IOException {
 		String scope = ReloadDataProviderHelper.getScope(request, response);
-		ApplicationDataProvider provider = (ApplicationDataProvider) ReloadDataProviderHelper.getDisplayProvider(ApplicationDataProvider.class, request, response);
+		ApplicationDataProvider provider = ReloadDataProviderHelper.getDisplayProvider(ApplicationDataProvider.class, request, response);
 		if (scope == null || provider == null) {
 			return;
 		}

@@ -22,16 +22,19 @@ class ResourceBrowserHelper extends BaseBrowserHelper {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected BaseResource getResource(ServletContext context, String resourcePath) {
 		return new Resource(resourcePath);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getI18nBundleName() {
 		return BUNDLE_NAME;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected BaseResource getDefaultRootResource() {
 		return ROOT_RESOURCE;
 	}

@@ -47,14 +47,14 @@ public class KnownThreadLocalsCleaner implements RequestLifeCycleProvider, Reque
 		// org.apache.log4j.NDC.remove();
 		try {
 			Class log4jNdcClass = thisClassLoader.loadClass("org.apache.log4j.NDC");//$NON-NLS-1$
-			log4jNDCRemoveMethod = log4jNdcClass.getMethod("remove", null);//$NON-NLS-1$
+			log4jNDCRemoveMethod = log4jNdcClass.getMethod("remove");//$NON-NLS-1$
 		} catch (Throwable e) {
 			// ignore
 		}
 		// org.apache.log4j.MDC.getContext().clear();
 		try {
 			Class log4jMdcClass = thisClassLoader.loadClass("org.apache.log4j.MDC");//$NON-NLS-1$
-			log4jMDCContextMethod = log4jMdcClass.getMethod("getContext", null);//$NON-NLS-1$
+			log4jMDCContextMethod = log4jMdcClass.getMethod("getContext");//$NON-NLS-1$
 		} catch (Throwable e) {
 			// ignore
 		}
@@ -62,7 +62,7 @@ public class KnownThreadLocalsCleaner implements RequestLifeCycleProvider, Reque
 		// org.apache.log4j.MDC.clear();
 		try {
 			Class log4jMdcClass = thisClassLoader.loadClass("org.apache.log4j.MDC");//$NON-NLS-1$
-			log4jMDCClearMethod = log4jMdcClass.getMethod("clear", null);//$NON-NLS-1$
+			log4jMDCClearMethod = log4jMdcClass.getMethod("clear");//$NON-NLS-1$
 		} catch (Throwable e) {
 			// ignore
 		}
@@ -70,7 +70,7 @@ public class KnownThreadLocalsCleaner implements RequestLifeCycleProvider, Reque
 		// ch.qos.logback.classic.MDC.clear();
 		try {
 			Class logBackMdcClass = thisClassLoader.loadClass("ch.qos.logback.classic.MDC");//$NON-NLS-1$
-			logBackMDCClearMethod = logBackMdcClass.getMethod("clear", null);//$NON-NLS-1$
+			logBackMDCClearMethod = logBackMdcClass.getMethod("clear");//$NON-NLS-1$
 		} catch (Throwable e) {
 			// ignore
 		}
@@ -78,7 +78,7 @@ public class KnownThreadLocalsCleaner implements RequestLifeCycleProvider, Reque
 		// org.slf4j.MDC.clear();
 		try {
 			Class slf4jMdcClass = thisClassLoader.loadClass("org.slf4j.MDC");//$NON-NLS-1$
-			slf4jMDCClearMethod = slf4jMdcClass.getMethod("clear", null);//$NON-NLS-1$
+			slf4jMDCClearMethod = slf4jMdcClass.getMethod("clear");//$NON-NLS-1$
 		} catch (Throwable e) {
 			// ignore
 		}
@@ -115,7 +115,7 @@ public class KnownThreadLocalsCleaner implements RequestLifeCycleProvider, Reque
 		// org.apache.log4j.NDC.remove();
 		if (log4jNDCRemoveMethod != null) {
 			try {
-				log4jNDCRemoveMethod.invoke(null, null);
+				log4jNDCRemoveMethod.invoke(null);
 			} catch (Exception e) {
 				// do nothing
 			}
@@ -123,7 +123,7 @@ public class KnownThreadLocalsCleaner implements RequestLifeCycleProvider, Reque
 		// org.apache.log4j.MDC.clear();
 		if (log4jMDCClearMethod != null) {
 			try {
-				log4jMDCClearMethod.invoke(null, null);
+				log4jMDCClearMethod.invoke(null);
 			} catch (Exception e) {
 				// do nothing
 			}
@@ -131,7 +131,7 @@ public class KnownThreadLocalsCleaner implements RequestLifeCycleProvider, Reque
 			// org.apache.log4j.MDC.getContext().clear();
 			if (log4jMDCContextMethod != null) {
 				try {
-					Map context = (Map) log4jMDCContextMethod.invoke(null, null);
+					Map context = (Map) log4jMDCContextMethod.invoke(null);
 					if (context != null) {
 						context.clear();
 					}
@@ -145,7 +145,7 @@ public class KnownThreadLocalsCleaner implements RequestLifeCycleProvider, Reque
 		// ch.qos.logback.classic.MDC.clear();
 		if (logBackMDCClearMethod != null) {
 			try {
-				logBackMDCClearMethod.invoke(null, null);
+				logBackMDCClearMethod.invoke(null);
 			} catch (Exception e) {
 				// do nothing
 			}
@@ -155,7 +155,7 @@ public class KnownThreadLocalsCleaner implements RequestLifeCycleProvider, Reque
 		// org.slf4j.MDC.clear();
 		if (slf4jMDCClearMethod != null) {
 			try {
-				slf4jMDCClearMethod.invoke(null, null);
+				slf4jMDCClearMethod.invoke(null);
 			} catch (Exception e) {
 				// do nothing
 			}

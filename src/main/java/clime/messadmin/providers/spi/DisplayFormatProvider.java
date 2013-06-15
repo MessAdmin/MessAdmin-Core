@@ -5,7 +5,6 @@ package clime.messadmin.providers.spi;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Set;
 
 import javax.servlet.ServletConfig;
@@ -36,9 +35,7 @@ public interface DisplayFormatProvider extends BaseProvider {
 			return getInstance(format);
 		}
 		public static DisplayFormatProvider getInstance(String format) {
-			Iterator iter = ProviderUtils.getProviders(DisplayFormatProvider.class).iterator();
-			while (iter.hasNext()) {
-				DisplayFormatProvider provider = (DisplayFormatProvider) iter.next();
+			for (DisplayFormatProvider provider : ProviderUtils.getProviders(DisplayFormatProvider.class)) {
 				if (format.equalsIgnoreCase(provider.getFormatID())) {
 					return provider;
 				}

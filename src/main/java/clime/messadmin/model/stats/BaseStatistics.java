@@ -78,6 +78,7 @@ abstract class BaseStatistics implements Statistic, Serializable, ObjectInputVal
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String toString() {
 		return toStringBuffer().append(']').toString();
 	}

@@ -48,10 +48,10 @@ public class AcegiUserName implements RequestLifeCycleProvider {
 			authenticationClass = Class.forName(getAuthenticationClassName());
 			userDetailsClass = Class.forName(getUserDetailsClassName());
 
-			securityContextHolder_getContext = securityContextHolderClass.getMethod("getContext", null);//$NON-NLS-1$
-			securityContext_getAuthentication = securityContextClass.getMethod("getAuthentication", null);//$NON-NLS-1$
-			authentication_getPrincipal = authenticationClass.getMethod("getPrincipal", null);//$NON-NLS-1$
-			userDetails_getUsername = userDetailsClass.getMethod("getUsername", null);//$NON-NLS-1$
+			securityContextHolder_getContext = securityContextHolderClass.getMethod("getContext");//$NON-NLS-1$
+			securityContext_getAuthentication = securityContextClass.getMethod("getAuthentication");//$NON-NLS-1$
+			authentication_getPrincipal = authenticationClass.getMethod("getPrincipal");//$NON-NLS-1$
+			userDetails_getUsername = userDetailsClass.getMethod("getUsername");//$NON-NLS-1$
 
 			acegiAvailable = securityContextHolderClass != null && securityContextClass != null
 				&& authenticationClass != null && userDetailsClass != null
@@ -104,11 +104,11 @@ public class AcegiUserName implements RequestLifeCycleProvider {
 				if (sessionInfo != null && sessionInfo.getRemoteUser() == null) {
 					try {
 						String userName = null;
-						Object securityContext = securityContextHolder_getContext.invoke(null, null);
-						Object authentication = securityContext_getAuthentication.invoke(securityContext, null);
-						Object obj = authentication_getPrincipal.invoke(authentication, null);
+						Object securityContext = securityContextHolder_getContext.invoke(null);
+						Object authentication = securityContext_getAuthentication.invoke(securityContext);
+						Object obj = authentication_getPrincipal.invoke(authentication);
 						if (userDetailsClass.isInstance(obj)) { // obj instanceof UserDetails
-							userName = (String) userDetails_getUsername.invoke(obj, null);
+							userName = (String) userDetails_getUsername.invoke(obj);
 						} else {
 							userName = (obj == null) ? null : obj.toString();
 						}

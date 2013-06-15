@@ -5,6 +5,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -48,6 +49,7 @@ public class RemoveServletContextAttribute extends BaseAdminActionWithContext im
 		return ID;
 	}
 
+	@Override
 	public int getPriority() {
 		return helper.getPriority();
 	}
@@ -63,6 +65,7 @@ public class RemoveServletContextAttribute extends BaseAdminActionWithContext im
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void serviceWithContext(HttpServletRequest request, HttpServletResponse response, String context) throws ServletException, IOException {
 		String name = request.getParameter(PARAM_ATTRIBUTE_NAME);
 		IApplicationInfo applicationInfo = Server.getInstance().getApplication(context).getApplicationInfo();
@@ -101,6 +104,7 @@ public class RemoveServletContextAttribute extends BaseAdminActionWithContext im
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		protected String getTableCaption(ServletContext context, String[] labels, RowIterator values) {
 			if (values == null || values.getNRows() < 0) {
 				return "";//$NON-NLS-1$
@@ -112,6 +116,7 @@ public class RemoveServletContextAttribute extends BaseAdminActionWithContext im
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public String[] getApplicationTabularDataLabels(ServletContext context) {
 			return new String[] {
 					I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.remove"),//$NON-NLS-1$
@@ -122,6 +127,7 @@ public class RemoveServletContextAttribute extends BaseAdminActionWithContext im
 		}
 
 		/** {@inheritDoc} */
+		@Override
 		public RowIterator getApplicationRowIterator(ServletContext context) {
 			return new ServletContextAttributesIterator(context);
 		}
@@ -144,8 +150,9 @@ public class RemoveServletContextAttribute extends BaseAdminActionWithContext im
 			}
 
 			/** {@inheritDoc} */
+			@Override
 			public int getNRows() {
-				ArrayList list = Collections.list(context.getAttributeNames());
+				List<?> list = Collections.list(context.getAttributeNames());
 				return list.size();
 			}
 
@@ -155,6 +162,7 @@ public class RemoveServletContextAttribute extends BaseAdminActionWithContext im
 			}
 
 			/** {@inheritDoc} */
+			@Override
 			public String getCellStyle(int cellNumber, Object value) {
 				if (cellNumber == 0) {
 					return "text-align: center;";

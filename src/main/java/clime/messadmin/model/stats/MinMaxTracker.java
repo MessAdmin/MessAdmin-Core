@@ -86,6 +86,7 @@ public class MinMaxTracker extends HitsCounter implements /*RangeStatistic,*/ Se
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected StringBuffer toStringBuffer() {
 		StringBuffer buffer = super.toStringBuffer().append(',');
 		buffer.append("lastValue=").append(getLastValue()).append(',');//$NON-NLS-1$
@@ -97,6 +98,7 @@ public class MinMaxTracker extends HitsCounter implements /*RangeStatistic,*/ Se
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void validateObject() throws InvalidObjectException {
 		super.validateObject();
 		if (minAccessTime < 0) {

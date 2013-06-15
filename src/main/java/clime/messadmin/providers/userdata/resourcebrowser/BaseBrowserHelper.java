@@ -790,9 +790,9 @@ public abstract class BaseBrowserHelper {
 	 * Checks if response contains the header value.
 	 */
 	private boolean headerContains(final HttpServletResponse response, final String header, final String value) {
-		final Iterator/*<String>*/ accepted = MessAdminResponseWrapper.getHeaders(response, header).iterator();
+		final Iterator<String> accepted = MessAdminResponseWrapper.getHeaders(response, header).iterator();
 		while (accepted.hasNext()) {
-			final String headerValue = (String) accepted.next();
+			final String headerValue = accepted.next();
 			if (headerValue.indexOf(value) != -1) {
 				return true;
 			}
@@ -800,7 +800,7 @@ public abstract class BaseBrowserHelper {
 		return false;
 	}
 
-	private static final Collection compressableMimeType = Arrays.asList(new String[] {
+	private static final Collection<String> compressableMimeType = Arrays.asList(new String[] {
 			//"text/*",
 			"application/xhtml+xml",
 			"application/xml",
@@ -820,10 +820,10 @@ public abstract class BaseBrowserHelper {
 		return
 			// enable compression for text files
 			mimeType.startsWith("text/")
-			// enable compression for "binary" text files and known compressable binaries
+			// enable compression for "binary" text files and known compressible binaries
 			|| compressableMimeType.contains(mimeType)
 			// fall back to enable compression for unknown types (e.g. log files with no extensions...)
-			// all non-compressable types like audio, video, images, pdf, flash... are thus excluded
+			// all non-compressible types like audio, video, images, pdf, flash... are thus excluded
 			|| DEFAULT_MIME_TYPE.equals(mimeType);
 	}
 

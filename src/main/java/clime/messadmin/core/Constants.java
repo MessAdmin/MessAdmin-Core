@@ -4,7 +4,6 @@
 package clime.messadmin.core;
 
 /**
- * Should be a Java 5 Enum...
  * @author C&eacute;drik LIME
  */
 public interface Constants {

@@ -32,9 +32,10 @@ public class ReloadServerDataProvider extends BaseAdminActionProvider
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String scope = ReloadDataProviderHelper.getScope(request, response);
-		ServerDataProvider provider = (ServerDataProvider) ReloadDataProviderHelper.getDisplayProvider(ServerDataProvider.class, request, response);
+		ServerDataProvider provider = ReloadDataProviderHelper.getDisplayProvider(ServerDataProvider.class, request, response);
 		if (scope == null || provider == null) {
 			return;
 		}

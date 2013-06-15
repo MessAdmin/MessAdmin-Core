@@ -31,6 +31,7 @@ public class WebAppStats extends BaseAdminActionWithContext implements AdminActi
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void serviceWithContext(HttpServletRequest request, HttpServletResponse response, String context) throws ServletException, IOException {
 		if (METHOD_POST.equals(request.getMethod())) {
 			sendRedirect(request, response);

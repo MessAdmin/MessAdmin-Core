@@ -32,6 +32,7 @@ public class JNDIBrowser extends BaseAdminActionWithContext implements Applicati
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int getPriority() {
 		return 11;
 	}
@@ -65,6 +66,7 @@ public class JNDIBrowser extends BaseAdminActionWithContext implements Applicati
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void serviceWithContext(HttpServletRequest request, HttpServletResponse response, String context) throws ServletException, IOException {
 		try {
 			try {

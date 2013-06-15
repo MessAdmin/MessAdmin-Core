@@ -5,7 +5,6 @@ package clime.messadmin.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 import junit.framework.TestCase;
 import clime.messadmin.providers.ProviderUtils;
@@ -16,11 +15,11 @@ import clime.messadmin.providers.spi.SerializableProvider;
  */
 public class SerializableUtilsTest extends TestCase {
 	private static final SerializableProvider provider;
-	private static final Collection serializables = new ArrayList();
-	private static final Collection nonSerializables = new ArrayList();
+	private static final Collection<Object> serializables = new ArrayList<Object>();
+	private static final Collection<Object> nonSerializables = new ArrayList<Object>();
 
 	static {
-		provider = (SerializableProvider) ProviderUtils.getProviders(SerializableProvider.class).get(0);
+		provider = ProviderUtils.getProviders(SerializableProvider.class).get(0);
 		System.out.println("Using provider " + provider.getClass());
 	}
 
@@ -39,6 +38,7 @@ public class SerializableUtilsTest extends TestCase {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		serializables.add(null);
@@ -54,7 +54,7 @@ public class SerializableUtilsTest extends TestCase {
 		nonSerializables.add(new Object());
 		nonSerializables.add(new ThreadLocal());
 		nonSerializables.add(new Object[] {new Object()});
-		Collection coll = new ArrayList(1);
+		Collection<Object> coll = new ArrayList<Object>(1);
 		coll.add(new Object());
 		nonSerializables.add(coll);
 		nonSerializables.add(nonSerializables); // I mean it!
@@ -63,6 +63,7 @@ public class SerializableUtilsTest extends TestCase {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected void tearDown() throws Exception {
 		serializables.clear();
 		nonSerializables.clear();
@@ -73,8 +74,7 @@ public class SerializableUtilsTest extends TestCase {
 	 * Test method for 'clime.messadmin.utils.SerializableUtils.isSerializable(Object)'
 	 */
 	public void testIsSerializableObject() {
-		for (Iterator iter = serializables.iterator(); iter.hasNext();) {
-			Object obj = iter.next();
+		for (Object obj : serializables) {
 			assertTrue(provider.isSerializable(obj));
 		}
 	}
@@ -83,8 +83,7 @@ public class SerializableUtilsTest extends TestCase {
 	 * Test method for 'clime.messadmin.utils.SerializableUtils.isSerializable(Object)'
 	 */
 	public void testIsNotSerializableObject() {
-		for (Iterator iter = nonSerializables.iterator(); iter.hasNext();) {
-			Object obj = iter.next();
+		for (Object obj : nonSerializables) {
 			assertFalse(provider.isSerializable(obj));
 		}
 	}

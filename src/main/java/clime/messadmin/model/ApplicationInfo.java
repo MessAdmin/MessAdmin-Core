@@ -56,7 +56,7 @@ public class ApplicationInfo implements IApplicationInfo {
 	static {
 		// @since Servlet 2.5
 		try {
-			getContextPath = ServletContext.class.getMethod("getContextPath", null);//$NON-NLS-1$
+			getContextPath = ServletContext.class.getMethod("getContextPath");//$NON-NLS-1$
 		} catch (SecurityException e) {
 		} catch (NoSuchMethodException e) {
 		}
@@ -73,7 +73,7 @@ public class ApplicationInfo implements IApplicationInfo {
 //		}
 		if (getContextPath != null) {
 			try {
-				this.contextPath = (String) getContextPath.invoke(servletContext, null);
+				this.contextPath = (String) getContextPath.invoke(servletContext);
 			} catch (Exception ignore) {
 				//nothing
 			}
@@ -204,7 +204,7 @@ public class ApplicationInfo implements IApplicationInfo {
 
 	/** {@inheritDoc} */
 	public long getActiveSessionsSize() {
-		/* Copy all sessions' attributes in a temporary structure, to avoid concurent modifications problems */
+		/* Copy all sessions' attributes in a temporary structure, to avoid concurrent modifications problems */
 		Set sessions = Server.getInstance().getApplication(servletContext).getActiveSessionInfos();
 		List sessionsAttributes = new ArrayList(sessions.size());
 		final long shellSize = SizeOfProvider.Util.getObjectSize(sessionsAttributes, classLoader);
@@ -261,10 +261,8 @@ public class ApplicationInfo implements IApplicationInfo {
 
 	/** {@inheritDoc} */
 	public List getApplicationSpecificData() {
-		Iterator iter = ProviderUtils.getProviders(ApplicationDataProvider.class, classLoader).iterator();
 		List result = new ArrayList();
-		while (iter.hasNext()) {
-			ApplicationDataProvider ad = (ApplicationDataProvider) iter.next();
+		for (ApplicationDataProvider ad : ProviderUtils.getProviders(ApplicationDataProvider.class, classLoader)) {
 			result.add(new DisplayDataHolder.ApplicationDataHolder(ad, servletContext));
 		}
 		return result;

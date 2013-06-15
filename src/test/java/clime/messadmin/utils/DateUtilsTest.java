@@ -43,6 +43,7 @@ public class DateUtilsTest extends TestCase {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
@@ -50,6 +51,7 @@ public class DateUtilsTest extends TestCase {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}

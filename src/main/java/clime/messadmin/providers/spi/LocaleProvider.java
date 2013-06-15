@@ -3,7 +3,6 @@
  */
 package clime.messadmin.providers.spi;
 
-import java.util.Iterator;
 import java.util.Locale;
 
 import javax.servlet.http.HttpSession;
@@ -25,9 +24,7 @@ public interface LocaleProvider extends BaseProvider {
 				return null;
 			}
 			try {
-				Iterator ps = ProviderUtils.getProviders(LocaleProvider.class, cl).iterator();
-				while (ps.hasNext()) {
-					LocaleProvider provider = (LocaleProvider) ps.next();
+				for (LocaleProvider provider : ProviderUtils.getProviders(LocaleProvider.class, cl)) {
 					Locale locale = provider.guessLocaleFromSession(httpSession);
 					if (locale != null) {
 						return locale;

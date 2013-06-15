@@ -26,13 +26,13 @@ public class SessionUtils {
 	static {
 		// @since Servlet 2.5
 		try {
-			ServletContext_getContextPath = ServletContext.class.getMethod("getContextPath", null);//$NON-NLS-1$
+			ServletContext_getContextPath = ServletContext.class.getMethod("getContextPath");//$NON-NLS-1$
 		} catch (SecurityException e) {
 		} catch (NoSuchMethodException e) {
 		}
 		// @since Servlet 3.0
 		try {
-			ServletRequest_getServletContext = ServletRequest.class.getMethod("getServletContext", null);//$NON-NLS-1$
+			ServletRequest_getServletContext = ServletRequest.class.getMethod("getServletContext");//$NON-NLS-1$
 		} catch (SecurityException e) {
 		} catch (NoSuchMethodException e) {
 		}
@@ -173,7 +173,7 @@ public class SessionUtils {
 		if (result == null) {
 			if (ServletContext_getContextPath != null) {
 				try {
-					result = (String) ServletContext_getContextPath.invoke(context, null);
+					result = (String) ServletContext_getContextPath.invoke(context);
 				} catch (IllegalArgumentException e) {
 					throw e;
 				} catch (IllegalAccessException e) {
@@ -250,7 +250,7 @@ public class SessionUtils {
 	public static ServletContext getServletContext(HttpServletRequest request) {
 		if (ServletRequest_getServletContext != null) {
 			try {
-				return (ServletContext) ServletRequest_getServletContext.invoke(request, null);
+				return (ServletContext) ServletRequest_getServletContext.invoke(request);
 			} catch (IllegalArgumentException e) {
 				throw e;
 			} catch (IllegalAccessException e) {

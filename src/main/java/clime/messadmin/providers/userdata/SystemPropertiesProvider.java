@@ -31,6 +31,7 @@ public class SystemPropertiesProvider extends BaseTabularServerDataProvider
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public String[] getServerTabularDataLabels() {
 		String key = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.key");//$NON-NLS-1$
 		String value = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.value");//$NON-NLS-1$
@@ -40,6 +41,7 @@ public class SystemPropertiesProvider extends BaseTabularServerDataProvider
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected String getTableCaption(String[] labels, Object[][] values) {
 		NumberFormat numberFormatter = NumberFormat.getNumberInstance(I18NSupport.getAdminLocale());
 		String caption = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "table.caption", new Object[] {numberFormatter.format(values.length)});//$NON-NLS-1$
@@ -49,6 +51,7 @@ public class SystemPropertiesProvider extends BaseTabularServerDataProvider
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public Object[][] getServerTabularData() {
 		Map sysProps = Server.getInstance().getServerInfo().getSystemProperties();
 		List resultList = new ArrayList(sysProps.size());

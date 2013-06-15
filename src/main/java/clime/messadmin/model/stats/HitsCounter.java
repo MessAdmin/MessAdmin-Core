@@ -48,6 +48,7 @@ public class HitsCounter extends BaseStatistics implements CountStatistic, Seria
 //	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected StringBuffer toStringBuffer() {
 		StringBuffer buffer = super.toStringBuffer().append(',');
 		buffer.append("hits=").append(getCount());//.append(',');//$NON-NLS-1$
@@ -55,6 +56,7 @@ public class HitsCounter extends BaseStatistics implements CountStatistic, Seria
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void validateObject() throws InvalidObjectException {
 		super.validateObject();
 		if (hits < 0) {

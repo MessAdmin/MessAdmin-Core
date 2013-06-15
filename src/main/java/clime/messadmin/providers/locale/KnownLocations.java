@@ -27,7 +27,7 @@ public class KnownLocations implements LocaleProvider {
 	// org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME
 	private static final String SPRING_LOCALE_KEY = "org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE";//$NON-NLS-1$
 	/**
-	 * Lower and upper-case strings will be dynamically generated. Put mid-capitalised strings here!
+	 * Lower and upper-case strings will be dynamically generated. Put mid-capitalized strings here!
 	 */
 	private static final String[] LOCALE_TEST_ATTRIBUTES = new String[] {
 		STRUTS_LOCALE_KEY, SPRING_LOCALE_KEY, JSTL_LOCALE_KEY, "Locale", "java.util.Locale" };

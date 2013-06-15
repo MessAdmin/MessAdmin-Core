@@ -3,8 +3,6 @@
  */
 package clime.messadmin.providers.spi;
 
-import java.util.Iterator;
-
 import javax.servlet.http.HttpSession;
 
 import clime.messadmin.providers.ProviderUtils;
@@ -24,9 +22,7 @@ public interface UserNameProvider extends BaseProvider {
 				return null;
 			}
 			try {
-				Iterator ps = ProviderUtils.getProviders(UserNameProvider.class, cl).iterator();
-				while (ps.hasNext()) {
-					UserNameProvider provider = (UserNameProvider) ps.next();
+				for (UserNameProvider provider : ProviderUtils.getProviders(UserNameProvider.class, cl)) {
 					Object user = provider.guessUserFromSession(httpSession);
 					if (user != null) {
 						return user;

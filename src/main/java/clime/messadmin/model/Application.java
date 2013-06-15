@@ -33,7 +33,7 @@ public class Application implements HttpSessionListener, HttpSessionActivationLi
 	 * HttpSession id here. This is used as a o(1) cache to avoid traversing activeSessions#values.
 	 * The (simpler) alternative would be to store the information into the HttpSession itself,
 	 * but this is contrary to our (current) policy.
-	 * Note that this problem will disapear if one day we decide to store MessAdmin Session
+	 * Note that this problem will disappear if one day we decide to store MessAdmin Session
 	 * data inside the HttpSession! :-)
 	 */
 	protected final Map<HttpSession, String> activeSessionsIds = new ConcurrentHashMap<HttpSession, String>(); // must be synchronized
@@ -88,9 +88,7 @@ public class Application implements HttpSessionListener, HttpSessionActivationLi
 		Session session = activeSessions.get(sessionId);
 		if (session == null && activeSessionsIds.containsValue(sessionId)) {
 			//httpSession = activeSessionsIds.getKeyForValue(sessionId);
-			Iterator<Map.Entry<HttpSession, String>> iter = activeSessionsIds.entrySet().iterator();
-			while (iter.hasNext()) {
-				Map.Entry<HttpSession, String> entry = iter.next();
+			for (Map.Entry<HttpSession, String> entry : activeSessionsIds.entrySet()) {
 				HttpSession httpSession = entry.getKey();
 				if (httpSession.getId().equals(sessionId)) {
 					String sessionOldId = entry.getValue();
@@ -126,9 +124,7 @@ public class Application implements HttpSessionListener, HttpSessionActivationLi
 	 */
 	public Set<ISessionInfo> getActiveSessionInfos() {
 		Set<ISessionInfo> result = new HashSet<ISessionInfo>(activeSessions.size());
-		Iterator iter = getActiveSessions().iterator();
-		while (iter.hasNext()) {
-			Session session = (Session) iter.next();
+		for (Session session : getActiveSessions()) {
 			result.add(session.getSessionInfo());
 		}
 		return result;
@@ -182,9 +178,7 @@ public class Application implements HttpSessionListener, HttpSessionActivationLi
 			}
 		}
 		// remove display timestamps from sessions
-		Iterator iter = getActiveSessionInfos().iterator();
-		while (iter.hasNext()) {
-			ISessionInfo session = (ISessionInfo) iter.next();
+		for (ISessionInfo session : getActiveSessionInfos()) {
 			session.removeAttribute(Constants.GLOBAL_MESSAGE_TIMESTAMP_KEY);
 		}
 		return actionDone;

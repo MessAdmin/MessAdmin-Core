@@ -32,6 +32,7 @@ public class ResourceBrowser extends BaseAdminActionWithContext implements Appli
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int getPriority() {
 		return 10;
 	}
@@ -55,6 +56,7 @@ public class ResourceBrowser extends BaseAdminActionWithContext implements Appli
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void serviceWithContext(HttpServletRequest request, HttpServletResponse response, String context) throws ServletException, IOException {
 		//setNoCache(response); // we don't want to prevent caching
 		helper.serviceWithContext(request, response, context);

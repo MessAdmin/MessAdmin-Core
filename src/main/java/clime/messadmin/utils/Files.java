@@ -16,7 +16,7 @@ public final class Files {
 	static {
 		// @since 1.6
 		try {
-			getUsableSpace = File.class.getMethod("getUsableSpace", null);//$NON-NLS-1$
+			getUsableSpace = File.class.getMethod("getUsableSpace");//$NON-NLS-1$
 		} catch (SecurityException e) {
 		} catch (NoSuchMethodException e) {
 		}
@@ -46,7 +46,7 @@ public final class Files {
 		}
 		//return file.getUsableSpace();
 		try {
-			Object usableSpace = getUsableSpace.invoke(file, null);
+			Object usableSpace = getUsableSpace.invoke(file);
 			return ((Long) usableSpace).longValue();
 		} catch (Exception e) {
 			return -1;

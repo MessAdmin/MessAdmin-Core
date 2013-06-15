@@ -64,6 +64,7 @@ public abstract class BaseTabularDataProvider {
 	 * @since 4.1
 	 * @deprecated
 	 */
+	@Deprecated
 	protected ResourceBundle getResourceBundle(String baseName, ClassLoader cl) {
 		return I18NSupport.getResourceBundle(baseName, cl);
 	}
@@ -73,6 +74,7 @@ public abstract class BaseTabularDataProvider {
 	 * @since 4.1
 	 * @deprecated
 	 */
+	@Deprecated
 	protected String getLocalizedMessage(String baseName, ClassLoader cl, String key) {
 		return I18NSupport.getLocalizedMessage(baseName, cl, key);
 	}
@@ -81,6 +83,7 @@ public abstract class BaseTabularDataProvider {
 	 * @deprecated
 	 * @since 4.1
 	 */
+	@Deprecated
 	protected String getLocalizedMessage(String baseName, ClassLoader cl, String key, Object[] args) {
 		return I18NSupport.getLocalizedMessage(baseName, cl, key, args);
 	}
@@ -111,6 +114,7 @@ public abstract class BaseTabularDataProvider {
 	/**
 	 * @deprecated
 	 */
+	@Deprecated
 	protected String buildXHTML(String[] labels, Object[][] values, String tableId, String tableCaption) {
 		if (labels == null || labels.length == 0 || values == null) {// || values.length == 0
 			return null;
@@ -128,6 +132,7 @@ public abstract class BaseTabularDataProvider {
 	/**
 	 * @deprecated
 	 */
+	@Deprecated
 	protected StringBuffer buildXHTML(StringBuffer buffer, String[] labels, Object[][] values, String tableId, String tableCaption) {
 		if (labels == null || labels.length == 0 || values == null) {// || values.length == 0
 			return buffer;
@@ -187,6 +192,7 @@ public abstract class BaseTabularDataProvider {
 	/**
 	 * @deprecated
 	 */
+	@Deprecated
 	protected void appendBody(StringBuffer buffer, Object[][] values) {
 		buffer.append("<tbody>\n");
 		for (int i = 0; i < values.length; ++i) {
@@ -229,6 +235,7 @@ public abstract class BaseTabularDataProvider {
 	/**
 	 * @deprecated
 	 */
+	@Deprecated
 	protected void appendRow(StringBuffer buffer, Object[] row) {
 		buffer.append("<tr>\n");
 		for (int j = 0; j < row.length; ++j) {
@@ -249,6 +256,7 @@ public abstract class BaseTabularDataProvider {
 	 * @return CSS class for &lt;td&gt; HTML element
 	 * @deprecated
 	 */
+	@Deprecated
 	protected String getCellClass(int cellNumber, Object value) {
 		return null;
 	}

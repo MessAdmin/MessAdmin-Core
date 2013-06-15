@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import clime.messadmin.admin.AdminActionProvider;
 import clime.messadmin.admin.BaseAdminActionProvider;
+import clime.messadmin.model.IApplicationInfo;
 import clime.messadmin.model.Server;
 import clime.messadmin.providers.spi.DisplayFormatProvider;
 
@@ -31,12 +32,13 @@ public class WebAppsList extends BaseAdminActionProvider implements AdminActionP
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if (METHOD_POST.equals(request.getMethod())) {
 			sendRedirect(request, response);
 			return;
 		}
-		Set/*<ApplicationInfo>*/ applicationInfos = Server.getInstance().getApplicationInfos();
+		Set<IApplicationInfo> applicationInfos = Server.getInstance().getApplicationInfos();
 		setNoCache(response);
 		DisplayFormatProvider.Util.getInstance(request).displayWebAppsList(request, response, applicationInfos);
 	}

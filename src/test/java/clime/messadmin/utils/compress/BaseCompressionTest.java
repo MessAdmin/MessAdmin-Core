@@ -35,6 +35,7 @@ public abstract class BaseCompressionTest extends TestCase {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		copyBufferSize = 16384;//FIXME should test with 16384, 49999, and config.getBlockSize()
@@ -46,6 +47,7 @@ public abstract class BaseCompressionTest extends TestCase {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected void tearDown() throws Exception {
 		dst.delete();
 		super.tearDown();

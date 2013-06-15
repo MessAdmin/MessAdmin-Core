@@ -11,7 +11,6 @@ import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletResponse;
@@ -24,12 +23,11 @@ import clime.messadmin.utils.DateUtils;
 /**
  * Pass-trough response wrapper, looking up for message injection.
  * IMPLEMENTATION NOTE: do not buffer response here: it can be quite large...
- * TODO: for version 2, try to put the script at an even more suitable location (immediatly after &lt;body&gt; or immediatly before &lt;/body&gt; or &lt;/head&gt;)
+ * TODO: for version 2, try to put the script at an even more suitable location (immediately after &lt;body&gt; or immediately before &lt;/body&gt; or &lt;/head&gt;)
  * @author C&eacute;drik LIME
  */
 public class MessAdminResponseWrapper extends HttpServletResponseWrapper {
 	private static final boolean DEBUG = false;
-	private static Method getContentType = null;
 	private static Method getStatus = null;
 	private static Method getHeaders = null;
 
@@ -121,21 +119,15 @@ public class MessAdminResponseWrapper extends HttpServletResponseWrapper {
 		}
 		JS_SCRIPT_SIZE = scriptSize;
 
-		// @since 2.4
+		// @since 3.0
 		try {
-			getContentType = ServletResponse.class.getMethod("getContentType", null);//$NON-NLS-1$
+			getStatus = ServletResponse.class.getMethod("getStatus");//$NON-NLS-1$
 		} catch (SecurityException e) {
 		} catch (NoSuchMethodException e) {
 		}
 		// @since 3.0
 		try {
-			getStatus = ServletResponse.class.getMethod("getStatus", null);//$NON-NLS-1$
-		} catch (SecurityException e) {
-		} catch (NoSuchMethodException e) {
-		}
-		// @since 3.0
-		try {
-			getHeaders = ServletResponse.class.getMethod("getHeaders", new Class[] {String.class});//$NON-NLS-1$
+			getHeaders = ServletResponse.class.getMethod("getHeaders", String.class);//$NON-NLS-1$
 		} catch (SecurityException e) {
 		} catch (NoSuchMethodException e) {
 		}
@@ -159,23 +151,15 @@ public class MessAdminResponseWrapper extends HttpServletResponseWrapper {
 	public MessAdminResponseWrapper(HttpServletResponse response) {
 		super(response);
 		this.httpResponse = response;
-		if (getContentType != null) {
-			//contentType = response.getContentType();
-			try {
-				contentType = (String) getContentType.invoke(response, null);
-				setShouldInject();
-			} catch (IllegalArgumentException iae) {
-			} catch (IllegalAccessException iae) {
-			} catch (InvocationTargetException ite) {
-			}
-		}
+		contentType = response.getContentType();
+		setShouldInject();
 	}
 
 	public int getContentLength() {
 		return contentLength;
 	}
 	/** {@inheritDoc} */
-//	@Override
+	@Override
 	public void setContentLength(int len) {
 		int realLength = len;
 		if (shouldInject) {
@@ -186,7 +170,7 @@ public class MessAdminResponseWrapper extends HttpServletResponseWrapper {
 	}
 
 	/** {@inheritDoc} */
-//	@Override
+	@Override
 	public void resetBuffer() throws IllegalStateException {
 		super.resetBuffer();
 		resetInternal();
@@ -200,7 +184,7 @@ public class MessAdminResponseWrapper extends HttpServletResponseWrapper {
 	}
 
 	/** {@inheritDoc} */
-//	@Override
+	@Override
 	public void reset() throws IllegalStateException {
 		super.reset();
 		resetInternal();
@@ -236,41 +220,46 @@ public class MessAdminResponseWrapper extends HttpServletResponseWrapper {
 	}
 
 	/** {@inheritDoc} */
-//	@Override
+	@Override
 	public void setContentType(String type) {
 		super.setContentType(type);
 		if (super.isCommitted()) {
 			return;
 		}
-		contentType = type;//super.getContentType(); need Servlet 2.4
+		contentType = super.getContentType();
 		setShouldInject();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void setStatus(int sc) {
 		super.setStatus(sc);
 		status = sc;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void setStatus(int sc, String sm) {
 		super.setStatus(sc, sm);
 		status = sc;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void sendError(int sc) throws IOException {
 		super.sendError(sc);
 		status = sc;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void sendError(int sc, String msg) throws IOException {
 		super.sendError(sc, msg);
 		status = sc;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void sendRedirect(String location) throws IOException {
 		super.sendRedirect(location);
 		status = HttpServletResponse.SC_MOVED_TEMPORARILY;//SC_FOUND
@@ -299,7 +288,7 @@ public class MessAdminResponseWrapper extends HttpServletResponseWrapper {
 		if (getStatus != null) {
 			//status = response.getStatus();
 			try {
-				status = ((Integer) getStatus.invoke(httpResponse, null)).intValue();
+				status = ((Integer) getStatus.invoke(httpResponse)).intValue();
 			} catch (IllegalArgumentException iae) {
 			} catch (IllegalAccessException iae) {
 			} catch (InvocationTargetException ite) {
@@ -314,11 +303,11 @@ public class MessAdminResponseWrapper extends HttpServletResponseWrapper {
 	 * @since Servlet 3.0
 	 */
 //	@Override
-	public static Collection/*<String>*/ getHeaders(HttpServletResponse httpResponse, String name) {
-		Collection/*<String>*/ values = Collections.EMPTY_LIST;
+	public static Collection<String> getHeaders(HttpServletResponse httpResponse, String name) {
+		Collection<String> values = Collections.emptyList();
 		if (getHeaders != null) {
 			try {
-				values = (Collection/*<String>*/) getHeaders.invoke(httpResponse, new Object[] {name});
+				values = (Collection<String>) getHeaders.invoke(httpResponse, new Object[] {name});
 			} catch (IllegalArgumentException iae) {
 			} catch (IllegalAccessException iae) {
 			} catch (InvocationTargetException ite) {
@@ -342,9 +331,7 @@ public class MessAdminResponseWrapper extends HttpServletResponseWrapper {
 			// so don't do anything for old containers (i.e. consider oldValue.length == newValue.length).
 			if (getHeaders != null) {
 				//oldValues = response.getHeaders(name);
-				Collection/*<String>*/ oldValues = getHeaders(httpResponse, name);
-				for (Iterator iter = oldValues.iterator(); iter.hasNext();) {
-					String oldValue = (String) iter.next();
+				for (String oldValue : getHeaders(httpResponse, name)) {
 					responseHeaderLength -= name.length() + 3 + oldValue.length();//+3: "name: value\n"
 				}
 				registerAddHeader(name, value);
@@ -358,21 +345,21 @@ public class MessAdminResponseWrapper extends HttpServletResponseWrapper {
 	}
 
 	/** {@inheritDoc} */
-//	@Override
+	@Override
 	public void setDateHeader(String name, long date) {
 		registerSetHeader(name, DateUtils.formatRFC2822Date(date));
 		super.setDateHeader(name, date);
 	}
 
 	/** {@inheritDoc} */
-//	@Override
+	@Override
 	public void addDateHeader(String name, long date) {
 		registerAddHeader(name, DateUtils.formatRFC2822Date(date));
 		super.addDateHeader(name, date);
 	}
 
 	/** {@inheritDoc} */
-//	@Override
+	@Override
 	public void setHeader(String name, String value) {
 		registerSetHeader(name, value);
 		super.setHeader(name, value);
@@ -386,21 +373,21 @@ public class MessAdminResponseWrapper extends HttpServletResponseWrapper {
 	}
 
 	/** {@inheritDoc} */
-//	@Override
+	@Override
 	public void addHeader(String name, String value) {
 		registerAddHeader(name, value);
 		super.addHeader(name, value);
 	}
 
 	/** {@inheritDoc} */
-//	@Override
+	@Override
 	public void setIntHeader(String name, int value) {
 		registerSetHeader(name, Integer.toString(value));
 		super.setIntHeader(name, value);
 	}
 
 	/** {@inheritDoc} */
-//	@Override
+	@Override
 	public void addIntHeader(String name, int value) {
 		registerAddHeader(name, Integer.toString(value));
 		super.addIntHeader(name, value);
@@ -426,7 +413,7 @@ public class MessAdminResponseWrapper extends HttpServletResponseWrapper {
 	}
 
 	/** {@inheritDoc} */
-//	@Override
+	@Override
 	public synchronized PrintWriter getWriter() throws IOException {
 		setWarning();
 		if (writer == null) {
@@ -443,6 +430,7 @@ public class MessAdminResponseWrapper extends HttpServletResponseWrapper {
 			super(outWriter);
 		}
 		/** {@inheritDoc} */
+		@Override
 		public void write(int c) {
 			if (shouldInject) {
 				// look for <head> and inject
@@ -469,6 +457,7 @@ public class MessAdminResponseWrapper extends HttpServletResponseWrapper {
 			++responseBodyLength;
 		}
 		/** {@inheritDoc} */
+		@Override
 		public void write(char[] cbuf, int off, int len) {
 			if (shouldInject) {
 				// look for <head> and inject
@@ -499,6 +488,7 @@ public class MessAdminResponseWrapper extends HttpServletResponseWrapper {
 			responseBodyLength += len - off;
 		}
 		/** {@inheritDoc} */
+		@Override
 		public void write(String s, int off, int len) {
 			if (shouldInject) {
 				// look for <head> and inject
@@ -532,7 +522,7 @@ public class MessAdminResponseWrapper extends HttpServletResponseWrapper {
 	}
 
 	/** {@inheritDoc} */
-//	@Override
+	@Override
 	public synchronized ServletOutputStream getOutputStream() throws IOException {
 		setWarning();
 		if (stream == null) {
@@ -547,23 +537,28 @@ public class MessAdminResponseWrapper extends HttpServletResponseWrapper {
 			this.out = out;
 		}
 		/** {@inheritDoc} */
+		@Override
 		public void write(int b) throws IOException {
 			out.write(b);
 			++responseBodyLength;
 		}
 		/** {@inheritDoc} */
+		@Override
 		public void write(byte[] b) throws IOException {
 			out.write(b);
 			responseBodyLength += b.length;
 		}
 		/** {@inheritDoc} */
+		@Override
 		public void write(byte[] b, int off, int len) throws IOException {
 			out.write(b, off, len);
 			responseBodyLength += len;
 		}
+		@Override
 		public void flush() throws IOException {
 			out.flush();
 		}
+		@Override
 		public void close() throws IOException {
 			out.close();
 		}

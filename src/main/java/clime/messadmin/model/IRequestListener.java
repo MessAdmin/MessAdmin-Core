@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Implementations of this interface recieve notifications about changes
+ * Implementations of this interface receive notifications about changes
  * to the servlet request of the web application they are part of.
  * Implementation note: we can't use a RequestLifeCycleProvider, as we need our internal wrapper
  * @author C&eacute;drik LIME

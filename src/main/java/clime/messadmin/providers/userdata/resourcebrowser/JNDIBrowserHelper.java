@@ -28,7 +28,7 @@ class JNDIBrowserHelper extends BaseBrowserHelper {
 	/**
 	 * List of {@code web.xml}'s {@code <env-entry><env-entry-type>} allowed types
 	 */
-	private static final ThreadLocal JNDI_CONTEXT = new ThreadLocal();
+	private static final ThreadLocal<Context> JNDI_CONTEXT = new ThreadLocal<Context>();
 
 
 	public JNDIBrowserHelper(AdminActionProvider adminActionProviderCallback, DisplayProvider displayProviderCallback) {
@@ -36,6 +36,7 @@ class JNDIBrowserHelper extends BaseBrowserHelper {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected BaseResource getResource(ServletContext context, String resourcePath) {
 		return new JNDIResource(resourcePath, getContext());
 	}
@@ -57,18 +58,20 @@ class JNDIBrowserHelper extends BaseBrowserHelper {
 			} catch (NamingException ignore) {
 			}
 		}
-		JNDI_CONTEXT.set(null);
+		JNDI_CONTEXT.remove();
 	}
 	protected Context getContext() {
-		return (Context) JNDI_CONTEXT.get();
+		return JNDI_CONTEXT.get();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getI18nBundleName() {
 		return BUNDLE_NAME;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected BaseResource getDefaultRootResource() {
 		String result = "java:";//$NON-NLS-1$
 		try {
@@ -79,6 +82,7 @@ class JNDIBrowserHelper extends BaseBrowserHelper {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected BaseResource getDefaultUserResource() {
 		String result = "java:comp/env/";//$NON-NLS-1$
 		try {
@@ -89,6 +93,7 @@ class JNDIBrowserHelper extends BaseBrowserHelper {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected String getEntryTitle(ServletContext context, BaseResource resource) {
 		// There is no concept of 'last modified' here. Return Class of entry instead.
 		// FIXME should try to get the class from list() instead, as it is less costly
@@ -116,7 +121,7 @@ class JNDIBrowserHelper extends BaseBrowserHelper {
 	}
 
 
-	protected void closeQuietly(NamingEnumeration enumeration) {
+	protected <T> void closeQuietly(NamingEnumeration<T> enumeration) {
 		if (enumeration != null) {
 			try {
 				enumeration.close();

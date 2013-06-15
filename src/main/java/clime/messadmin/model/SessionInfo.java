@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -24,7 +23,7 @@ import clime.messadmin.providers.spi.UserNameProvider;
 
 /**
  * Stores/computes extra informations related to a session, such as the ones from requests
- * Takes care of HttpSession-related stats.
+ * Takes care of HttpSession-related statistics.
  * @author C&eacute;drik LIME
  */
 public class SessionInfo implements ISessionInfo {
@@ -403,10 +402,8 @@ public class SessionInfo implements ISessionInfo {
 
 	/**{@inheritDoc} */
 	public List getSessionSpecificData() {
-		Iterator iter = ProviderUtils.getProviders(SessionDataProvider.class, classLoader).iterator();
 		List result = new ArrayList();
-		while (iter.hasNext()) {
-			SessionDataProvider sd = (SessionDataProvider) iter.next();
+		for (SessionDataProvider sd : ProviderUtils.getProviders(SessionDataProvider.class, classLoader)) {
 			result.add(new DisplayDataHolder.SessionDataHolder(sd, httpSession));
 		}
 		return result;
@@ -560,6 +557,7 @@ public class SessionInfo implements ISessionInfo {
 	 * {@inheritDoc}
 	 * @deprecated no replacement
 	 */
+	@Deprecated
 	public HttpSessionContext getSessionContext() {
 		return httpSession.getSessionContext();
 	}
@@ -567,6 +565,7 @@ public class SessionInfo implements ISessionInfo {
 	 * {@inheritDoc}
 	 * @deprecated replaced by {@link #getAttribute}
 	 */
+	@Deprecated
 	public Object getValue(String name) {
 		return httpSession.getValue(name);
 	}
@@ -574,6 +573,7 @@ public class SessionInfo implements ISessionInfo {
 	 * {@inheritDoc}
 	 * @deprecated replaced by {@link #getAttributeNames}
 	 */
+	@Deprecated
 	public String[] getValueNames() {
 		return httpSession.getValueNames();
 	}
@@ -581,6 +581,7 @@ public class SessionInfo implements ISessionInfo {
 	 * {@inheritDoc}
 	 * @deprecated replaced by {@link #setAttribute}
 	 */
+	@Deprecated
 	public void putValue(String name, Object value) {
 		httpSession.putValue(name, value);
 	}
@@ -588,6 +589,7 @@ public class SessionInfo implements ISessionInfo {
 	 * {@inheritDoc}
 	 * @deprecated replaced by {@link #removeAttribute}
 	 */
+	@Deprecated
 	public void removeValue(String name) {
 		httpSession.removeValue(name);
 	}

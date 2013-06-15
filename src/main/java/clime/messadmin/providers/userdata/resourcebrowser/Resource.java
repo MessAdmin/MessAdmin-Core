@@ -42,11 +42,13 @@ class Resource extends BaseResource {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public BaseResource getCanonicalResource() {
 		return this;//FIXME
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	protected BaseResource getParentDirectoryInternal() {
 		String directoryPath = resourcePath;
 		if (isDirectory()) {
@@ -61,6 +63,7 @@ class Resource extends BaseResource {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public String getFileName() {
 		String resource = resourcePath;
 		int slashIndex = resource.lastIndexOf("/");//$NON-NLS-1$
@@ -71,48 +74,58 @@ class Resource extends BaseResource {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean isFile() {
 		return ! isDirectory();
 	}
 	/** {@inheritDoc} */
+	@Override
 	public boolean isDirectory() {
 		return resourcePath.endsWith("/");//$NON-NLS-1$
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean isHidden() {
 		return false;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean canRead() {
 		return true;
 	}
 	/** {@inheritDoc} */
+	@Override
 	public boolean canWrite() {
 		return false;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean canDelete() {
 		return false;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean canRename() {
 		return false;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean canCompress() {
 		return false;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public InputStream getResourceAsStream(ServletContext servletContext) {
 		return servletContext.getResourceAsStream(resourcePath);
 	}
 
+	@Override
 	protected URL getURL(ServletContext context) {
 		try {
 			return context.getResource(resourcePath);
@@ -122,6 +135,7 @@ class Resource extends BaseResource {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public long getContentLength(ServletContext context) {
 		URLConnection connection = getURLConnection(context);
 		if (connection != null) {
@@ -131,6 +145,7 @@ class Resource extends BaseResource {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public long getLastModified(ServletContext context) {
 		URLConnection connection = getURLConnection(context);
 		if (connection != null) {

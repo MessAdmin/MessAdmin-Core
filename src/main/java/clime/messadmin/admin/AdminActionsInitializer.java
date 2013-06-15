@@ -4,7 +4,6 @@
 package clime.messadmin.admin;
 
 import java.util.Enumeration;
-import java.util.Iterator;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -34,9 +33,7 @@ public class AdminActionsInitializer implements ApplicationLifeCycleProvider {
 	/** {@inheritDoc} */
 	public void contextDestroyed(ServletContext servletContext) {
 		final ClassLoader thisCL = Thread.currentThread().getContextClassLoader();
-		Iterator iter = ProviderUtils.getProviders(AdminActionProvider.class).iterator();
-		while (iter.hasNext()) {
-			AdminActionProvider provider = (AdminActionProvider) iter.next();
+		for (AdminActionProvider provider : ProviderUtils.getProviders(AdminActionProvider.class)) {
 			if (provider.getClass().getClassLoader() == thisCL) {
 				provider.destroy();
 			}
@@ -46,9 +43,7 @@ public class AdminActionsInitializer implements ApplicationLifeCycleProvider {
 	/** {@inheritDoc} */
 	public void contextInitialized(final ServletContext servletContext) {
 		final ClassLoader thisCL = Thread.currentThread().getContextClassLoader();
-		Iterator iter = ProviderUtils.getProviders(AdminActionProvider.class).iterator();
-		while (iter.hasNext()) {
-			final AdminActionProvider provider = (AdminActionProvider) iter.next();
+		for (final AdminActionProvider provider : ProviderUtils.getProviders(AdminActionProvider.class)) {
 			try {
 				if (provider.getClass().getClassLoader() == thisCL && provider.getServletConfig() == null) {
 					provider.init(new ServletConfig() {
