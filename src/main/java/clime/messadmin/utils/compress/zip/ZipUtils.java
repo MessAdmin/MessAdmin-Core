@@ -66,8 +66,8 @@ public class ZipUtils {
 		} else if (source.isDirectory()) {
 			// Iterate
 			File files[] = source.listFiles(ReadableFiles.INSTANCE);
-			for (int i = 0; i < files.length; ++i) {
-				currentVisitedSize = isSourceSizeAtLeast(files[i], minimumSize, currentVisitedSize);
+			for (File file : files) {
+				currentVisitedSize = isSourceSizeAtLeast(file, minimumSize, currentVisitedSize);
 				if (currentVisitedSize >= minimumSize) {
 					return currentVisitedSize;
 				}
@@ -144,8 +144,8 @@ public class ZipUtils {
 			out.closeEntry();
 			// Iterate
 			File files[] = source.listFiles(ReadableFiles.INSTANCE);
-			for (int i = 0; i < files.length; ++i) {
-				long lastMod = compress(files[i], out, rootPath);
+			for (File file : files) {
+				long lastMod = compress(file, out, rootPath);
 				lastModified = Math.max(lastModified, lastMod);
 			}
 		} else {
@@ -156,7 +156,7 @@ public class ZipUtils {
 	}
 
 	private static void copy(InputStream in, OutputStream out) throws IOException {
-		byte[] buff = new byte[16384];//FIXME magic number
+		byte[] buff = new byte[32768];//FIXME magic number
 		int nRead = 0;
 		while ((nRead = in.read(buff)) != -1) {
 			out.write(buff, 0, nRead);

@@ -669,10 +669,11 @@ public abstract class BaseBrowserHelper {
 		}
 //		resp.setHeader("Content-Description", "");//$NON-NLS-1$
 //		resp.setHeader("Content-Transfer-Encoding", "binary");//$NON-NLS-1$//$NON-NLS-2$
-		ZipOutputStreamAdapter zipOutputStream = ZipUtils.getZipOutputStream(null, response.getOutputStream(), new ZipConfiguration());
+		ZipConfiguration zipConfiguration = new ZipConfiguration();
+		zipConfiguration.setCompressionLevel(Deflater.BEST_SPEED);
+		ZipOutputStreamAdapter zipOutputStream = ZipUtils.getZipOutputStream(null, response.getOutputStream(), zipConfiguration);
 		try {
-			for (int i = 0; i < resourceNames.length; ++i) {
-				String resourcePath = resourceNames[i];
+			for (String resourcePath : resourceNames) {
 				BaseResource resource = getResource(servletContext, resourcePath);
 				compress(resource, servletContext, zipOutputStream, "");
 			}
@@ -705,9 +706,8 @@ public abstract class BaseBrowserHelper {
 			out.putNextEntry(zipEntry);
 			out.closeEntry();
 			// Iterate
-			Iterator childs = source.getChildResources(servletContext).iterator();
-			while (childs.hasNext()) {
-				BaseResource child = (BaseResource) childs.next();
+			Collection<BaseResource> childs = source.getChildResources(servletContext);
+			for (BaseResource child : childs) {
 				compress(child, servletContext, out, rootPath);
 			}
 		} else {
@@ -739,7 +739,7 @@ public abstract class BaseBrowserHelper {
 				) {
 			GZipConfiguration config = new GZipConfiguration();
 			config.setCompressionLevel(Deflater.BEST_SPEED);
-			output = new clime.messadmin.utils.compress.gzip.GZIPOutputStream(output, 4096, config);
+			output = new clime.messadmin.utils.compress.gzip.GZIPOutputStream(output, 8192, config);
 			response.setHeader("Content-Encoding", "gzip");//$NON-NLS-1$//$NON-NLS-2$
 			response.addHeader("Vary", "Accept-Encoding");//$NON-NLS-1$//$NON-NLS-2$
 			//response.setContentLength(compressedBytes.length);
@@ -755,7 +755,7 @@ public abstract class BaseBrowserHelper {
 
 	protected void copy(InputStream input, OutputStream output) throws IOException {
 		int nRead;
-		byte[] buffer = new byte[16384];//FIXME magic number
+		byte[] buffer = new byte[32768];//FIXME magic number
 		while ((nRead = input.read(buffer)) != -1) {
 			output.write(buffer, 0, nRead);
 		}

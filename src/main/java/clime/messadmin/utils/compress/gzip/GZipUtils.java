@@ -97,7 +97,7 @@ public class GZipUtils {
 	}
 
 	private static void copy(InputStream in, OutputStream out) throws IOException {
-		byte[] buff = new byte[16384];//FIXME magic number
+		byte[] buff = new byte[32768];//FIXME magic number
 		int nRead = 0;
 		while ((nRead = in.read(buff)) != -1) {
 			out.write(buff, 0, nRead);
