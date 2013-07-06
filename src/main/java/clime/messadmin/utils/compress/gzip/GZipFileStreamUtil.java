@@ -102,7 +102,7 @@ class GZipFileStreamUtil {
 		}
 		byte[] result = null;
 		try {
-			Charset charset = Charsets.forName("ISO-8859-1");//$NON-NLS-1$
+			Charset charset = Charsets.ISO_8859_1;
 			CharsetEncoder encoder = charset.newEncoder();
 			ByteBuffer bbuffer = encoder.encode(CharBuffer.wrap(str));
 			result = bbuffer.array();

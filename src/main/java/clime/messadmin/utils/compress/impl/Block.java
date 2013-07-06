@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.util.concurrent.CountDownLatch;
 
 import clime.messadmin.utils.compress.zip.ZipConfiguration;
@@ -133,6 +134,16 @@ public class Block implements Comparable<Block> {
 		}
 		int toCopy = Math.min(length, uncompressed.length-uncompressedSize);
 		System.arraycopy(b, offset, uncompressed, uncompressedSize, toCopy);
+		uncompressedSize += toCopy;
+		return toCopy;
+	}
+
+	/**
+	 * @return number of bytes read in this block
+	 */
+	public int read(ByteBuffer src) {
+		int toCopy = Math.min(src.remaining(), uncompressed.length-uncompressedSize);
+		src.get(uncompressed, uncompressedSize, toCopy);
 		uncompressedSize += toCopy;
 		return toCopy;
 	}

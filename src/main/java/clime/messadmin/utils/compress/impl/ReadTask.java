@@ -5,6 +5,7 @@ package clime.messadmin.utils.compress.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 import clime.messadmin.utils.compress.zip.ZipConfiguration;
 
@@ -34,6 +35,7 @@ public class ReadTask {
 	private byte[] inputBytes = null;
 	private int inputBytesPos = -1;
 	private int inputBytesEnd = -1;
+	private ByteBuffer inputByteBuffer = null;
 	/* Current Block being read */
 	private Block currentBlock = null;
 	private long uncompressedSize = 0;
@@ -50,7 +52,7 @@ public class ReadTask {
 	}
 
 	public boolean needsInput() {
-		return inputStream == null && inputBytesPos == -1;
+		return inputStream == null && inputBytesPos == -1 && inputByteBuffer == null;
 	}
 
 	/**
@@ -117,8 +119,7 @@ public class ReadTask {
 			}
 			long endNanoTime = ((StatisticsImpl)configuration.getStatistics()).nanoTime();
 			((StatisticsImpl)configuration.getStatistics()).readTimeNano.addAndGet(endNanoTime - startNanoTime);
-		} else {
-			assert inputBytes != null;
+		} else if (inputBytes != null) {
 			int nRead = block.read(inputBytes, inputBytesPos, inputBytesEnd-inputBytesPos);
 			uncompressedSize += nRead;
 			((StatisticsImpl)configuration.getStatistics()).uncompressedSize.addAndGet(nRead);
@@ -126,6 +127,14 @@ public class ReadTask {
 			if (inputBytesPos >= inputBytesEnd) {
 				inputBytes = null;
 				inputBytesPos = inputBytesEnd = -1;
+			}
+		} else {
+			assert inputByteBuffer != null;
+			int nRead = block.read(inputByteBuffer);
+			uncompressedSize += nRead;
+			((StatisticsImpl)configuration.getStatistics()).uncompressedSize.addAndGet(nRead);
+			if ( ! inputByteBuffer.hasRemaining()) {
+				inputByteBuffer = null;
 			}
 		}
 		if (block.getUncompressedSize() <= 0) {
@@ -136,7 +145,7 @@ public class ReadTask {
 	}
 
 	public void setInput(InputStream input) throws IllegalStateException {
-		if (inputBytes != null || inputStream != null) {
+		if (inputBytes != null || inputStream != null || inputByteBuffer != null) {
 			throw new IllegalStateException("setInput() called when there was unread input");
 		}
 		this.inputStream = input;
@@ -149,12 +158,24 @@ public class ReadTask {
 		if (off < 0 || len < 0 || off > buff.length - len) {
 			throw new ArrayIndexOutOfBoundsException();
 		}
-		if (inputBytes != null || inputStream != null) {
+		if (inputBytes != null || inputStream != null || inputByteBuffer != null) {
 			throw new IllegalStateException("setInput() called when there was unread input");
 		}
 		this.inputBytes = buff;
 		this.inputBytesPos = off;
 		this.inputBytesEnd = off + len;
+	}
+
+	public void setInput(ByteBuffer src) throws IllegalStateException {
+		if (inputBytes != null || inputStream != null || inputByteBuffer != null) {
+			throw new IllegalStateException("setInput() called when there was unread input");
+		}
+		if (src.hasArray()) {
+			// direct compression from backing array
+			setInput(src.array(), src.arrayOffset(), src.remaining());
+		} else {
+			this.inputByteBuffer = src;
+		}
 	}
 
 	/**

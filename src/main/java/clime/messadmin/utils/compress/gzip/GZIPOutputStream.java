@@ -4,8 +4,15 @@
 package clime.messadmin.utils.compress.gzip;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.channels.NonReadableChannelException;
+import java.nio.channels.FileChannel.MapMode;
+import java.nio.channels.WritableByteChannel;
 import java.util.zip.CRC32;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
@@ -20,9 +27,9 @@ import clime.messadmin.utils.compress.impl.StatisticsImpl;
  * 4255743</a> and
  * <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4813885">Bug
  * 4813885</a>) so the GZIP'd output can be flushed.
- *
- * Java 7 finally exposes Z_SYNC_FLUSH and Z_FULL_FLUSH in addition to the default Z_NO_FLUSH (and Z_FINISH for EOF).
- *
+ * <p>
+ * Java 7 finally exposes {@code Z_SYNC_FLUSH} and {@code Z_FULL_FLUSH} in addition to the default {@code Z_NO_FLUSH} (and {@code Z_FINISH} for EOF).
+ * <p>
  * Can also set mTime, fileName and comment, exposing gzip features.
  *
  * @see "http://www.ietf.org/rfc/rfc1952.txt"
@@ -31,7 +38,7 @@ import clime.messadmin.utils.compress.impl.StatisticsImpl;
 // IMPLEMENTATION NOTE: we can not extend java.util.zip.GZIPOutputStream since:
 // * writeHeader is private
 // * DeflaterOutputStream's constructors are not accessible
-public class GZIPOutputStream extends DeflaterOutputStream {
+public class GZIPOutputStream extends DeflaterOutputStream implements WritableByteChannel {
 	private static final Field superUsesDefaultDeflater;
 	private static final Field superSyncFlush;
 
@@ -54,6 +61,11 @@ public class GZIPOutputStream extends DeflaterOutputStream {
 
 	private static final byte[] EMPTYBYTEARRAY = new byte[0];
 	private boolean hasData = false;
+
+	/**
+	 * Indicates that the stream has been closed.
+	 */
+	private boolean closed = false;
 
 	protected GZipConfiguration configuration;
 	protected StatisticsImpl statistics;
@@ -140,6 +152,40 @@ public class GZIPOutputStream extends DeflaterOutputStream {
 			statistics.uncompressedSize.addAndGet(len);
 			hasData = true;
 		}
+	}
+
+	public synchronized void write(final InputStream input) throws IOException {
+		byte[] buffer = new byte[32768];//FIXME magic number
+		int read;
+		while ((read = input.read(buffer)) >= 0) {
+			write(buffer, 0, read);
+		}
+	}
+
+	public synchronized void write(final FileChannel src) throws IOException, NonReadableChannelException {
+		MappedByteBuffer map = src.map(MapMode.READ_ONLY, 0, src.size());
+		write(map);
+	}
+
+	/** {@inheritDoc} */
+	public synchronized int write(final ByteBuffer src) throws IOException {
+		int r = src.remaining();
+		if (r <= 0) {
+			return r;
+		}
+		if (src.hasArray()) {
+			// direct compression from backing array
+			write(src.array(), src.arrayOffset(), src.limit() - src.arrayOffset());
+		} else {
+			// need to copy to heap array first
+			byte[] buffer = new byte[Math.min(32768, src.remaining())];//FIXME magic number
+			while (src.hasRemaining()) {
+				int toRead = Math.min(src.remaining(), buffer.length);
+				src.get(buffer, 0, toRead);
+				write(buffer, 0, toRead);
+			}
+		}
+		return r;
 	}
 
 	/**
@@ -263,10 +309,16 @@ public class GZIPOutputStream extends DeflaterOutputStream {
 	}
 
 	/** {@inheritDoc} */
+	public boolean isOpen() {
+		return ! closed;
+	}
+
+	/** {@inheritDoc} */
 	@Override
 	public void close() throws IOException {
 		super.close();
 		long endTimeNano = System.nanoTime();
 		statistics.realTimeNano.addAndGet(endTimeNano - startTimeNano);
+		closed = true;
 	}
 }

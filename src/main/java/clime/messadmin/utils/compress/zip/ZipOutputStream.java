@@ -10,8 +10,15 @@ import static clime.messadmin.utils.compress.zip.ZipConstants64.*;
 import static java.util.zip.ZipEntry.*;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.channels.NonReadableChannelException;
+import java.nio.channels.WritableByteChannel;
+import java.nio.channels.FileChannel.MapMode;
 import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.HashSet;
@@ -34,7 +41,7 @@ import clime.messadmin.utils.compress.impl.StatisticsImpl;
  * @author      David Connelly
  * @author      C&eacute;drik LIME
  */
-public class ZipOutputStream extends DeflaterOutputStream {
+public class ZipOutputStream extends DeflaterOutputStream implements WritableByteChannel {
 	private static final Field superUsesDefaultDeflater;
 
 	static {
@@ -408,6 +415,40 @@ public class ZipOutputStream extends DeflaterOutputStream {
 		statistics.checksumTimeNano.addAndGet(endNanoTime - startNanoTime);
 	}
 
+	public synchronized void write(final InputStream input) throws IOException {
+		byte[] buffer = new byte[32768];//FIXME magic number
+		int read;
+		while ((read = input.read(buffer)) >= 0) {
+			write(buffer, 0, read);
+		}
+	}
+
+	public synchronized void write(final FileChannel src) throws IOException, NonReadableChannelException {
+		MappedByteBuffer map = src.map(MapMode.READ_ONLY, 0, src.size());
+		write(map);
+	}
+
+	/** {@inheritDoc} */
+	public synchronized int write(final ByteBuffer src) throws IOException {
+		int r = src.remaining();
+		if (r <= 0) {
+			return r;
+		}
+		if (src.hasArray()) {
+			// direct compression from backing array
+			write(src.array(), src.arrayOffset(), src.limit() - src.arrayOffset());
+		} else {
+			// need to copy to heap array first
+			byte[] buffer = new byte[Math.min(32768, src.remaining())];//FIXME magic number
+			while (src.hasRemaining()) {
+				int toRead = Math.min(src.remaining(), buffer.length);
+				src.get(buffer, 0, toRead);
+				write(buffer, 0, toRead);
+			}
+		}
+		return r;
+	}
+
 	/*
 	 * Keep on calling deflate until it runs dry. The default implementation
 	 * only does it once and can therefore hold onto data when they need to be
@@ -469,6 +510,11 @@ public class ZipOutputStream extends DeflaterOutputStream {
 		long endNanoTime = statistics.nanoTime();
 		statistics.writeTimeNano.addAndGet(endNanoTime - startNanoTime);
 		finished = true;
+	}
+
+	/** {@inheritDoc} */
+	public boolean isOpen() {
+		return ! closed;
 	}
 
 	/**

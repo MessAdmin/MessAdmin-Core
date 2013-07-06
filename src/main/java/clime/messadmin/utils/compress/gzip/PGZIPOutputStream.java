@@ -7,6 +7,12 @@ import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.channels.NonReadableChannelException;
+import java.nio.channels.WritableByteChannel;
+import java.nio.channels.FileChannel.MapMode;
 import java.util.zip.CRC32;
 
 import clime.messadmin.utils.compress.impl.Block;
@@ -22,7 +28,7 @@ import clime.messadmin.utils.compress.impl.StatisticsImpl;
  *
  * @author C&eacute;drik LIME
  */
-public class PGZIPOutputStream extends FilterOutputStream {
+public class PGZIPOutputStream extends FilterOutputStream implements WritableByteChannel {
 //	protected static Logger log = LoggerFactory.getLogger(PGZIPOutputStream.class);
 	private final long startTimeNano;
 	private final GZipConfiguration configuration;
@@ -36,6 +42,7 @@ public class PGZIPOutputStream extends FilterOutputStream {
 	private Compressor compressor;
 	private Block previousBlock = null;
 	private Block currentBlock = null;
+	/** Indicates that the stream has been closed. */
 	private boolean closed = false;
 
 	public PGZIPOutputStream(OutputStream out, GZipConfiguration configuration) throws IOException {
@@ -74,7 +81,7 @@ public class PGZIPOutputStream extends FilterOutputStream {
 
 	/** {@inheritDoc} */
 	@Override
-	public void write(byte[] buf, int offset, int length) throws IOException, RuntimeException {
+	public synchronized void write(byte[] buf, int offset, int length) throws IOException, RuntimeException {
 		if (buf == null || length == 0) {
 			return;
 		}
@@ -85,9 +92,22 @@ public class PGZIPOutputStream extends FilterOutputStream {
 	/**
 	 * Writes the content of the specified {@code InputStream} to this output stream.
 	 */
-	public void write(InputStream in) throws IOException, RuntimeException {
+	public synchronized void write(InputStream in) throws IOException, RuntimeException {
 		readTask.setInput(in);
 		write();
+	}
+
+	public synchronized void write(final FileChannel src) throws IOException, NonReadableChannelException {
+		MappedByteBuffer map = src.map(MapMode.READ_ONLY, 0, src.size());
+		write(map);
+	}
+
+	/** {@inheritDoc} */
+	public synchronized int write(ByteBuffer src) throws IOException, RuntimeException {
+		int r = src.remaining();
+		readTask.setInput(src);
+		write();
+		return r;
 	}
 
 	private void write() throws IOException, RuntimeException {
@@ -148,6 +168,11 @@ public class PGZIPOutputStream extends FilterOutputStream {
 	@Override
 	protected void finalize() throws Throwable {
 		close();
+	}
+
+	/** {@inheritDoc} */
+	public boolean isOpen() {
+		return ! closed;
 	}
 
 	/**

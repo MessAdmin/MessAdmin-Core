@@ -76,8 +76,8 @@ public class GZipUtils {
 				((PGZIPOutputStream)out).write(in);
 			} else {
 				// single thread if file.size < 20M or available processors == 1
-				out = new GZIPOutputStream(out, config);// override "out" so that it is the GZIPOutputStream that is closed at the end!
-				copy(in, out);
+				out = new GZIPOutputStream(out, 32768, config);// override "out" so that it is the GZIPOutputStream that is closed at the end!
+				((GZIPOutputStream)out).write(in);
 			}
 		} finally {
 			try {
@@ -96,12 +96,4 @@ public class GZipUtils {
 		return stats;
 	}
 
-	private static void copy(InputStream in, OutputStream out) throws IOException {
-		byte[] buff = new byte[32768];//FIXME magic number
-		int nRead = 0;
-		while ((nRead = in.read(buff)) != -1) {
-			out.write(buff, 0, nRead);
-		}
-		out.flush();
-	}
 }
