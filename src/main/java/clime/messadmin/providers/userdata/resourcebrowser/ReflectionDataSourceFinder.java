@@ -13,7 +13,8 @@ import javax.sql.DataSource;
  * (e.g. org.apache.commons.dbcp.BasicDataSource / org.apache.tomcat.dbcp.dbcp.BasicDataSource)
  * @author C&eacute;drik LIME
  */
-class ReflexionDataSourceFinder {
+class ReflectionDataSourceFinder {
+
 	public static class DataSourceConfiguration {
 		public String driverClassName;
 		public String url;
@@ -21,6 +22,7 @@ class ReflexionDataSourceFinder {
 		public boolean closed;
 		public int numActive, maxActive;
 		public int numIdle, minIdle, maxIdle;
+
 		/** {@inheritDoc} */
 		@Override
 		public String toString() {
@@ -49,7 +51,7 @@ class ReflexionDataSourceFinder {
 	private static final String getNumIdle   = "getNumIdle";//$NON-NLS-1$
 	private static final String getMaxIdle   = "getMaxIdle";//$NON-NLS-1$
 
-	private ReflexionDataSourceFinder() {
+	private ReflectionDataSourceFinder() {
 		throw new AssertionError();
 	}
 
@@ -57,7 +59,7 @@ class ReflexionDataSourceFinder {
 		if (obj == null) {
 			return null;
 		}
-		Class clazz = obj.getClass();
+		Class<?> clazz = obj.getClass();
 		DataSourceConfiguration result = null;
 		try {
 			Method driverClassName = clazz.getMethod(getDriverClassName);
@@ -71,16 +73,15 @@ class ReflexionDataSourceFinder {
 			Method maxIdle   = clazz.getMethod(getMaxIdle);
 			DataSourceConfiguration config = new DataSourceConfiguration();
 			config.driverClassName = (String) driverClassName.invoke(obj);
-			config.url = (String) url.invoke(obj);
-			config.userName = (String) username.invoke(obj);
-			config.closed = ((Boolean) closed.invoke(obj)).booleanValue();
+			config.url       = (String) url.invoke(obj);
+			config.userName  = (String) username.invoke(obj);
+			config.closed    = ((Boolean) closed.invoke(obj)).booleanValue();
 			config.numActive = ((Integer) numActive.invoke(obj)).intValue();
 			config.maxActive = ((Integer) maxActive.invoke(obj)).intValue();
-			config.minIdle = ((Integer) minIdle.invoke(obj)).intValue();
-			config.numIdle = ((Integer) numIdle.invoke(obj)).intValue();
-			config.maxIdle = ((Integer) maxIdle.invoke(obj)).intValue();
+			config.minIdle   = ((Integer) minIdle.invoke(obj)).intValue();
+			config.numIdle   = ((Integer) numIdle.invoke(obj)).intValue();
+			config.maxIdle   = ((Integer) maxIdle.invoke(obj)).intValue();
 			result = config;
-		} catch (SecurityException ignore) {
 		} catch (NoSuchMethodException ignore) {
 		} catch (IllegalAccessException ignore) {
 		} catch (InvocationTargetException ignore) {

@@ -224,7 +224,7 @@ public class ThreadsDumper extends BaseAdminActionProvider implements ServerData
 		out.append("<div id=\"").append(infoballoonId).append("-infoballoon\" class=\"infoballoon\">");
 		out.append("<table border=\"0\">");
 		out.append("<tr><th>ClassLoader</th><td><pre>").append(cl==null?null:StringUtils.escapeXml(cl.toString())).append("</pre></td></tr>");
-		if (uncaughtExceptionHandler != null && uncaughtExceptionHandler != t.getThreadGroup()) {//FIXME
+		if (uncaughtExceptionHandler != null && uncaughtExceptionHandler != t.getThreadGroup()) {
 			out.append("<tr><th>UncaughtExceptionHandler</th><td>");
 			out.append(StringUtils.escapeXml(uncaughtExceptionHandler.toString()));
 			out.append("</td></tr>");

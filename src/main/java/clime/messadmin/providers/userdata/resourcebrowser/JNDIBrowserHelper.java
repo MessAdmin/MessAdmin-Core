@@ -11,7 +11,7 @@ import javax.servlet.ServletContext;
 
 import clime.messadmin.admin.AdminActionProvider;
 import clime.messadmin.providers.spi.DisplayProvider;
-import clime.messadmin.providers.userdata.resourcebrowser.ReflexionDataSourceFinder.DataSourceConfiguration;
+import clime.messadmin.providers.userdata.resourcebrowser.ReflectionDataSourceFinder.DataSourceConfiguration;
 import clime.messadmin.utils.StringUtils;
 
 /**
@@ -108,7 +108,7 @@ class JNDIBrowserHelper extends BaseBrowserHelper {
 				//	getNumActive() | getMaxActive()
 				//	getMinIdle() | getNumIdle() | getMaxIdle()
 				//)
-				DataSourceConfiguration dataSourceConfiguration = ReflexionDataSourceFinder.getDataSourceConfiguration(element);
+				DataSourceConfiguration dataSourceConfiguration = ReflectionDataSourceFinder.getDataSourceConfiguration(element);
 				if (dataSourceConfiguration != null) {
 					title = StringUtils.escapeXml(dataSourceConfiguration.toString());
 				} else {
