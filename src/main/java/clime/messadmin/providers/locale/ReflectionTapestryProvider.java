@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 import clime.messadmin.providers.spi.LocaleProvider;
 
 /**
- * Note: this provider implementation uses reflexion, to avoid linking against Tapestry libs.
+ * Note: this provider implementation uses reflection, to avoid linking against Tapestry libs.
  * @author C&eacute;drik LIME
  */
 public class ReflectionTapestryProvider implements LocaleProvider {
@@ -42,9 +42,9 @@ public class ReflectionTapestryProvider implements LocaleProvider {
 		// Tapestry 3.0: Engine stored in session under "org.apache.tapestry.engine:" + config.getServletName()
 		// TODO: Tapestry 4+
 		final List tapestryArray = new ArrayList();
-		Enumeration attrEnum = httpSession.getAttributeNames();
+		Enumeration<String> attrEnum = httpSession.getAttributeNames();
 		while (attrEnum.hasMoreElements()) {
-			String name = (String) attrEnum.nextElement();
+			String name = attrEnum.nextElement();
 			if (name.indexOf("tapestry") > -1 && name.indexOf("engine") > -1 && null != httpSession.getAttribute(name)) {//$NON-NLS-1$ //$NON-NLS-2$
 				tapestryArray.add(httpSession.getAttribute(name));
 			}
@@ -54,10 +54,10 @@ public class ReflectionTapestryProvider implements LocaleProvider {
 			Object probableEngine = tapestryArray.get(0);
 			if (null != probableEngine) {
 				try {
-					Method readMethod = probableEngine.getClass().getMethod("getLocale", null);//$NON-NLS-1$
+					Method readMethod = probableEngine.getClass().getMethod("getLocale");//$NON-NLS-1$
 					if (null != readMethod) {
 						// Call the property getter and return the value
-						Object possibleLocale = readMethod.invoke(probableEngine, null);
+						Object possibleLocale = readMethod.invoke(probableEngine);
 						if (null != possibleLocale && possibleLocale instanceof Locale) {
 							locale = (Locale) possibleLocale;
 						}

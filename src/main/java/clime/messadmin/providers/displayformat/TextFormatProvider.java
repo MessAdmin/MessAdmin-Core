@@ -175,11 +175,11 @@ public class TextFormatProvider implements DisplayFormatProvider {
 		out.println("Size:\t\t" + bytesFormat.format(currentSession.getSize()));
 		out.println();
 		// Session attributes
-		Map attributes = currentSession.getAttributes();
+		Map<String, Object> attributes = currentSession.getAttributes();
 		out.println("# attributes:\t" + numberFormat.format(attributes.size()));
-		Iterator iter = attributes.entrySet().iterator();
+		Iterator<Map.Entry<String, Object>> iter = attributes.entrySet().iterator();
 		while (iter.hasNext()) {
-			Map.Entry entry = (Map.Entry) iter.next();
+			Map.Entry<String, Object> entry = iter.next();
 			out.println("\tAttribute name:\t" + entry.getKey());
 			out.println("\tAttribute Class:\t" + (entry.getValue() != null ? entry.getValue().getClass().getName() : ""));
 			out.println("\tAttribute size:\t"
@@ -218,11 +218,11 @@ public class TextFormatProvider implements DisplayFormatProvider {
 		out.println("Total response size:\t" + bytesFormat.format(webAppStats.getResponseTotalLength()));
 		out.println();
 		// ServletContext attributes
-		Map attributes = webAppStats.getAttributes();
+		Map<String, Object> attributes = webAppStats.getAttributes();
 		out.println("# attributes:\t" + numberFormat.format(attributes.size()));
-		Iterator iter = attributes.entrySet().iterator();
+		Iterator<Map.Entry<String, Object>> iter = attributes.entrySet().iterator();
 		while (iter.hasNext()) {
-			Map.Entry entry = (Map.Entry) iter.next();
+			Map.Entry<String, Object> entry = iter.next();
 			out.println("\tAttribute name:\t" + entry.getKey());
 			out.println("\tAttribute Class:\t" + (entry.getValue() != null ? entry.getValue().getClass().getName() : ""));
 			out.println("\tAttribute size:\t"

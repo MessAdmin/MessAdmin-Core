@@ -120,17 +120,17 @@ public class MessAdminRequestWrapper extends HttpServletRequestWrapper {
 	}
 
 	public static long getHeadersSize(HttpServletRequest request) {
-		Enumeration headerNames = request.getHeaderNames();
+		Enumeration<String> headerNames = request.getHeaderNames();
 		if (headerNames == null) {
 			return 0;
 		} //else
 		long size = 0;
 		while (headerNames.hasMoreElements()) {
-			String headerName = (String) headerNames.nextElement();
-			Enumeration headerValues = request.getHeaders(headerName);
+			String headerName = headerNames.nextElement();
+			Enumeration<String> headerValues = request.getHeaders(headerName);
 			if (headerValues != null) {
 				while (headerValues.hasMoreElements()) {
-					String headerValue = (String) headerValues.nextElement();
+					String headerValue = headerValues.nextElement();
 					size += headerName.length() + 3 + headerValue.length();//+3: "<name>: value\n"
 				}
 			}

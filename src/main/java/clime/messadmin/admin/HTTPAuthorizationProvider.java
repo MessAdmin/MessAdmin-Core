@@ -70,12 +70,16 @@ class HTTPAuthorizationProvider {
 				throw new IllegalArgumentException("Only Basic HTTP Access Authentication supported");//$NON-NLS-1$
 			}
 //			assert request.getAuthType() == HttpServletRequest.BASIC_AUTH : request.getAuthType();
-			String base64UserPass = authorization.substring(BASIC_AUTH.length()).trim();
-			String userPass = new String(Base64.decode(base64UserPass.getBytes()));
-			int index = userPass.indexOf(':');
-			//String user = userPass.substring(0, index);
-			String password = userPass.substring(index+1);
-			providedPassword = password;
+			try {
+				String base64UserPass = authorization.substring(BASIC_AUTH.length()).trim();
+				String userPass = new String(Base64.decode(base64UserPass.getBytes()));
+				int index = userPass.indexOf(':');
+				//String user = userPass.substring(0, index);
+				String password = userPass.substring(index+1);
+				providedPassword = password;
+			} catch (Exception ignore) {
+				providedPassword = null;
+			}
 		} else {
 			providedPassword = null;
 		}

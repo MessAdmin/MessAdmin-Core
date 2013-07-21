@@ -123,7 +123,7 @@ public class Session implements SessionMBean { //extends NotificationBroadcaster
 		return (session == null) ? null : session.getAttribute(name);
 	}
 
-	public Enumeration getAttributeNames() {
+	public Enumeration<String> getAttributeNames() {
 		HttpSession session = Server.getInstance().getApplication(context).getSession(sessionId).getSessionInfo();
 		return (session == null) ? null : session.getAttributeNames();
 	}
@@ -195,7 +195,7 @@ public class Session implements SessionMBean { //extends NotificationBroadcaster
 	/**
 	 * {@inheritDoc}
 	 */
-	public Map getAttributes() {
+	public Map<String, Object> getAttributes() {
 		ISessionInfo extraSessionInfo = Server.getInstance().getApplication(context).getSession(sessionId).getSessionInfo();
 		return extraSessionInfo == null ? Collections.EMPTY_MAP : extraSessionInfo.getAttributes();
 	}

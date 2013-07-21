@@ -72,7 +72,7 @@ public class ServletContextInitParametersProvider extends
 
 	private class ServletContextInitParametersIterator extends BaseRowIterator implements RowIterator {
 		private final ServletContext context;
-		private final Enumeration/*<String>*/ attributeNames;
+		private final Enumeration<String> attributeNames;
 		private String currentKey = null;
 		private Object currentValue = null;
 
@@ -84,7 +84,7 @@ public class ServletContextInitParametersProvider extends
 		/** {@inheritDoc} */
 		@Override
 		public int getNRows() {
-			List<?> list = Collections.list(context.getInitParameterNames());
+			List<String> list = Collections.list(context.getInitParameterNames());
 			return list.size();
 		}
 
@@ -104,8 +104,8 @@ public class ServletContextInitParametersProvider extends
 		}
 
 		/** {@inheritDoc} */
-		public Object next() {
-			currentKey = (String)attributeNames.nextElement();
+		public Object[] next() {
+			currentKey = attributeNames.nextElement();
 			currentValue = context.getInitParameter(currentKey);
 			Object[] result = new Object[2];
 			result[0] = StringUtils.escapeXml(currentKey);

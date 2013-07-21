@@ -2,7 +2,6 @@ package clime.messadmin.admin.actions;
 
 import java.io.IOException;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -74,10 +73,10 @@ public class RemoveServletContextAttribute extends BaseAdminActionWithContext im
 		final ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		if (removed) {
 			request.setAttribute(Constants.APPLICATION_MESSAGE,
-					I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "removeServletContextAttribute.ok", new String[] {name}));//$NON-NLS-1$
+					I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "removeServletContextAttribute.ok", new Object[] {name}));//$NON-NLS-1$
 		} else {
 			request.setAttribute(Constants.APPLICATION_ERROR,
-					I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "removeServletContextAttribute.ko", new String[] {context, name}));//$NON-NLS-1$
+					I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "removeServletContextAttribute.ko", new Object[] {context, name}));//$NON-NLS-1$
 		}
 		ReloadDataProviderHelper.sendRedirect(request, response, ReloadApplicationDataProvider.ID, DisplayProvider.Util.getId(this), ReloadDataProviderHelper.SCOPE_CONTENT);
 	}
@@ -137,7 +136,7 @@ public class RemoveServletContextAttribute extends BaseAdminActionWithContext im
 			private final String internalContext;
 			private final ClassLoader cl;
 			private final ServletContext context;
-			private final Enumeration/*<String>*/ attributeNames;
+			private final Enumeration<String> attributeNames;
 			private String currentKey = null;
 			private Object currentValue = null;
 			private final BytesFormat bytesFormat = BytesFormat.getBytesInstance(I18NSupport.getAdminLocale(), true);
@@ -152,7 +151,7 @@ public class RemoveServletContextAttribute extends BaseAdminActionWithContext im
 			/** {@inheritDoc} */
 			@Override
 			public int getNRows() {
-				List<?> list = Collections.list(context.getAttributeNames());
+				List<String> list = Collections.list(context.getAttributeNames());
 				return list.size();
 			}
 
@@ -172,8 +171,8 @@ public class RemoveServletContextAttribute extends BaseAdminActionWithContext im
 			}
 
 			/** {@inheritDoc} */
-			public Object next() {
-				currentKey = (String)attributeNames.nextElement();
+			public Object[] next() {
+				currentKey = attributeNames.nextElement();
 				currentValue = context.getAttribute(currentKey);
 				Object[] result = new Object[4];
 				{

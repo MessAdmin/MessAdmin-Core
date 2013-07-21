@@ -7,6 +7,10 @@ import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
+
+import clime.messadmin.model.HttpServletRequestInfo;
+
 /**
  * ThreadLocal containing some interesting data for internal usage.
  * An alternative would be to put data into the request, but this could look like pollution...
@@ -17,6 +21,7 @@ public class MessAdminThreadLocal {
 	private static final ThreadLocal<Date> stopTime = new ThreadLocal<Date>();
 	private static final ThreadLocal<Long> startTimeNano = new ThreadLocal<Long>();
 	private static final ThreadLocal<Long> stopTimeNano = new ThreadLocal<Long>();
+	private static final ThreadLocal<HttpServletRequestInfo> currentRequest = new ThreadLocal<HttpServletRequestInfo>();
 
 	/**
 	 * 
@@ -25,9 +30,10 @@ public class MessAdminThreadLocal {
 		super();
 	}
 
-	public static void start() {
+	public static void start(HttpServletRequest request) {
 		startTime.set(new Date());
 		startTimeNano.set(System.nanoTime());
+		currentRequest.set(new HttpServletRequestInfo(request)); // leave this line /after/ startTime*
 	}
 
 	public static void stop() {
@@ -40,6 +46,7 @@ public class MessAdminThreadLocal {
 		stopTime.remove();
 		startTimeNano.remove();
 		stopTimeNano.remove();
+		currentRequest.remove();
 	}
 
 	public static Date getStartTime() {
@@ -48,6 +55,10 @@ public class MessAdminThreadLocal {
 		return date != null ? date : new Date(0);
 	}
 
+	public static long getStartTimeNano() {
+		return startTimeNano.get();
+	}
+	
 	public static Date getStopTime() {
 		Date date = stopTime.get();
 		// Workaround for bug of BEA Weblogic 8.1.5 / Java 1.4.2_05 / XP
@@ -67,5 +78,9 @@ public class MessAdminThreadLocal {
 			//e.printStackTrace();
 			return 0;
 		}
+	}
+
+	public static HttpServletRequestInfo getCurrentRequestInfo() {
+		return currentRequest.get();
 	}
 }

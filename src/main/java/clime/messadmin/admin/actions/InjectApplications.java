@@ -44,7 +44,7 @@ public class InjectApplications extends BaseAdminActionProvider implements Admin
 			i = MessAdmin.injectApplicationsOnce(applicationIds, message);
 		}
 		final ClassLoader cl = Thread.currentThread().getContextClassLoader();
-		request.setAttribute(Constants.APPLICATION_MESSAGE, I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "injectApplications.ok", new Integer[] {Integer.valueOf(i)}));//$NON-NLS-1$
+		request.setAttribute(Constants.APPLICATION_MESSAGE, I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "injectApplications.ok", new Object[] {Integer.valueOf(i)}));//$NON-NLS-1$
 		((BaseAdminActionProvider)AdminActionProvider.Util.getInstance(request, WebAppsList.ID)).sendRedirect(request, response);
 	}
 }

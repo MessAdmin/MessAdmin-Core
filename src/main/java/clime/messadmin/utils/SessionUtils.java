@@ -241,7 +241,7 @@ public class SessionUtils {
 		int totalLength = method.length() + 1 + requestURL.length() + (queryString==null?0:1+queryString.length());
 		StringBuilder buffer = new StringBuilder(totalLength);
 		buffer.append(method).append(' ').append(requestURL);
-		if (queryString != null && !"".equals(queryString)) {//$NON-NLS-1$
+		if (queryString != null) {
 			buffer.append('?').append(queryString);
 		}
 		return buffer.toString();

@@ -273,7 +273,7 @@ public class WebApp implements WebAppMBean { //extends NotificationBroadcasterSu
 	/**
 	 * {@inheritDoc}
 	 */
-	public Map getInitParameters() {
+	public Map<String, String> getInitParameters() {
 		return Server.getInstance().getApplication(context).getApplicationInfo().getInitParameters();
 	}
 
@@ -287,7 +287,7 @@ public class WebApp implements WebAppMBean { //extends NotificationBroadcasterSu
 	/**
 	 * {@inheritDoc}
 	 */
-	public Map getAttributes() {
+	public Map<String, Object> getAttributes() {
 		return Server.getInstance().getApplication(context).getApplicationInfo().getAttributes();
 	}
 

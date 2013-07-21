@@ -39,7 +39,7 @@ public class InvalidateSessions extends BaseAdminActionWithContext implements Ad
 		int i = MessAdmin.invalidateSessions(context, sessionIds);
 		final ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		request.setAttribute(Constants.APPLICATION_MESSAGE,
-				I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "invalidateSessions.ok", new Integer[] {Integer.valueOf(i)}));//$NON-NLS-1$
+				I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "invalidateSessions.ok", new Object[] {Integer.valueOf(i)}));//$NON-NLS-1$
 		((BaseAdminActionProvider)AdminActionProvider.Util.getInstance(request, SessionsList.ID)).sendRedirect(request, response);
 	}
 }

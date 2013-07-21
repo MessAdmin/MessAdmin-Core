@@ -213,11 +213,11 @@ public class ApplicationInfo implements IApplicationInfo {
 		while (iter.hasNext()) {
 			HttpSession httpSession = ((SessionInfo) iter.next()).getHttpSession();
 			try {
-				Map attributes = new HashMap();
-				Enumeration enumeration = httpSession.getAttributeNames();
+				Map<String, Object> attributes = new HashMap<String, Object>();
+				Enumeration<String> enumeration = httpSession.getAttributeNames();
 				// for each session attribute
 				while (enumeration.hasMoreElements()) {
-					String name = (String) enumeration.nextElement();
+					String name = enumeration.nextElement();
 					Object attribute = httpSession.getAttribute(name);
 					attributes.put(name, attribute);
 				}
@@ -315,11 +315,11 @@ public class ApplicationInfo implements IApplicationInfo {
 	}
 
 	/** {@inheritDoc} */
-	public Map getInitParameters() {
-		Map result = new HashMap();
-		Enumeration enumeration = servletContext.getInitParameterNames();
+	public Map<String, String> getInitParameters() {
+		Map<String, String> result = new HashMap<String, String>();
+		Enumeration<String> enumeration = servletContext.getInitParameterNames();
 		while (enumeration.hasMoreElements()) {
-			String name = (String) enumeration.nextElement();
+			String name = enumeration.nextElement();
 			String value = servletContext.getInitParameter(name);
 			result.put(name, value);
 		}
@@ -328,11 +328,11 @@ public class ApplicationInfo implements IApplicationInfo {
 
 
 	/** {@inheritDoc} */
-	public Map getAttributes() {
-		Map result = new HashMap();
-		Enumeration enumeration = servletContext.getAttributeNames();
+	public Map<String, Object> getAttributes() {
+		Map<String, Object> result = new HashMap<String, Object>();
+		Enumeration<String> enumeration = servletContext.getAttributeNames();
 		while (enumeration.hasMoreElements()) {
-			String name = (String) enumeration.nextElement();
+			String name = enumeration.nextElement();
 			Object value = servletContext.getAttribute(name);
 			result.put(name, value);
 		}

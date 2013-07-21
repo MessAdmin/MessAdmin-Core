@@ -54,7 +54,7 @@ public abstract class BaseAdminActionWithContextAndSession extends BaseAdminActi
 		// Get the Session ID we want to work with
 		String session = getSession(request);
 		if (session == null) {
-			String error = I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, "sessionDetail.null.error", new String[] {request.getParameter(SESSION_KEY)});//$NON-NLS-1$
+			String error = I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, "sessionDetail.null.error", new Object[] {request.getParameter(SESSION_KEY)});//$NON-NLS-1$
 			log(error);
 			request.setAttribute(Constants.APPLICATION_ERROR, error);
 			((BaseAdminActionProvider)AdminActionProvider.Util.getInstance(request, SessionsList.ID)).sendRedirect(request, response);

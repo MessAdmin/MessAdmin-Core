@@ -25,6 +25,7 @@ public class SizeofTag extends TagSupport implements TryCatchFinally {
 	 * 
 	 * @return EVAL_PAGE
 	 */
+	@Override
 	public final int doEndTag() throws JspException {
 		if (object == null && id != null && !"".equals(id.trim())) {//$NON-NLS-1$
 			object = pageContext.findAttribute(id);
@@ -44,16 +45,16 @@ public class SizeofTag extends TagSupport implements TryCatchFinally {
 			// if sizing an HttpSession, we are really only interested in its attributes!
 			if (objectToSize != null && objectToSize instanceof HttpSession) {
 				HttpSession session = (HttpSession) objectToSize;
-				Map attributes = new HashMap();
-				Enumeration enumeration = session.getAttributeNames();
+				Map<String, Object> attributes = new HashMap<String, Object>();
+				Enumeration<String> enumeration = session.getAttributeNames();
 				while (enumeration.hasMoreElements()) {
-					String name = (String) enumeration.nextElement();
+					String name = enumeration.nextElement();
 					Object attribute = session.getAttribute(name);
 					attributes.put(name, attribute);
 				}
 				objectToSize = attributes;
 			}
-			// user can chose formater in JSP as we write a simple Long
+			// user can chose formatter in JSP as we write a simple Long
             long currentItemSize = SizeOfProvider.Util.getObjectSize(objectToSize, null);
 			valueStr = Long.toString(currentItemSize);
 		} catch (IllegalStateException ise) {
@@ -63,6 +64,7 @@ public class SizeofTag extends TagSupport implements TryCatchFinally {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void release() {
 		object = null;
 		super.release();

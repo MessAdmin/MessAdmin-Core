@@ -40,7 +40,7 @@ public interface ISessionInfo extends HttpSession {
 	 * @see javax.servlet.http.HttpSession#getAttributeNames()
 	 * @see javax.servlet.http.HttpSession#getAttribute(java.lang.String)
 	 */
-	Map/*<String,Object>*/ getAttributes();
+	Map<String, Object> getAttributes();
 
 	/**
 	 * @return number of exceptions generated during request processing

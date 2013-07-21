@@ -415,9 +415,9 @@ public class SetLocaleTag extends TagSupport {
     private static Locale findFormattingMatch(PageContext pageContext,
 					      Locale[] avail) {
 	Locale match = null;
-	for (Enumeration enum_ = Util.getRequestLocales((HttpServletRequest)pageContext.getRequest());
+	for (Enumeration<Locale> enum_ = Util.getRequestLocales((HttpServletRequest)pageContext.getRequest());
 	     enum_.hasMoreElements(); ) {
-            Locale locale = (Locale)enum_.nextElement();
+            Locale locale = enum_.nextElement();
 	    match = findFormattingMatch(locale, avail);
 	    if (match != null) {
 		break;

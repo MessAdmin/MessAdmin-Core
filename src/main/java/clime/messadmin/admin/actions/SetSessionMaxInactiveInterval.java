@@ -45,7 +45,7 @@ public class SetSessionMaxInactiveInterval extends BaseAdminActionWithContextAnd
 						I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "setSessionMaxInactiveInterval.ok", new Object[] {Integer.valueOf(oldTimeout/60), timeoutStr}));//$NON-NLS-1$
 			} else {
 				request.setAttribute(Constants.APPLICATION_ERROR,
-						I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "setSessionMaxInactiveInterval.ko", new String[] {sessionId}));//$NON-NLS-1$
+						I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "setSessionMaxInactiveInterval.ko", new Object[] {sessionId}));//$NON-NLS-1$
 			}
 		} catch (NumberFormatException nfe) {
 			request.setAttribute(Constants.APPLICATION_ERROR,

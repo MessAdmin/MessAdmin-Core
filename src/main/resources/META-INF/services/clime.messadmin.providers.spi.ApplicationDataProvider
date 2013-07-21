@@ -4,3 +4,4 @@ clime.messadmin.providers.userdata.ServletContextInitParametersProvider
 clime.messadmin.providers.userdata.ClassLoaderDisplayer
 clime.messadmin.providers.userdata.resourcebrowser.ResourceBrowser
 clime.messadmin.providers.userdata.resourcebrowser.JNDIBrowser
+clime.messadmin.providers.userdata.CurrentRequestsProvider

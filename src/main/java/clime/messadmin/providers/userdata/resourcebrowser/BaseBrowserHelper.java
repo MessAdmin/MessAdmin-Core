@@ -775,10 +775,10 @@ public abstract class BaseBrowserHelper {
 	 * Checks if request contains the header value.
 	 */
 	private boolean headerContains(final HttpServletRequest request, final String header, final String value) {
-		final Enumeration accepted = request.getHeaders(header);
+		final Enumeration<String> accepted = request.getHeaders(header);
 		if (accepted != null) {
 			while (accepted.hasMoreElements()) {
-				final String headerValue = (String) accepted.nextElement();
+				final String headerValue = accepted.nextElement();
 				if (headerValue.indexOf(value) != -1) {
 					return true;
 				}

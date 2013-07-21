@@ -23,6 +23,7 @@ import java.io.OutputStreamWriter;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.util.Enumeration;
+import java.util.Locale;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -232,13 +233,13 @@ public class Util {
      * locale has been specified. This way, the logic for the fallback
      * locale will be able to kick in.
      */
-    public static Enumeration getRequestLocales(HttpServletRequest request) {
-        Enumeration values = request.getHeaders("accept-language");//$NON-NLS-1$
+    public static Enumeration<Locale> getRequestLocales(HttpServletRequest request) {
+        Enumeration<String> values = request.getHeaders("accept-language");//$NON-NLS-1$
         if (values == null) {
             // No header for "accept-language". Simply return
             // a new empty enumeration.
             // System.out.println("Null accept-language");
-            return new Vector().elements();
+            return new Vector<Locale>().elements();
         } else if (values.hasMoreElements()) {
             // At least one "accept-language". Simply return
             // the enumeration returned by request.getLocales().
@@ -248,7 +249,7 @@ public class Util {
             // No header for "accept-language". Simply return
             // the empty enumeration.
             // System.out.println("No accept-language");
-            return values;
+            return new Vector<Locale>().elements();
         }
     }
 }

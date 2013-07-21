@@ -280,9 +280,9 @@ public class BundleTag extends BodyTagSupport {
 
         // Determine locale from client's browser settings.
 
-        for (Enumeration enum_ = Util.getRequestLocales(request);
+        for (Enumeration<Locale> enum_ = Util.getRequestLocales(request);
              enum_.hasMoreElements();) {
-            Locale pref = (Locale) enum_.nextElement();
+            Locale pref = enum_.nextElement();
             ResourceBundle match = findMatch(basename, pref);
             if (match != null) {
                 locCtxt = new LocalizationContext(match, pref);

@@ -40,7 +40,7 @@ public class InjectSessions extends BaseAdminActionWithContext implements AdminA
 		int i = MessAdmin.injectSessions(context, sessionIds, message);
 		final ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		request.setAttribute(Constants.APPLICATION_MESSAGE,
-				I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "injectSessions.ok", new Integer[] {Integer.valueOf(i)}));//$NON-NLS-1$
+				I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "injectSessions.ok", new Object[] {Integer.valueOf(i)}));//$NON-NLS-1$
 		((BaseAdminActionProvider)AdminActionProvider.Util.getInstance(request, SessionsList.ID)).sendRedirect(request, response);
 	}
 }

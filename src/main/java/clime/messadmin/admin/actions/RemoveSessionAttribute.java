@@ -73,10 +73,10 @@ public class RemoveSessionAttribute extends BaseAdminActionWithContextAndSession
 		final ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		if (removed) {
 			request.setAttribute(Constants.APPLICATION_MESSAGE,
-					I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "removeSessionAttribute.ok", new String[] {name}));//$NON-NLS-1$
+					I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "removeSessionAttribute.ok", new Object[] {name}));//$NON-NLS-1$
 		} else {
 			request.setAttribute(Constants.APPLICATION_ERROR,
-					I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "removeSessionAttribute.ko", new String[] {name}));//$NON-NLS-1$
+					I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "removeSessionAttribute.ko", new Object[] {name}));//$NON-NLS-1$
 		}
 		ReloadDataProviderHelper.sendRedirect(request, response, ReloadSessionDataProvider.ID, DisplayProvider.Util.getId(this), ReloadDataProviderHelper.SCOPE_CONTENT);
 	}
@@ -137,7 +137,7 @@ public class RemoveSessionAttribute extends BaseAdminActionWithContextAndSession
 			private final ClassLoader cl;
 			private final HttpSession session;
 			private final String sessionId;
-			private final Enumeration/*<String>*/ attributeNames;
+			private final Enumeration<String> attributeNames;
 			private String currentKey = null;
 			private Object currentValue = null;
 			private final BytesFormat bytesFormat = BytesFormat.getBytesInstance(I18NSupport.getAdminLocale(), true);
@@ -153,7 +153,7 @@ public class RemoveSessionAttribute extends BaseAdminActionWithContextAndSession
 			/** {@inheritDoc} */
 			@Override
 			public int getNRows() {
-				List<?> list = Collections.list(session.getAttributeNames());
+				List<String> list = Collections.list(session.getAttributeNames());
 				return list.size();
 			}
 
@@ -184,8 +184,8 @@ public class RemoveSessionAttribute extends BaseAdminActionWithContextAndSession
 			}
 
 			/** {@inheritDoc} */
-			public Object next() {
-				currentKey = (String)attributeNames.nextElement();
+			public Object[] next() {
+				currentKey = attributeNames.nextElement();
 				currentValue = session.getAttribute(currentKey);
 				Object[] result = new Object[4];
 				{

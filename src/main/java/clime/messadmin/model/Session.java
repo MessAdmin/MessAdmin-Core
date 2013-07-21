@@ -3,7 +3,6 @@
  */
 package clime.messadmin.model;
 
-import java.util.Enumeration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,14 +14,13 @@ import javax.servlet.http.HttpSessionActivationListener;
 import javax.servlet.http.HttpSessionEvent;
 
 import clime.messadmin.core.Constants;
-import clime.messadmin.utils.SessionUtils;
+import clime.messadmin.filter.MessAdminThreadLocal;
 import clime.messadmin.utils.StringUtils;
 
 /**
  * @author C&eacute;drik LIME
  */
 public class Session implements HttpSessionActivationListener, IRequestListener {
-	private static final String X_FORWARDED_FOR = "X-Forwarded-For";//$NON-NLS-1$
 
 	protected final SessionInfo sessionInfo;
 	protected final Request cumulativeRequests = new Request(null);
@@ -103,31 +101,6 @@ public class Session implements HttpSessionActivationListener, IRequestListener 
 	/**	Request/Response Listener methods	**/
 	/*****************************************/
 
-	private String getXForwardedFor(final HttpServletRequest request, final String remoteHostToAdd) {
-		String remoteHost;
-		String xForwardedFor = null;
-		Enumeration xffEnum = request.getHeaders(X_FORWARDED_FOR);
-		// Concatenate all X-Forwarded-For HTTP headers
-		if (xffEnum != null && xffEnum.hasMoreElements()) {
-			while (xffEnum.hasMoreElements()) {
-				String xForwardedForHeader = (String) xffEnum.nextElement();
-				if (StringUtils.isNotBlank(xForwardedForHeader)) {
-					if (xForwardedFor == null) {// 1rst time in loop
-						xForwardedFor = xForwardedForHeader;
-					} else {
-						xForwardedFor = xForwardedFor + ", " + xForwardedForHeader;//$NON-NLS-1$
-					}
-				}
-			}
-		}
-		if (StringUtils.isNotBlank(xForwardedFor)) {
-			remoteHost = X_FORWARDED_FOR + ": " + xForwardedFor + ", " + remoteHostToAdd;//$NON-NLS-1$//$NON-NLS-2$
-		} else {
-			remoteHost = remoteHostToAdd;
-		}
-		return remoteHost;
-	}
-
 	/** {@inheritDoc} */
 	public void requestInitialized(final HttpServletRequest request, final ServletContext servletContext) {
 		if (request == null || servletContext == null) {
@@ -139,19 +112,8 @@ public class Session implements HttpSessionActivationListener, IRequestListener 
 			return;
 		} // else
 		try {
-			sessionInfo.id          = httpSession.getId(); // Correctly track changing Session ID
-			sessionInfo.authType    = request.getAuthType();
-			sessionInfo.remoteAddr  = getXForwardedFor(request, request.getRemoteAddr());
-			sessionInfo.remoteHost  = getXForwardedFor(request, request.getRemoteHost());
-			sessionInfo.lastRequestURL = SessionUtils.getRequestURLWithMethodAndQueryString(request);
-			sessionInfo.userPrincipal = request.getUserPrincipal();
-			sessionInfo.remoteUser  = request.getRemoteUser();
-			sessionInfo.isSecure    = request.isSecure();
-			sessionInfo.userAgent   = request.getHeader("user-agent");//$NON-NLS-1$
-			sessionInfo.referer     = request.getHeader("referer");//$NON-NLS-1$
-			sessionInfo.sslCipherSuite   = (String)request.getAttribute(Constants.SSL_CIPHER_SUITE);//$NON-NLS-1$
-			sessionInfo.sslAlgorithmSize = (Integer)request.getAttribute(Constants.SSL_KEY_SIZE);//$NON-NLS-1$
-//			sessionInfo.sslCertificates = (X509Certificate[])request.getAttribute(Constants.SSL_CERTIFICATE);//$NON-NLS-1$
+			sessionInfo.id = httpSession.getId(); // Correctly track changing Session ID
+			sessionInfo.lastRequestInfo = MessAdminThreadLocal.getCurrentRequestInfo();
 			cumulativeRequests.requestInitialized(sessionInfo.cumulativeRequestStats, request, servletContext);
 		} catch (IllegalStateException ise) {
 			// session is invalidated

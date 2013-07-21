@@ -183,7 +183,7 @@ public class MessAdminFilter implements Filter {
 	 * @param httpResponse  WARNING: can be {@code null}!
 	 */
 	public static void requestInitialized(HttpServletRequest httpRequest, HttpServletResponse httpResponse, ServletContext servletContext) {
-		MessAdminThreadLocal.start();
+		MessAdminThreadLocal.start(httpRequest);
 		// Sniff request infos for future usage
 		Server.getInstance().requestInitialized(httpRequest, servletContext);
 		final HttpSession session = httpRequest.getSession(false);

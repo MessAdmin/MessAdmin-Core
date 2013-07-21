@@ -222,7 +222,7 @@ public interface IApplicationInfo {
 	 * @see javax.servlet.ServletContext#getInitParameterNames()
 	 * @see javax.servlet.ServletContext#getInitParameter(java.lang.String)
 	 */
-	Map/*<String,String>*/ getInitParameters();
+	Map<String, String> getInitParameters();
 
 	/**
 	 * Returns a <code>String</code> containing the value of the named
@@ -264,7 +264,7 @@ public interface IApplicationInfo {
 	 * @see javax.servlet.ServletContext#getAttributeNames()
 	 * @see javax.servlet.ServletContext#getAttribute(java.lang.String)
 	 */
-	Map/*<String,Object>*/ getAttributes();
+	Map<String, Object> getAttributes();
 
 	/**
 	 * Returns the servlet container attribute with the given name, 

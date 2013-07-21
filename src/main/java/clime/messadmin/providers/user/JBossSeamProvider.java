@@ -7,7 +7,7 @@ import javax.servlet.http.HttpSession;
 import clime.messadmin.providers.spi.UserNameProvider;
 
 /**
- * Note: this provider implementation uses reflexion, to avoid linking against Seam libs.
+ * Note: this provider implementation uses reflection, to avoid linking against Seam libs.
  * 
  * @author @author C&eacute;drik LIME
  * @since 4.1

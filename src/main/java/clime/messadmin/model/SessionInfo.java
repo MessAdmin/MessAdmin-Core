@@ -34,25 +34,7 @@ public class SessionInfo implements ISessionInfo {
 	protected final RequestInfo cumulativeRequestStats = new RequestInfo(null);
 
 	// cache from ServletRequest and HttpServletRequest
-	protected Principal userPrincipal;
-	protected String remoteUser;
-	protected String remoteAddr;
-	protected String remoteHost;
-	protected String lastRequestURL;
-	protected boolean isSecure = false;
-	protected String userAgent;
-	protected String authType;
-	protected String referer;
-	// If a request has been transmitted over a secure protocol, such as HTTPS, this
-	// information must be exposed via the isSecure method of the ServletRequest
-	// interface. The web container must expose the following attributes to the servlet
-	// programmer:
-	protected String sslCipherSuite;
-	protected Integer sslAlgorithmSize;
-	// The order of this array is defined as being in ascending order of trust. The first
-	// certificate in the chain is the one set by the client, the next is the one used to
-	// authenticate the first, and so on.
-	//protected X509Certificate[] sslCertificates;
+	protected HttpServletRequestInfo lastRequestInfo;
 
 
 	/**
@@ -97,11 +79,11 @@ public class SessionInfo implements ISessionInfo {
 	}
 
 	/** {@inheritDoc} */
-	public Map getAttributes() {
-		Map result = new HashMap();
-		Enumeration enumeration = getAttributeNames();
+	public Map<String, Object> getAttributes() {
+		Map<String, Object> result = new HashMap<String, Object>();
+		Enumeration<String> enumeration = getAttributeNames();
 		while (enumeration.hasMoreElements()) {
-			String name = (String) enumeration.nextElement();
+			String name = enumeration.nextElement();
 			Object value = getAttribute(name);
 			result.put(name, value);
 		}
@@ -112,19 +94,19 @@ public class SessionInfo implements ISessionInfo {
 	public boolean isSerializable() {
 		try {
 			/*
-			Enumeration enumeration = getAttributeNames();
+			Enumeration<String> enumeration = getAttributeNames();
 			IdentityHashMap visitedObjects = new IdentityHashMap();
 			while (enumeration.hasMoreElements()) {
-				String attributeName = (String) enumeration.nextElement();
+				String attributeName = enumeration.nextElement();
 				Object attributeValue = getAttribute(attributeName);
 				if (! SerializableUtils.isMaybeSerializable(attributeValue, visitedObjects)) {
 					return false;
 				}
 			}
 			*/
-			Enumeration enumeration = getAttributeNames();
+			Enumeration<String> enumeration = getAttributeNames();
 			while (enumeration.hasMoreElements()) {
-				String attributeName = (String) enumeration.nextElement();
+				String attributeName = enumeration.nextElement();
 				Object attributeValue = getAttribute(attributeName);
 				if (! SerializableProvider.Util.isSerializable(attributeValue, classLoader)) {
 					return false;
@@ -142,10 +124,10 @@ public class SessionInfo implements ISessionInfo {
 		try {
 			// when sizing an HttpSession, we are really only interested in its attributes!
 			if (httpSession != null) {
-				Map attributes = new HashMap();
-				Enumeration enumeration = httpSession.getAttributeNames();
+				Map<String, Object> attributes = new HashMap<String, Object>();
+				Enumeration<String> enumeration = httpSession.getAttributeNames();
 				while (enumeration.hasMoreElements()) {
-					String name = (String) enumeration.nextElement();
+					String name = enumeration.nextElement();
 					Object attribute = httpSession.getAttribute(name);
 					attributes.put(name, attribute);
 				}
@@ -167,34 +149,32 @@ public class SessionInfo implements ISessionInfo {
 		return cumulativeRequestStats.getLastError();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
+	/**{@inheritDoc} */
 	public String getLastRequestURL() {
-		return lastRequestURL;
+		return lastRequestInfo.getURL();
 	}
 
 	/**{@inheritDoc} */
 	public String getRemoteAddr() {
-		return remoteAddr;
+		return lastRequestInfo.getRemoteAddr();
 	}
 
 	/**{@inheritDoc} */
 	public String getRemoteHost() {
-		return remoteHost;
+		return lastRequestInfo.getRemoteHost();
 	}
 
 	/**{@inheritDoc} */
 	public Principal getUserPrincipal() {
-		return userPrincipal;
+		return lastRequestInfo.getUserPrincipal();
 	}
 
 	/**{@inheritDoc} */
 	public String getRemoteUser() {
-		return remoteUser;
+		return lastRequestInfo.getRemoteUser();
 	}
 	public void setRemoteUser(String remoteUser) {
-		this.remoteUser = remoteUser;
+		lastRequestInfo.setRemoteUser(remoteUser);
 	}
 
 	/**{@inheritDoc} */
@@ -294,22 +274,22 @@ public class SessionInfo implements ISessionInfo {
 
 	/**{@inheritDoc} */
 	public boolean isSecure() {
-		return isSecure;
+		return lastRequestInfo.isSecure();
 	}
 
 	/**{@inheritDoc} */
 	public String getUserAgent() {
-		return userAgent;
+		return lastRequestInfo.getUserAgent();
 	}
 
 	/**{@inheritDoc} */
 	public String getAuthType() {
-		return authType;
+		return lastRequestInfo.getAuthType();
 	}
 
 	/**{@inheritDoc} */
 	public String getReferer() {
-		return referer;
+		return lastRequestInfo.getReferer();
 	}
 
 	/**{@inheritDoc} */
@@ -411,17 +391,17 @@ public class SessionInfo implements ISessionInfo {
 
 	/**{@inheritDoc} */
 	public String getSslCipherSuite() {
-		return sslCipherSuite;
+		return lastRequestInfo.getSslCipherSuite();
 	}
 
 	/**{@inheritDoc} */
 	public Integer getSslAlgorithmSize() {
-		return sslAlgorithmSize;
+		return lastRequestInfo.getSslAlgorithmSize();
 	}
 
 //	/**{@inheritDoc} */
 //	public X509Certificate[] getSslCertificates() {
-//		return sslCertificates;
+//		return lastRequestInfo.getSslCertificates();
 //	}
 
 	/*********************************************************************/
@@ -432,8 +412,8 @@ public class SessionInfo implements ISessionInfo {
 	 * A enumerator class for empty session attributes, specializes
 	 * the general Enumerator
 	 */
-	private static class EmptyEnumerator implements Enumeration {
-		static final Enumeration INSTANCE = new EmptyEnumerator();
+	private static class EmptyEnumerator<E> implements Enumeration<E> {
+		static final Enumeration<String> INSTANCE = new EmptyEnumerator<String>();
 		private EmptyEnumerator() {
 		}
 		/** {@inheritDoc} */
@@ -441,7 +421,7 @@ public class SessionInfo implements ISessionInfo {
 			return false;
 		}
 		/** {@inheritDoc} */
-		public Object nextElement() {
+		public E nextElement() {
 			throw new NoSuchElementException("SessionAttribute Enumerator");//$NON-NLS-1$
 		}
 	}
@@ -457,7 +437,7 @@ public class SessionInfo implements ISessionInfo {
 	}
 
 	/**{@inheritDoc} */
-	public Enumeration getAttributeNames() {
+	public Enumeration<String> getAttributeNames() {
 		try {
 			return (httpSession==null) ? EmptyEnumerator.INSTANCE : httpSession.getAttributeNames();
 		} catch (IllegalStateException ise) {

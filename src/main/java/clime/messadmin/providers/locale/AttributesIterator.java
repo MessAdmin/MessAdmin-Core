@@ -38,17 +38,17 @@ public class AttributesIterator implements LocaleProvider {
 	public Locale guessLocaleFromSession(HttpSession httpSession) {
 		Locale locale = null;
 		
-		final List localeArray = new ArrayList();
-		Enumeration attrEnum = httpSession.getAttributeNames();
+		final List<Locale> localeArray = new ArrayList<Locale>();
+		Enumeration<String> attrEnum = httpSession.getAttributeNames();
 		while (attrEnum.hasMoreElements()) {
-			String name = (String) attrEnum.nextElement();
+			String name = attrEnum.nextElement();
 			Object obj = httpSession.getAttribute(name);
 			if (null != obj && obj instanceof Locale) {
-				localeArray.add(obj);
+				localeArray.add((Locale) obj);
 			}
 		}
 		if (localeArray.size() == 1) {
-			locale = (Locale) localeArray.get(0);
+			locale = localeArray.get(0);
 		}
 
 		return locale;

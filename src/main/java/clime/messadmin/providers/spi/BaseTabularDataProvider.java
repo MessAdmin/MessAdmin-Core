@@ -203,7 +203,7 @@ public abstract class BaseTabularDataProvider {
 	}
 
 	protected void appendRow(StringBuffer buffer, RowIterator rows) {
-		Object[] row = (Object[]) rows.next();
+		Object[] row = rows.next();
 		String rowClass = rows.getRowClass();
 		String rowStyle = rows.getRowStyle();
 		buffer.append("<tr");
@@ -218,12 +218,16 @@ public abstract class BaseTabularDataProvider {
 			Object value = row[j];
 			String cellClass = rows.getCellClass(j, value);
 			String cellStyle = rows.getCellStyle(j, value);
+			String cellTitle = rows.getCellTitle(j, value);
 			buffer.append("\t<td");
 			if (StringUtils.isNotBlank(cellClass)) {
 				buffer.append(" class=\"").append(cellClass).append('"');
 			}
 			if (StringUtils.isNotBlank(cellStyle)) {
 				buffer.append(" style=\"").append(cellStyle).append('"');
+			}
+			if (StringUtils.isNotBlank(cellTitle)) {
+				buffer.append(" title=\"").append(cellTitle).append('"');
 			}
 			buffer.append('>');
 			appendValue(buffer, j, value);
@@ -285,7 +289,7 @@ public abstract class BaseTabularDataProvider {
 	}
 
 
-	public static interface RowIterator extends Iterator/*Object[]*/ {
+	public static interface RowIterator extends Iterator<Object[]> {
 		/**
 		 * @return number of rows, or {@code -1} if not available
 		 */
@@ -306,6 +310,10 @@ public abstract class BaseTabularDataProvider {
 		 * @return CSS style for &lt;td&gt; HTML element
 		 */
 		String getCellStyle(int cellNumber, Object value);
+		/**
+		 * @return title attribute for &lt;td&gt; HTML element
+		 */
+		String getCellTitle(int cellNumber, Object value);
 	}
 
 	public static abstract class BaseRowIterator implements RowIterator {
@@ -331,6 +339,10 @@ public abstract class BaseTabularDataProvider {
 		}
 		/** {@inheritDoc} */
 		public String getCellStyle(int cellNumber, Object value) {
+			return null;
+		}
+		/** {@inheritDoc} */
+		public String getCellTitle(int cellNumber, Object value) {
 			return null;
 		}
 	}

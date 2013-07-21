@@ -3,10 +3,12 @@
  */
 package clime.messadmin.model;
 
+import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.ServletContext;
@@ -18,7 +20,9 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 import clime.messadmin.core.Constants;
+import clime.messadmin.filter.MessAdminThreadLocal;
 import clime.messadmin.utils.StringUtils;
+import clime.messadmin.utils.backport.java.util.Collections;
 
 /**
  * @author C&eacute;drik LIME
@@ -26,6 +30,8 @@ import clime.messadmin.utils.StringUtils;
 public class Application implements HttpSessionListener, HttpSessionActivationListener, IRequestListener {
 	protected final ApplicationInfo applicationInfo;
 	protected final Request cumulativeRequests = new Request(null);
+	// Implementation note: we need constant-time (O(1)) insertions and removals
+	protected final Set<HttpServletRequestInfo> currentRequests = Collections.newSetFromMap(new ConcurrentHashMap<HttpServletRequestInfo, Boolean>());// in theory: ConcurrentLinkedHashMap
 	protected final Map<String, Session> activeSessions = new ConcurrentHashMap<String, Session>(); // must be synchronized
 	protected final Map<String, Session> passiveSessions = new ConcurrentHashMap<String, Session>(); // must be synchronized
 	/**
@@ -149,6 +155,11 @@ public class Application implements HttpSessionListener, HttpSessionActivationLi
 		return new HashSet<String>(passiveSessions.keySet());
 	}
 
+	public SortedSet<HttpServletRequestInfo> getCurrentRequests() {
+		SortedSet<HttpServletRequestInfo> result = new TreeSet<HttpServletRequestInfo>(HttpServletRequestInfo.START_DATE_COMPARATOR);
+		result.addAll(currentRequests);
+		return result;
+	}
 
 	protected void hit() {
 		++applicationInfo.hits;
@@ -203,6 +214,7 @@ public class Application implements HttpSessionListener, HttpSessionActivationLi
 		if (applicationInfo.getClassLoader() == null) {
 			applicationInfo.setClassLoader(Thread.currentThread().getContextClassLoader());
 		}
+		currentRequests.add(MessAdminThreadLocal.getCurrentRequestInfo());
 		registerContextPath(request.getContextPath());
 		cumulativeRequests.requestInitialized(applicationInfo.cumulativeRequestStats, request, servletContext);
 		final HttpSession httpSession = request.getSession(false);
@@ -235,6 +247,7 @@ public class Application implements HttpSessionListener, HttpSessionActivationLi
 		if (request == null || servletContext == null) { // allow null response
 			return;
 		}
+		currentRequests.remove(MessAdminThreadLocal.getCurrentRequestInfo());
 		hit();
 		cumulativeRequests.requestDestroyed(applicationInfo.cumulativeRequestStats, request, response, servletContext);
 		final HttpSession httpSession = request.getSession(false);
@@ -255,6 +268,7 @@ public class Application implements HttpSessionListener, HttpSessionActivationLi
 		if (request == null || response == null || servletContext == null) {
 			return;
 		}
+		currentRequests.remove(MessAdminThreadLocal.getCurrentRequestInfo());
 		cumulativeRequests.requestException(applicationInfo.cumulativeRequestStats, e, request, response, servletContext);
 		final HttpSession httpSession = request.getSession(false);
 		if (httpSession != null) {
