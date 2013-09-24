@@ -11,8 +11,9 @@ import javax.servlet.ServletContext;
 
 import clime.messadmin.admin.AdminActionProvider;
 import clime.messadmin.providers.spi.DisplayProvider;
-import clime.messadmin.providers.userdata.resourcebrowser.ReflectionDataSourceFinder.DataSourceConfiguration;
+import clime.messadmin.utils.ReflectionDataSourceFinder;
 import clime.messadmin.utils.StringUtils;
+import clime.messadmin.utils.ReflectionDataSourceFinder.DataSourceConfiguration;
 
 /**
  * Browser for the JNDI directory
