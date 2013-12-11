@@ -800,7 +800,7 @@ public abstract class BaseBrowserHelper {
 		return false;
 	}
 
-	private static final Collection<String> compressableMimeType = Arrays.asList(new String[] {
+	private static final Collection<String> compressableMimeType = Arrays.asList(
 			//"text/*",
 			"application/xhtml+xml",
 			"application/xml",
@@ -814,7 +814,7 @@ public abstract class BaseBrowserHelper {
 			"image/bmp",
 			"image/svg+xml"
 			// + all fonts except in WOFF format
-	});
+	);
 	protected boolean isCompressableMimeType(String mimeType) {
 		mimeType = mimeType.toLowerCase();
 		return

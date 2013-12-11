@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 
@@ -256,6 +255,9 @@ public abstract class BaseResource {
 		URLConnection connection = getURLConnection(context);
 		if (connection != null) {
 			return connection.getContentEncoding();
+//			if (connection instanceof HttpURLConnection) {
+//				((HttpURLConnection)connection).disconnect();
+//			}
 		}
 		return null;
 	}
@@ -267,9 +269,9 @@ public abstract class BaseResource {
 	 * <ul>
 	 * <li>{@link ServletContext#getMimeType(String)} -- based on web.xml &lt;mime-mapping&gt; section</li>
 	 * <li>{@link URLConnection#guessContentTypeFromName(String)} -- uses ${java.home}/lib/content-types.properties</li>
+	 * <li>{@link javax.activation.FileTypeMap#getContentType(String)} -- uses "mime.types" (needs javax.activation or Java >= 6), see {@link javax.activation.MimetypesFileTypeMap}</li>
 	 * <li>{@link URLConnection#guessContentTypeFromStream(InputStream)} -- hard-coded in the JDK</li>
 	 * <li>{@link URLConnection#getContentType()}</li>
-	 * <li>{@link javax.activation.FileTypeMap#getContentType(String)} -- uses "mime.types" (needs javax.activation or Java >= 6), see {@link javax.activation.MimetypesFileTypeMap}</li>
 	 * </ul>
 	 * See also http://sourceforge.net/projects/mime-util/ for reading UNIX "magic.mime"
 	 *
@@ -294,7 +296,7 @@ public abstract class BaseResource {
 			}
 		}
 		if (checkContent) {
-			if (DEFAULT_MIME_TYPE.equals(contentType)) {
+			if (contentType == null || DEFAULT_MIME_TYPE.equals(contentType)) {
 				InputStream is = getResourceAsStream(context);
 				if (is != null) {
 					try {
@@ -312,6 +314,9 @@ public abstract class BaseResource {
 				URLConnection connection = getURLConnection(context);
 				if (connection != null) {
 					contentType = connection.getContentType();
+//					if (connection instanceof HttpURLConnection) {
+//						((HttpURLConnection)connection).disconnect();
+//					}
 				}
 			}
 		}
