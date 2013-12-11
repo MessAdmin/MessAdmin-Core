@@ -13,6 +13,8 @@ import clime.messadmin.admin.MessAdminServlet;
 import clime.messadmin.core.Constants;
 import clime.messadmin.core.MessAdmin;
 import clime.messadmin.i18n.I18NSupport;
+import clime.messadmin.model.Application;
+import clime.messadmin.model.Server;
 
 /**
  * Set Session Max Inactive Interval.
@@ -36,16 +38,16 @@ public class SetSessionMaxInactiveInterval extends BaseAdminActionWithContextAnd
 	@Override
 	public void serviceWithContextAndSession(HttpServletRequest request, HttpServletResponse response, String context, String sessionId) throws ServletException, IOException {
 		String timeoutStr = request.getParameter("timeout");//$NON-NLS-1$
-		final ClassLoader cl = Thread.currentThread().getContextClassLoader();
+		final ClassLoader cl = Server.getInstance().getApplication(context).getApplicationInfo().getClassLoader();
 		try {
 			int timeout = Integer.parseInt(timeoutStr.trim()) * 60;
 			int oldTimeout = MessAdmin.setSessionMaxInactiveInterval(context, sessionId, timeout);
 			if (oldTimeout != 0) {
 				request.setAttribute(Constants.APPLICATION_MESSAGE,
-						I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "setSessionMaxInactiveInterval.ok", new Object[] {Integer.valueOf(oldTimeout/60), timeoutStr}));//$NON-NLS-1$
+						I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "setSessionMaxInactiveInterval.ok", Integer.valueOf(oldTimeout/60), timeoutStr));//$NON-NLS-1$
 			} else {
 				request.setAttribute(Constants.APPLICATION_ERROR,
-						I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "setSessionMaxInactiveInterval.ko", new Object[] {sessionId}));//$NON-NLS-1$
+						I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "setSessionMaxInactiveInterval.ko", sessionId));//$NON-NLS-1$
 			}
 		} catch (NumberFormatException nfe) {
 			request.setAttribute(Constants.APPLICATION_ERROR,

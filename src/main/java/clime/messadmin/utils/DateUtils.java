@@ -116,7 +116,7 @@ public abstract class DateUtils {
 		rest = rest % 60;
 		long second = rest;
 		if (hour >= 24) {
-			buff.append(I18NSupport.getLocalizedMessage(BUNDLE_NAME, "days", new Object[] {Long.valueOf(hour/24)}));//$NON-NLS-1$
+			buff.append(I18NSupport.getLocalizedMessage(BUNDLE_NAME, "days", Long.valueOf(hour/24)));//$NON-NLS-1$
 			hour = hour % 24;
 		}
 		if (hour < 10) {

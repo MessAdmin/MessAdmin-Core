@@ -175,16 +175,13 @@ public abstract class BaseBrowserHelper {
 			resource = getDefaultUserResource();
 		}
 		Collection/*<BaseResource>*/ resources = sortResourcePaths(resource.getChildResources(context), BaseResource.CASE_INSENSITIVE_ORDER, false);
+		ClassLoader cl = I18NSupport.getClassLoader(context);
 		if (resources == null) {
-			ClassLoader cl = null;
-			if (context != null) {
-				cl = Server.getInstance().getApplication(context).getApplicationInfo().getClassLoader();
-			}
-			String msg = I18NSupport.getLocalizedMessage(getI18nBundleName(), cl, "error.404", new Object[] {StringUtils.escapeXml(resource.getPath())});//$NON-NLS-1$
+			String msg = I18NSupport.getLocalizedMessage(getI18nBundleName(), cl, "error.404", StringUtils.escapeXml(resource.getPath()));//$NON-NLS-1$
 			return msg;
 		}
 		StringBuffer xhtml = new StringBuffer(16384);
-		xhtml.append(getXHTMLPreResourceListing(resource));
+		xhtml.append(getXHTMLPreResourceListing(resource, cl));
 		xhtml.append("<ul>\n");
 		Iterator/*<BaseResource>*/ iter = resources.iterator();
 		String urlPrefix;
@@ -209,11 +206,11 @@ public abstract class BaseBrowserHelper {
 			appendEntry(xhtml, context, child, null, urlPrefix);
 		}
 		xhtml.append("</ul>\n");
-		xhtml.append(getXHTMLPostResourceListing(resource));
+		xhtml.append(getXHTMLPostResourceListing(resource, cl));
 		return xhtml.toString();
 	}
 
-	protected String getXHTMLPreResourceListing(BaseResource resource) {
+	protected String getXHTMLPreResourceListing(BaseResource resource, ClassLoader cl) {
 		StringBuilder out = new StringBuilder(256);
 		// Text field for direct CD command
 		{
@@ -222,7 +219,7 @@ public abstract class BaseBrowserHelper {
 			out.append("<form action=\"\" method=\"get\">\n");
 			out.append("<input type=\"hidden\" name=\""+AdminActionProvider.ACTION_PARAMETER_NAME+"\" value=\""+adminActionProviderCallback.getActionID()+"\"/>\n");
 			out.append("<label>");
-			out.append(I18NSupport.getLocalizedMessage(getI18nInternalBundleName(), "action.cd"));//$NON-NLS-1$
+			out.append(I18NSupport.getLocalizedMessage(getI18nInternalBundleName(), cl, "action.cd"));//$NON-NLS-1$
 			out.append("<input type=\"text\" name=\""+getResourceID()+"\" size=\"80\" value=\""+(getDefaultRootResource().equals(resource)?"":StringUtils.escapeXml(resource.getPath()))+"\"/>");
 			out.append("</label>&nbsp;");
 			out.append("<button name=\"submit\" onclick=\"javascript:jah('"+urlPrefix+"'+"+getResourceID()+".value,'"+DisplayProvider.Util.getId(displayProviderCallback)+"');return false;\">cd</button>\n");
@@ -231,7 +228,7 @@ public abstract class BaseBrowserHelper {
 		return out.toString();
 	}
 
-	protected String getXHTMLPostResourceListing(BaseResource resource) {
+	protected String getXHTMLPostResourceListing(BaseResource resource, ClassLoader cl) {
 		return "";//$NON-NLS-1$
 	}
 
@@ -302,6 +299,7 @@ public abstract class BaseBrowserHelper {
 		if ( ! "..".equals(displayName)) {
 			// link to rename
 			if (resource.canRename()) {
+				ClassLoader cl = I18NSupport.getClassLoader(context);
 				String pathEncoded;
 				try {
 					pathEncoded = URLEncoder.encode(resource.getPath(), "UTF-8");
@@ -309,8 +307,8 @@ public abstract class BaseBrowserHelper {
 					throw new RuntimeException(uue);
 				}
 				String urlRename = urlPrefix + pathEncoded + '&' + FILE_ACTION_PARAMETER_NAME + '=' + FILE_RENAME_ACTION + '&' + FILE_RENAME_ACTION_PARAMETER_NAME + '=';
-				xhtml.append("<a href=\"").append(urlRename).append("\" onclick=\"var newName=window.prompt('").append(I18NSupport.getLocalizedMessage(getI18nInternalBundleName(), "action.rename.prompt")).append("','").append(StringUtils.escapeJavaScript(resource.getPath())).append("'); if(newName) {jah('").append(urlRename).append("'+newName,'").append(DisplayProvider.Util.getId(displayProviderCallback)).append("','POST');} return false;\">");
-				xhtml.append(I18NSupport.getLocalizedMessage(getI18nInternalBundleName(), "action.rename"));//$NON-NLS-1$
+				xhtml.append("<a href=\"").append(urlRename).append("\" onclick=\"var newName=window.prompt('").append(I18NSupport.getLocalizedMessage(getI18nInternalBundleName(), cl, "action.rename.prompt")).append("','").append(StringUtils.escapeJavaScript(resource.getPath())).append("'); if(newName) {jah('").append(urlRename).append("'+newName,'").append(DisplayProvider.Util.getId(displayProviderCallback)).append("','POST');} return false;\">");
+				xhtml.append(I18NSupport.getLocalizedMessage(getI18nInternalBundleName(), cl, "action.rename"));//$NON-NLS-1$
 				xhtml.append("</a>");
 				xhtml.append(' ');
 			}
@@ -319,6 +317,7 @@ public abstract class BaseBrowserHelper {
 
 	protected void appendEntryPost(StringBuffer xhtml, ServletContext context, BaseResource resource, String displayName, String urlPrefix) {
 		if (! "..".equals(displayName)) {
+			ClassLoader cl = I18NSupport.getClassLoader(context);
 			if (resource.isFile()) {
 				long contentLength = resource.getContentLength(context);
 				if (contentLength >= 0) {
@@ -342,9 +341,9 @@ public abstract class BaseBrowserHelper {
 					jsI18nKey += ".directory";//$NON-NLS-1$
 				}
 				String urlDelete = urlPrefix + pathEncoded + '&' + FILE_ACTION_PARAMETER_NAME + '=' + FILE_DELETE_ACTION;
-				String jsConfirmationMessage = I18NSupport.getLocalizedMessage(getI18nInternalBundleName(), jsI18nKey, new Object[] {StringUtils.escapeJavaScript(resource.getPath())});
+				String jsConfirmationMessage = I18NSupport.getLocalizedMessage(getI18nInternalBundleName(), cl, jsI18nKey, StringUtils.escapeJavaScript(resource.getPath()));
 				xhtml.append(BaseAdminActionProvider.buildActionLink(urlDelete,
-						I18NSupport.getLocalizedMessage(getI18nInternalBundleName(), "action.delete"),//$NON-NLS-1$
+						I18NSupport.getLocalizedMessage(getI18nInternalBundleName(), cl, "action.delete"),//$NON-NLS-1$
 						jsConfirmationMessage,
 						displayProviderCallback)
 				);
@@ -353,9 +352,9 @@ public abstract class BaseBrowserHelper {
 				xhtml.append(' ');
 				// link to compress
 				String urlCompress = urlPrefix + pathEncoded + '&' + FILE_ACTION_PARAMETER_NAME + '=' + FILE_COMPRESS_ACTION;
-				String jsConfirmationMessage = I18NSupport.getLocalizedMessage(getI18nInternalBundleName(), "action.compress.confirm", new Object[] {StringUtils.escapeJavaScript(resource.getPath())});//$NON-NLS-1$
+				String jsConfirmationMessage = I18NSupport.getLocalizedMessage(getI18nInternalBundleName(), cl, "action.compress.confirm", StringUtils.escapeJavaScript(resource.getPath()));//$NON-NLS-1$
 				xhtml.append(BaseAdminActionProvider.buildActionLink(urlCompress,
-						I18NSupport.getLocalizedMessage(getI18nInternalBundleName(), "action.compress"),//$NON-NLS-1$
+						I18NSupport.getLocalizedMessage(getI18nInternalBundleName(), cl, "action.compress"),//$NON-NLS-1$
 						jsConfirmationMessage,
 						displayProviderCallback)
 				);

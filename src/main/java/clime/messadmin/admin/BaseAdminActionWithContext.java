@@ -57,7 +57,7 @@ public abstract class BaseAdminActionWithContext extends BaseAdminActionProvider
 		// Get the WebApp context we want to work with
 		String context = getContext(request);
 		if (context == null) {
-			String error = I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, "webAppDetail.null.error", new Object[] {request.getParameter(CONTEXT_KEY)});//$NON-NLS-1$
+			String error = I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, "webAppDetail.null.error", request.getParameter(CONTEXT_KEY));//$NON-NLS-1$
 			log(error);
 			request.setAttribute(Constants.APPLICATION_ERROR, error);
 			((BaseAdminActionProvider)AdminActionProvider.Util.getInstance(request, WebAppsList.ID)).sendRedirect(request, response);

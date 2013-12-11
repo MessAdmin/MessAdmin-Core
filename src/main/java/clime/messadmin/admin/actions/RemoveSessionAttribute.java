@@ -2,7 +2,6 @@ package clime.messadmin.admin.actions;
 
 import java.io.IOException;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -18,6 +17,7 @@ import clime.messadmin.admin.MessAdminServlet;
 import clime.messadmin.core.Constants;
 import clime.messadmin.core.MessAdmin;
 import clime.messadmin.i18n.I18NSupport;
+import clime.messadmin.model.Server;
 import clime.messadmin.providers.spi.BaseTabularSessionDataProvider;
 import clime.messadmin.providers.spi.DisplayProvider;
 import clime.messadmin.providers.spi.SerializableProvider;
@@ -70,13 +70,13 @@ public class RemoveSessionAttribute extends BaseAdminActionWithContextAndSession
 	public void serviceWithContextAndSession(HttpServletRequest request, HttpServletResponse response, String context, String sessionId) throws ServletException, IOException {
 		String name = request.getParameter(PARAM_ATTRIBUTE_NAME);
 		boolean removed = MessAdmin.removeSessionAttribute(context, sessionId, name);
-		final ClassLoader cl = Thread.currentThread().getContextClassLoader();
+		final ClassLoader cl = Server.getInstance().getApplication(context).getApplicationInfo().getClassLoader();
 		if (removed) {
 			request.setAttribute(Constants.APPLICATION_MESSAGE,
-					I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "removeSessionAttribute.ok", new Object[] {name}));//$NON-NLS-1$
+					I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "removeSessionAttribute.ok", name));//$NON-NLS-1$
 		} else {
 			request.setAttribute(Constants.APPLICATION_ERROR,
-					I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "removeSessionAttribute.ko", new Object[] {name}));//$NON-NLS-1$
+					I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "removeSessionAttribute.ko", name));//$NON-NLS-1$
 		}
 		ReloadDataProviderHelper.sendRedirect(request, response, ReloadSessionDataProvider.ID, DisplayProvider.Util.getId(this), ReloadDataProviderHelper.SCOPE_CONTENT);
 	}
@@ -94,7 +94,7 @@ public class RemoveSessionAttribute extends BaseAdminActionWithContextAndSession
 
 		/** {@inheritDoc} */
 		public String getSessionDataTitle(HttpSession session) {
-			return I18NSupport.getLocalizedMessage(BUNDLE_NAME, "title");//$NON-NLS-1$
+			return I18NSupport.getLocalizedMessage(BUNDLE_NAME, I18NSupport.getClassLoader(session), "title");//$NON-NLS-1$
 		}
 
 		/** {@inheritDoc} */
@@ -109,7 +109,7 @@ public class RemoveSessionAttribute extends BaseAdminActionWithContextAndSession
 				return "";//$NON-NLS-1$
 			} else {
 				NumberFormat numberFormatter = NumberFormat.getNumberInstance(I18NSupport.getAdminLocale());
-				String caption = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "caption", new Object[] {numberFormatter.format(values.getNRows())});//$NON-NLS-1$
+				String caption = I18NSupport.getLocalizedMessage(BUNDLE_NAME, I18NSupport.getClassLoader(session), "caption", numberFormatter.format(values.getNRows()));//$NON-NLS-1$
 				return caption;
 			}
 		}
@@ -117,11 +117,12 @@ public class RemoveSessionAttribute extends BaseAdminActionWithContextAndSession
 		/** {@inheritDoc} */
 		@Override
 		public String[] getSessionTabularDataLabels(HttpSession session) {
+			final ClassLoader cl = I18NSupport.getClassLoader(session);
 			return new String[] {
-					I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.remove"),//$NON-NLS-1$
-					I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.size"),//$NON-NLS-1$
-					I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.name"),//$NON-NLS-1$
-					I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.value")//$NON-NLS-1$
+					I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.remove"),//$NON-NLS-1$
+					I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.size"),//$NON-NLS-1$
+					I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.name"),//$NON-NLS-1$
+					I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.value")//$NON-NLS-1$
 			};
 		}
 
@@ -199,7 +200,7 @@ public class RemoveSessionAttribute extends BaseAdminActionWithContextAndSession
 //					form.append("<input type=\"hidden\" name=\"").append(CONTEXT_KEY).append("\" value=\"").append(internalContext).append("\" />");
 //					form.append("<input type=\"hidden\" name=\"").append(SESSION_KEY).append("\" value=\"").append(StringUtils.escapeXml(sessionId)).append("\" />");
 //					form.append("<input type=\"hidden\" name=\"").append(PARAM_ATTRIBUTE_NAME).append("\" value=\"").append(StringUtils.escapeXml(currentKey)).append("\" />");
-					form.append(buildSubmitButton(submitUrl, I18NSupport.getLocalizedMessage(BUNDLE_NAME, "remove"), displayProviderCallback));
+					form.append(buildSubmitButton(submitUrl, I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "remove"), displayProviderCallback));
 					form.append("</div></form>");
 					result[0] = form.toString();
 				}

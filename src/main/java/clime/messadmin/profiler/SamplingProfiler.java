@@ -139,7 +139,7 @@ public class SamplingProfiler implements java.io.Closeable {
 			}
 			if (traces.size() > MAX_ELEMENTS) {
 				++minCount;
-				println(out, I18NSupport.getLocalizedMessage(BUNDLE_NAME, "stacktrace.increase", new Object[] {Integer.valueOf(minCount)}));//$NON-NLS-1$
+				println(out, I18NSupport.getLocalizedMessage(BUNDLE_NAME, "stacktrace.increase", Integer.valueOf(minCount)));//$NON-NLS-1$
 			}
 		}
 	}
@@ -151,7 +151,7 @@ public class SamplingProfiler implements java.io.Closeable {
 		String startDateStr = DateUtils.dateToFormattedDateTimeString(startDate, DateUtils.DEFAULT_DATE_TIME_FORMAT);
 		String endDateStr = DateUtils.dateToFormattedDateTimeString(endDate, DateUtils.DEFAULT_DATE_TIME_FORMAT);
 		String monitoringTime = DateUtils.timeIntervalToFormattedString(endDate - startDate);
-		println(out, I18NSupport.getLocalizedMessage(BUNDLE_NAME, "results", new Object[] {startDateStr, endDateStr, monitoringTime}));//$NON-NLS-1$
+		println(out, I18NSupport.getLocalizedMessage(BUNDLE_NAME, "results", startDateStr, endDateStr, monitoringTime));//$NON-NLS-1$
 		// sort traces by decreasing frequency
 		Map.Entry<String, Integer>[] sortedTraces = traces.entrySet().toArray(new Map.Entry[traces.size()]);
 		Arrays.sort(sortedTraces, new Comparator<Map.Entry<?, Integer>>() {

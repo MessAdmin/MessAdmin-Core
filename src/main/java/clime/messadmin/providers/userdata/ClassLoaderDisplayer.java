@@ -37,7 +37,8 @@ public class ClassLoaderDisplayer implements ApplicationDataProvider {
 	 * {@inheritDoc}
 	 */
 	public String getApplicationDataTitle(ServletContext context) {
-		return I18NSupport.getLocalizedMessage(BUNDLE_NAME, "title");//$NON-NLS-1$
+		ClassLoader cl = I18NSupport.getClassLoader(context);
+		return I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "title");//$NON-NLS-1$
 	}
 
 	/**

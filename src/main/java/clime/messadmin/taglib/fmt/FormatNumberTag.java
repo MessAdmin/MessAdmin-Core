@@ -163,7 +163,7 @@ public class FormatNumberTag extends BodyTagSupport {
 			if (BYTES.equalsIgnoreCase(type)) {
 				NumberFormat formatterPlain = NumberFormat.getNumberInstance(loc);
 				configureFormatter(formatterPlain);
-				String inputWithBytes = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "bytes", new Object[] {formatterPlain.format(input)});//$NON-NLS-1$
+				String inputWithBytes = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "bytes", formatterPlain.format(input));//$NON-NLS-1$
 				formatted = new StringBuffer()
 					.append("<span title=\"").append(inputWithBytes).append("\">")//$NON-NLS-1$//$NON-NLS-2$
 					.append(formatter.format(input)).append("</span>").toString();//$NON-NLS-1$

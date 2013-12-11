@@ -44,7 +44,7 @@ public class SystemPropertiesProvider extends BaseTabularServerDataProvider
 	@Override
 	protected String getTableCaption(String[] labels, Object[][] values) {
 		NumberFormat numberFormatter = NumberFormat.getNumberInstance(I18NSupport.getAdminLocale());
-		String caption = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "table.caption", new Object[] {numberFormatter.format(values.length)});//$NON-NLS-1$
+		String caption = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "table.caption", numberFormatter.format(values.length));//$NON-NLS-1$
 		return caption;
 	}
 

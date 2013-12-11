@@ -76,7 +76,7 @@ public class GZipUtils {
 				((PGZIPOutputStream)out).write(in);
 			} else {
 				// single thread if file.size < 20M or available processors == 1
-				out = new GZIPOutputStream(out, 32768, config);// override "out" so that it is the GZIPOutputStream that is closed at the end!
+				out = new GZIPOutputStream(out, 65536, config);// override "out" so that it is the GZIPOutputStream that is closed at the end!//FIXME magic number
 				((GZIPOutputStream)out).write(in);
 			}
 		} finally {

@@ -33,14 +33,14 @@ public abstract class BaseTabularDataProvider {
 	 * @since 4.1
 	 */
 	protected ClassLoader getClassLoader(final HttpSession session) {
-		return getClassLoader(session.getServletContext());
+		return I18NSupport.getClassLoader(session);
 	}
 	/**
 	 * Convenience method for i18n
 	 * @since 4.1
 	 */
 	protected ClassLoader getClassLoader(final ServletContext context) {
-		return Server.getInstance().getApplication(context).getApplicationInfo().getClassLoader();
+		return I18NSupport.getClassLoader(context);
 	}
 
 	/**

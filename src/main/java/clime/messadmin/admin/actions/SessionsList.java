@@ -20,6 +20,7 @@ import clime.messadmin.admin.BaseSessionComparator;
 import clime.messadmin.admin.MessAdminServlet;
 import clime.messadmin.core.Constants;
 import clime.messadmin.i18n.I18NSupport;
+import clime.messadmin.model.Application;
 import clime.messadmin.model.ISessionInfo;
 import clime.messadmin.model.Server;
 import clime.messadmin.providers.spi.DisplayFormatProvider;
@@ -66,7 +67,9 @@ public class SessionsList extends BaseAdminActionWithContext implements AdminAct
 			sendRedirect(request, response);
 			return;
 		}
-		Collection<ISessionInfo> activeSessions = Server.getInstance().getApplication(context).getActiveSessionInfos();
+		final Application application = Server.getInstance().getApplication(context);
+		final ClassLoader cl = application.getApplicationInfo().getClassLoader();
+		Collection<ISessionInfo> activeSessions = application.getActiveSessionInfos();
 		String sortBy = request.getParameter("sort");//$NON-NLS-1$
 		String orderBy = null;
 		if (null != sortBy && !"".equals(sortBy.trim())) {
@@ -85,7 +88,7 @@ public class SessionsList extends BaseAdminActionWithContext implements AdminAct
 				} catch (IllegalStateException ise) {
 					// at least 1 session is invalidated
 					request.setAttribute(Constants.APPLICATION_ERROR,
-							I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, "sessionsList.sort.error"));//$NON-NLS-1$
+							I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "sessionsList.sort.error"));//$NON-NLS-1$
 				}
 			} else {
 				log("WARNING: unknown sort order: " + sortBy);

@@ -38,7 +38,7 @@ public class InjectApplication extends BaseAdminActionWithContext implements Adm
 		String message = request.getParameter("message");//$NON-NLS-1$
 		Application application = Server.getInstance().getApplication(context);
 		application.injectPermanentMessage(message);
-		final ClassLoader cl = Thread.currentThread().getContextClassLoader();
+		final ClassLoader cl = application.getApplicationInfo().getClassLoader();
 		request.setAttribute(Constants.APPLICATION_MESSAGE,
 				I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "injectApplication.ok"));//$NON-NLS-1$
 		((BaseAdminActionProvider)AdminActionProvider.Util.getInstance(request, SessionsList.ID)).sendRedirect(request, response);

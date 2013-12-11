@@ -13,6 +13,7 @@ import clime.messadmin.admin.MessAdminServlet;
 import clime.messadmin.core.Constants;
 import clime.messadmin.core.MessAdmin;
 import clime.messadmin.i18n.I18NSupport;
+import clime.messadmin.model.Server;
 
 /**
  * Invalidate a Session.
@@ -37,9 +38,9 @@ public class InvalidateSessions extends BaseAdminActionWithContext implements Ad
 	public void serviceWithContext(HttpServletRequest request, HttpServletResponse response, String context) throws ServletException, IOException {
 		String[] sessionIds = request.getParameterValues("sessionIds");//$NON-NLS-1$
 		int i = MessAdmin.invalidateSessions(context, sessionIds);
-		final ClassLoader cl = Thread.currentThread().getContextClassLoader();
+		final ClassLoader cl = Server.getInstance().getApplication(context).getApplicationInfo().getClassLoader();
 		request.setAttribute(Constants.APPLICATION_MESSAGE,
-				I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "invalidateSessions.ok", new Object[] {Integer.valueOf(i)}));//$NON-NLS-1$
+				I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "invalidateSessions.ok", Integer.valueOf(i)));//$NON-NLS-1$
 		((BaseAdminActionProvider)AdminActionProvider.Util.getInstance(request, SessionsList.ID)).sendRedirect(request, response);
 	}
 }

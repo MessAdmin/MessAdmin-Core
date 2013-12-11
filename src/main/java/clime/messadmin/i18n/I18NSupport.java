@@ -8,6 +8,10 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
+
+import clime.messadmin.model.Server;
 import clime.messadmin.taglib.fmt.MessageTag;
 import clime.messadmin.utils.StackIntrospector;
 
@@ -141,6 +145,10 @@ public class I18NSupport {
 
 		return match;
 	}
+	/**
+	 * @deprecated use {@link #getResourceBundle(String, Locale, ClassLoader)}
+	 */
+	@Deprecated
 	public static ResourceBundle getResourceBundle(String baseName, Locale locale) {
 		return getResourceBundle(baseName, locale, null);
 	}
@@ -150,15 +158,27 @@ public class I18NSupport {
 	public static ResourceBundle getResourceBundle(Locale locale, ClassLoader cl) {
 		return getResourceBundle(StackIntrospector.getCallerClass().getName(), locale, cl);
 	}
+	/**
+	 * @deprecated use {@link #getResourceBundle(String, ClassLoader)}
+	 */
+	@Deprecated
 	public static ResourceBundle getResourceBundle(String baseName) {
 		return getResourceBundle(baseName, getAdminLocale(), null);
 	}
+	/**
+	 * @deprecated use {@link #getResourceBundle(Locale, ClassLoader)}
+	 */
+	@Deprecated
 	public static ResourceBundle getResourceBundle(Locale locale) {
 		return getResourceBundle(StackIntrospector.getCallerClass().getName(), locale, null);
 	}
 	public static ResourceBundle getResourceBundle(ClassLoader cl) {
 		return getResourceBundle(StackIntrospector.getCallerClass().getName(), getAdminLocale(), cl);
 	}
+	/**
+	 * @deprecated use {@link #getResourceBundle(ClassLoader)}
+	 */
+	@Deprecated
 	public static ResourceBundle getResourceBundle() {
 		return getResourceBundle(StackIntrospector.getCallerClass().getName(), getAdminLocale(), null);
 	}
@@ -214,9 +234,17 @@ public class I18NSupport {
 	public static String getLocalizedMessage(String baseName, Locale locale, ClassLoader cl, String key) {
 		return getLocalizedMessage(baseName, locale, cl, key, (Object[])null);
 	}
+	/**
+	 * @deprecated use {@link #getLocalizedMessage(String, Locale, ClassLoader, String, Object...)}
+	 */
+	@Deprecated
 	public static String getLocalizedMessage(String baseName, Locale locale, String key, Object... args) {
 		return getLocalizedMessage(baseName, locale, null, key, args);
 	}
+	/**
+	 * @deprecated use {@link #getLocalizedMessage(String, Locale, ClassLoader)}
+	 */
+	@Deprecated
 	public static String getLocalizedMessage(String baseName, Locale locale, String key) {
 		return getLocalizedMessage(baseName, locale, null, key, (Object[])null);
 	}
@@ -232,15 +260,31 @@ public class I18NSupport {
 	public static String getLocalizedMessage(Locale locale, ClassLoader cl, String key) {
 		return getLocalizedMessage(StackIntrospector.getCallerClass().getName(), locale, cl, key, (Object[])null);
 	}
+	/**
+	 * @deprecated use {@link #getLocalizedMessage(String, ClassLoader, String, Object...)}
+	 */
+	@Deprecated
 	public static String getLocalizedMessage(String baseName, String key, Object... args) {
 		return getLocalizedMessage(baseName, getAdminLocale(), null, key, args);
 	}
+	/**
+	 * @deprecated use {@link #getLocalizedMessage(String, ClassLoader, String)}
+	 */
+	@Deprecated
 	public static String getLocalizedMessage(String baseName, String key) {
 		return getLocalizedMessage(baseName, getAdminLocale(), null, key, (Object[])null);
 	}
+	/**
+	 * @deprecated use {@link #getLocalizedMessage(Locale, ClassLoader, String, Object...)}
+	 */
+	@Deprecated
 	public static String getLocalizedMessage(Locale locale, String key, Object... args) {
 		return getLocalizedMessage(StackIntrospector.getCallerClass().getName(), locale, null, key, args);
 	}
+	/**
+	 * @deprecated use {@link #getLocalizedMessage(Locale, ClassLoader, String)}
+	 */
+	@Deprecated
 	public static String getLocalizedMessage(Locale locale, String key) {
 		return getLocalizedMessage(StackIntrospector.getCallerClass().getName(), locale, null, key, (Object[])null);
 	}
@@ -250,10 +294,38 @@ public class I18NSupport {
 	public static String getLocalizedMessage(ClassLoader cl, String key) {
 		return getLocalizedMessage(StackIntrospector.getCallerClass().getName(), getAdminLocale(), cl, key, (Object[])null);
 	}
+	/**
+	 * @deprecated use {@link #getLocalizedMessageClassLoader, String, Object...)}
+	 */
+	@Deprecated
 	public static String getLocalizedMessage(String key, Object... args) {
 		return getLocalizedMessage(StackIntrospector.getCallerClass().getName(), getAdminLocale(), null, key, args);
 	}
+	/**
+	 * @deprecated use {@link #getLocalizedMessage(ClassLoader, String)}
+	 */
+	@Deprecated
 	public static String getLocalizedMessage(String key) {
 		return getLocalizedMessage(StackIntrospector.getCallerClass().getName(), getAdminLocale(), null, key, (Object[])null);
+	}
+
+	/* Utility methods */
+
+	public static ClassLoader getClassLoader(ServletContext context) {
+		if (context != null) {
+			try {
+				return Server.getInstance().getApplication(context).getApplicationInfo().getClassLoader();
+			} catch (NullPointerException npe) {
+			}
+		} // else
+		return null;
+	}
+
+	public static ClassLoader getClassLoader(HttpSession session) {
+		try {
+			return getClassLoader(session.getServletContext());
+		} catch (IllegalStateException ise) {
+			return null;
+		}
 	}
 }

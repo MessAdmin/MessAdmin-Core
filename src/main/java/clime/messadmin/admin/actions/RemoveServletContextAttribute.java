@@ -16,6 +16,7 @@ import clime.messadmin.admin.BaseAdminActionWithContext;
 import clime.messadmin.admin.MessAdminServlet;
 import clime.messadmin.core.Constants;
 import clime.messadmin.i18n.I18NSupport;
+import clime.messadmin.model.Application;
 import clime.messadmin.model.IApplicationInfo;
 import clime.messadmin.model.Server;
 import clime.messadmin.providers.spi.ApplicationDataProvider;
@@ -68,15 +69,15 @@ public class RemoveServletContextAttribute extends BaseAdminActionWithContext im
 	public void serviceWithContext(HttpServletRequest request, HttpServletResponse response, String context) throws ServletException, IOException {
 		String name = request.getParameter(PARAM_ATTRIBUTE_NAME);
 		IApplicationInfo applicationInfo = Server.getInstance().getApplication(context).getApplicationInfo();
+		final ClassLoader cl = applicationInfo.getClassLoader();
 		boolean removed = (null != applicationInfo.getAttribute(name));
 		applicationInfo.removeAttribute(name);
-		final ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		if (removed) {
 			request.setAttribute(Constants.APPLICATION_MESSAGE,
-					I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "removeServletContextAttribute.ok", new Object[] {name}));//$NON-NLS-1$
+					I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "removeServletContextAttribute.ok", name));//$NON-NLS-1$
 		} else {
 			request.setAttribute(Constants.APPLICATION_ERROR,
-					I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "removeServletContextAttribute.ko", new Object[] {context, name}));//$NON-NLS-1$
+					I18NSupport.getLocalizedMessage(MessAdminServlet.I18N_BUNDLE_NAME, cl, "removeServletContextAttribute.ko", context, name));//$NON-NLS-1$
 		}
 		ReloadDataProviderHelper.sendRedirect(request, response, ReloadApplicationDataProvider.ID, DisplayProvider.Util.getId(this), ReloadDataProviderHelper.SCOPE_CONTENT);
 	}
@@ -94,7 +95,7 @@ public class RemoveServletContextAttribute extends BaseAdminActionWithContext im
 
 		/** {@inheritDoc} */
 		public String getApplicationDataTitle(ServletContext context) {
-			return I18NSupport.getLocalizedMessage(BUNDLE_NAME, "title");//$NON-NLS-1$
+			return I18NSupport.getLocalizedMessage(BUNDLE_NAME, getClassLoader(context), "title");//$NON-NLS-1$
 		}
 
 		/** {@inheritDoc} */

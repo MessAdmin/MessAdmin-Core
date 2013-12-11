@@ -38,8 +38,9 @@ public class CurrentRequestsProvider extends
 		if (values == null || values.getNRows() == 0) {
 			return "";//$NON-NLS-1$
 		} else {
+			ClassLoader cl = I18NSupport.getClassLoader(context);
 			NumberFormat numberFormatter = NumberFormat.getNumberInstance(I18NSupport.getAdminLocale());
-			String caption = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "table.caption", new Object[] {numberFormatter.format(values.getNRows())});//$NON-NLS-1$
+			String caption = I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "table.caption", numberFormatter.format(values.getNRows()));//$NON-NLS-1$
 			return caption;
 		}
 	}
@@ -47,11 +48,12 @@ public class CurrentRequestsProvider extends
 	/** {@inheritDoc} */
 	@Override
 	public String[] getApplicationTabularDataLabels(ServletContext context) {
+		ClassLoader cl = I18NSupport.getClassLoader(context);
 		return new String[] {
-				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.time"),//$NON-NLS-1$
-				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.session"),//$NON-NLS-1$
-				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.host"),//$NON-NLS-1$
-				I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.url")//$NON-NLS-1$
+				I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.time"),//$NON-NLS-1$
+				I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.session"),//$NON-NLS-1$
+				I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.host"),//$NON-NLS-1$
+				I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.url")//$NON-NLS-1$
 		};
 	}
 
@@ -69,7 +71,8 @@ public class CurrentRequestsProvider extends
 
 	/** {@inheritDoc} */
 	public String getApplicationDataTitle(ServletContext context) {
-		return I18NSupport.getLocalizedMessage(BUNDLE_NAME, "title");//$NON-NLS-1$
+		ClassLoader cl = I18NSupport.getClassLoader(context);
+		return I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "title");//$NON-NLS-1$
 	}
 
 	/** {@inheritDoc} */

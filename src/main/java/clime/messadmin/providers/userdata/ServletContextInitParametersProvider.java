@@ -35,8 +35,9 @@ public class ServletContextInitParametersProvider extends
 		if (values == null || values.getNRows() == 0) {
 			return "";//$NON-NLS-1$
 		} else {
+			ClassLoader cl = I18NSupport.getClassLoader(context);
 			NumberFormat numberFormatter = NumberFormat.getNumberInstance(I18NSupport.getAdminLocale());
-			String caption = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "table.caption", new Object[] {numberFormatter.format(values.getNRows())});//$NON-NLS-1$
+			String caption = I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "table.caption", numberFormatter.format(values.getNRows()));//$NON-NLS-1$
 			return caption;
 		}
 	}
@@ -44,8 +45,9 @@ public class ServletContextInitParametersProvider extends
 	/** {@inheritDoc} */
 	@Override
 	public String[] getApplicationTabularDataLabels(ServletContext context) {
-		String name = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.name");//$NON-NLS-1$
-		String value = I18NSupport.getLocalizedMessage(BUNDLE_NAME, "label.value");//$NON-NLS-1$
+		ClassLoader cl = I18NSupport.getClassLoader(context);
+		String name = I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.name");//$NON-NLS-1$
+		String value = I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "label.value");//$NON-NLS-1$
 		return new String[] {name, value};
 	}
 
@@ -62,7 +64,8 @@ public class ServletContextInitParametersProvider extends
 
 	/** {@inheritDoc} */
 	public String getApplicationDataTitle(ServletContext context) {
-		return I18NSupport.getLocalizedMessage(BUNDLE_NAME, "title");//$NON-NLS-1$
+		ClassLoader cl = I18NSupport.getClassLoader(context);
+		return I18NSupport.getLocalizedMessage(BUNDLE_NAME, cl, "title");//$NON-NLS-1$
 	}
 
 	/** {@inheritDoc} */
