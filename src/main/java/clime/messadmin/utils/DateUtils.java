@@ -10,6 +10,7 @@ import java.util.Locale;
 import clime.messadmin.i18n.I18NSupport;
 
 /**
+ * Note: to format a Duration (e.g. {@code P3Y6M4DT12H30M5S} or {@code P0003-06-04T12:30:05}), use {@link javax.xml.datatype.DatatypeFactory#newDuration(long)}
  * @author C&eacute;drik LIME
  */
 public abstract class DateUtils {
@@ -26,6 +27,8 @@ public abstract class DateUtils {
 	 * Default ISO 8601 datetime format: {@value}
 	 * @see <a href="http://www.w3.org/TR/NOTE-datetime">ISO 8601 DateTime</a>
 	 * @see <a href="http://tools.ietf.org/html/rfc3339">RFC 3339</a>
+	 * @see javax.xml.bind.DatatypeConverter#printDateTime(java.util.Calendar)
+	 * @see javax.xml.datatype.XMLGregorianCalendar {@code javax.xml.datatype.DatatypeFactory.newInstance().newXMLGregorianCalendar(date)}
 	 */
 	public static final String ISO8601_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZ";//$NON-NLS-1$
 	public static final String ISO8601_DATE_FORMAT = "yyyy-MM-dd";//$NON-NLS-1$

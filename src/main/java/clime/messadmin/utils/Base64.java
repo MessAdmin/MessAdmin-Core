@@ -68,6 +68,10 @@ import java.util.Arrays;
  * @author Mikael Grev
  *         Date: 2004-aug-02
  *         Time: 11:31:11
+ * @see "http://migbase64.sourceforge.net"
+ * @see javax.xml.bind.DatatypeConverter#printBase64Binary(byte[])
+ * @see javax.xml.bind.DatatypeConverter#parseBase64Binary(String)
+ * @see java.util.Base64
  */
 
 public class Base64
