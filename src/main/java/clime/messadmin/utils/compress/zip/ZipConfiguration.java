@@ -3,8 +3,14 @@
  */
 package clime.messadmin.utils.compress.zip;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.floor;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 import java.util.zip.Deflater;
 
+import clime.messadmin.utils.JMX;
 import clime.messadmin.utils.compress.Statistics;
 import clime.messadmin.utils.compress.impl.StatisticsImpl;
 
@@ -18,7 +24,7 @@ public class ZipConfiguration {
 	/**
 	 * Limit memory usage to ~8 MB
 	 */
-	private int maxProcessors = 32;
+	private int maxProcessors = -32;
 	private int blockSize = DEFAULT_BLOCK_SIZE;
 	private boolean independentCompressedBlocks = false;
 
@@ -83,12 +89,29 @@ public class ZipConfiguration {
 	}
 
 	public int getMaxProcessors() {
-		return Math.min(maxProcessors, Runtime.getRuntime().availableProcessors());
-	}
-	public void setMaxProcessors(int maxProcessors) {
-		if (maxProcessors < 1) {
-			throw new IllegalArgumentException("" + maxProcessors);
+		final int cpuCores = Runtime.getRuntime().availableProcessors();
+		int optimalCores = cpuCores;
+		if (maxProcessors <= 0) {
+			double load = JMX.getSystemLoadAverage();
+			if (load >= 0) {
+				optimalCores = max(1, cpuCores - (int) floor(load)); // at least 1 core
+			}
 		}
+		if (maxProcessors != 0) {
+			// cap to |maxProcessors|, with at least 1 core
+			optimalCores = min(abs(maxProcessors), optimalCores);
+		} else {
+			// no capping
+		}
+		assert optimalCores > 0 && optimalCores <= cpuCores : optimalCores;
+		return optimalCores;
+	}
+	/**
+	 * @param maxProcessors  set to {@code <= 0} to compute optimal number of CPU cores using system load average,
+	 *                       capped to {@code abs(maxProcessors)}
+	 *                       ({@code 0} == uncapped)
+	 */
+	public void setMaxProcessors(int maxProcessors) {
 		this.maxProcessors = maxProcessors;
 	}
 
