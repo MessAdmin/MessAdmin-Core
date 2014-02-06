@@ -4,9 +4,8 @@
 package clime.messadmin.model;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -19,11 +18,17 @@ import clime.messadmin.utils.JMX;
  * @author C&eacute;drik LIME
  */
 public class ServerInfo implements Serializable, IServerInfo {
-	protected final long startupTime = System.currentTimeMillis();
-	private static String localHostStr = "";
 	private final static String localHostDefaultName = "localhost";//$NON-NLS-1$
+	protected final long startupTime;
+	private String localHostStr = "";
 
-	static {
+	/**
+	 *
+	 */
+	public ServerInfo() {
+		super();
+		//startupTime = System.currentTimeMillis();
+		startupTime = ManagementFactory.getRuntimeMXBean().getStartTime();
 		try {
 			localHostStr = java.net.InetAddress.getLocalHost().getHostName();
 			if (localHostDefaultName.equals(localHostStr)) {
@@ -32,13 +37,6 @@ public class ServerInfo implements Serializable, IServerInfo {
 		} catch (java.net.UnknownHostException uhe) {
 			// ignore
 		}
-	}
-
-	/**
-	 *
-	 */
-	public ServerInfo() {
-		super();
 	}
 
 	/**
@@ -70,6 +68,8 @@ public class ServerInfo implements Serializable, IServerInfo {
 	 * {@inheritDoc}
 	 */
 	public long getFreeMemory() {
+//		ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();//TODO
+//		ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage();//TODO
 		return Runtime.getRuntime().freeMemory();
 	}
 

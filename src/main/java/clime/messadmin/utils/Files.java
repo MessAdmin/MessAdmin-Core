@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package clime.messadmin.utils;
 
@@ -12,11 +12,13 @@ import java.lang.reflect.Method;
  */
 public final class Files {
 	private static transient Method getUsableSpace = null;
+	private static transient Method getTotalSpace = null;
 
 	static {
 		// @since 1.6
 		try {
 			getUsableSpace = File.class.getMethod("getUsableSpace");//$NON-NLS-1$
+			getTotalSpace = File.class.getMethod("getTotalSpace");//$NON-NLS-1$
 		} catch (SecurityException e) {
 		} catch (NoSuchMethodException e) {
 		}
@@ -46,8 +48,31 @@ public final class Files {
 		}
 		//return file.getUsableSpace();
 		try {
-			Object usableSpace = getUsableSpace.invoke(file);
-			return ((Long) usableSpace).longValue();
+			long usableSpace = ((Long)getUsableSpace.invoke(file)).longValue();
+			if (usableSpace == 0) {
+				usableSpace = -1;
+			}
+			return usableSpace;
+		} catch (Exception e) {
+			return -1;
+		}
+	}
+
+	/**
+	 * @return [0..1]
+	 * @since 1.6
+	 * @see File#getUsableSpace()
+	 * @see File#getTotalSpace()
+	 */
+	public static double getUsableSpacePercentForFile(File file) {
+		if (getUsableSpace == null || getTotalSpace == null || file == null || !file.exists()) {
+			return -1;
+		}
+		//return file.getUsableSpace() / (double)file.getTotalSpace();
+		try {
+			long usableSpace = ((Long)getUsableSpace.invoke(file)).longValue();
+			long totalSpace = ((Long)getTotalSpace.invoke(file)).longValue();
+			return usableSpace / (double)totalSpace;
 		} catch (Exception e) {
 			return -1;
 		}

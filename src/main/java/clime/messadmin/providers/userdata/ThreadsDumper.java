@@ -59,6 +59,8 @@ public class ThreadsDumper extends BaseAdminActionProvider implements ServerData
 		}
 		out.println();
 		Map<Thread,StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
+//		ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+//		threadMXBean.dumpAllThreads(threadMXBean.isObjectMonitorUsageSupported(), threadMXBean.isSynchronizerUsageSupported());
 		for (Map.Entry<Thread,StackTraceElement[]> entry : stackTraces.entrySet()) {
 			Thread t = entry.getKey();
 			StackTraceElement[] stes = entry.getValue();
