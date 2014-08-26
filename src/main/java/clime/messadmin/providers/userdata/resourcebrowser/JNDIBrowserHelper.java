@@ -88,7 +88,11 @@ class JNDIBrowserHelper extends BaseBrowserHelper {
 		String result = "java:comp/env/";//$NON-NLS-1$
 		try {
 			result = ((Context) getContext().lookup(result)).getNameInNamespace();
-		} catch (NamingException ne) {
+		} catch (NamingException ne1) {
+			try {
+				result = ((Context) getContext().lookup("java:")).getNameInNamespace();
+			} catch (NamingException ne2) {
+			}
 		}
 		return new JNDIResource(result, getContext());
 	}
