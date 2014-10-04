@@ -107,7 +107,7 @@ import clime.messadmin.taglib.jstl.fmt.LocalizationContext;
 	/** {@inheritDoc} */
 	@Override
 	public String getServletInfo() {
-		return "MessAdminServlet, copyright (c) 2005--2013 Cédrik LIME";
+		return "MessAdminServlet, copyright (c) 2005--2015 Cédrik LIME";
 	}
 
 	/** {@inheritDoc} */
