@@ -22,6 +22,8 @@ import clime.messadmin.model.Server;
 public class SessionUtils {
 	private static transient Method ServletContext_getContextPath;
 	private static transient Method ServletRequest_getServletContext;
+	private static transient Method ServletContext_getClassLoader;
+	private static transient Method ServletContext_getVirtualServerName;
 
 	static {
 		// @since Servlet 2.5
@@ -33,6 +35,17 @@ public class SessionUtils {
 		// @since Servlet 3.0
 		try {
 			ServletRequest_getServletContext = ServletRequest.class.getMethod("getServletContext");//$NON-NLS-1$
+		} catch (SecurityException e) {
+		} catch (NoSuchMethodException e) {
+		}
+		try {
+			ServletContext_getClassLoader = ServletContext.class.getMethod("getClassLoader");//$NON-NLS-1$
+		} catch (SecurityException e) {
+		} catch (NoSuchMethodException e) {
+		}
+		// @since Servlet 3.1
+		try {
+			ServletContext_getVirtualServerName = ServletContext.class.getMethod("getVirtualServerName");//$NON-NLS-1$
 		} catch (SecurityException e) {
 		} catch (NoSuchMethodException e) {
 		}
@@ -247,6 +260,11 @@ public class SessionUtils {
 		return buffer.toString();
 	}
 
+	/**
+	 * Gets the servlet context to which this ServletRequest was last dispatched.
+	 * @return the servlet context to which this ServletRequest was last dispatched
+	 * @since 3.0
+	 */
 	public static ServletContext getServletContext(HttpServletRequest request) {
 		if (ServletRequest_getServletContext != null) {
 			try {
@@ -262,6 +280,55 @@ public class SessionUtils {
 		HttpSession httpSession = request.getSession(false);
 		if (httpSession != null) {
 			return httpSession.getServletContext();
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the class loader of the web application represented by this ServletContext.
+	 * <p>If a security manager exists, and the caller's class loader is not the same as, or an ancestor of the requested class loader, then the security manager's
+	 * {@code checkPermission} method is called with a {@code RuntimePermission("getClassLoader")} permission to check whether access to the requested class loader should be granted.
+	 * @return the class loader of the web application represented by this ServletContext
+	 * @since 3.0
+	 */
+//	* @throws UnsupportedOperationException - if this ServletContext was passed to the ServletContextListener.contextInitialized(javax.servlet.ServletContextEvent) method of a ServletContextListener that was neither declared in web.xml or web-fragment.xml, nor annotated with WebListener
+//	* @throws SecurityException - if a security manager denies access to the requested class loader
+	public static ClassLoader getClassLoader(ServletContext servletContext) {
+		if (ServletContext_getClassLoader != null) {
+			try {
+				return (ClassLoader) ServletContext_getClassLoader.invoke(servletContext);
+			} catch (IllegalArgumentException e) {
+				throw e;
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException(e);
+			} catch (InvocationTargetException e) {
+				if ( ! (e.getCause() instanceof UnsupportedOperationException)) {
+					throw new RuntimeException(e);
+				} // else: ignore
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns the configuration name of the logical host on which the ServletContext is deployed. Servlet containers may support multiple logical hosts. This method must return the same name for all the servlet contexts deployed on a logical host, and the name returned by this method must be distinct, stable per logical host, and suitable for use in associating server configuration information with the logical host. The returned value is NOT expected or required to be equivalent to a network address or hostname of the logical host.
+	 * @return a {@code String} containing the configuration name of the logical host on which the servlet context is deployed.
+	 * @since 3.1
+	 */
+//	* @throws UnsupportedOperationException - if this ServletContext was passed to the ServletContextListener.contextInitialized(javax.servlet.ServletContextEvent) method of a ServletContextListener that was neither declared in web.xml or web-fragment.xml, nor annotated with WebListener
+	public static String getVirtualServerName(ServletContext servletContext) {
+		if (ServletContext_getVirtualServerName != null) {
+			try {
+				return (String) ServletContext_getVirtualServerName.invoke(servletContext);
+			} catch (IllegalArgumentException e) {
+				throw e;
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException(e);
+			} catch (InvocationTargetException e) {
+				if ( ! (e.getCause() instanceof UnsupportedOperationException)) {
+					throw new RuntimeException(e);
+				} // else: ignore
+			}
 		}
 		return null;
 	}

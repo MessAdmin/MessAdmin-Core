@@ -78,6 +78,7 @@ public class ApplicationInfo implements IApplicationInfo {
 				//nothing
 			}
 		}
+		classLoader = SessionUtils.getClassLoader(servletContext);
 	}
 
 

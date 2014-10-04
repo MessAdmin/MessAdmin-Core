@@ -90,6 +90,9 @@ public class Echo extends BaseAdminActionProvider implements AdminActionProvider
 		out.println(request.getCharacterEncoding());
 		out.print("getContentLength()\t");
 		out.println(request.getContentLength());
+		// @since 3.1
+//		out.print("getContentLengthLong()\t");
+//		out.println(request.getContentLengthLong());
 		out.print("getContentType()\t");
 		out.println(request.getContentType());
 //		request.getParameterNames();
@@ -128,6 +131,17 @@ public class Echo extends BaseAdminActionProvider implements AdminActionProvider
 		out.println(request.getLocalAddr());
 		out.print("getLocalPort()\t\t");
 		out.println(request.getLocalPort());
+		// @since 3.0
+//		out.print("getServletContext()\t\t");
+//		out.println(request.getServletContext());
+//		out.print("isAsyncStarted()\t\t");
+//		out.println(request.isAsyncStarted());
+//		out.print("isAsyncSupported()\t\t");
+//		out.println(request.isAsyncSupported());
+//		out.print("getAsyncContext()\t\t");
+//		out.println(request.getAsyncContext());
+//		out.print("getDispatcherType()\t\t");
+//		out.println(request.getDispatcherType());
 
 		out.println();
 
@@ -173,6 +187,9 @@ public class Echo extends BaseAdminActionProvider implements AdminActionProvider
 		out.println(request.isRequestedSessionIdFromCookie());
 		out.print("isRequestedSessionIdFromURL()\t\t");
 		out.println(request.isRequestedSessionIdFromURL());
+		// @since 3.0
+//		out.print("getParts()\t");
+//		out.println(request.getParts());
 
 		out.close();
 	}

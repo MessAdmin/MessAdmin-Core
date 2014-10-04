@@ -20,6 +20,7 @@ public interface IApplicationInfo {
 
 	/**
 	 * @return ClassLoader associated with this ServletContext.
+	 * @see ServletContext#getClassLoader()
 	 */
 	ClassLoader getClassLoader();
 

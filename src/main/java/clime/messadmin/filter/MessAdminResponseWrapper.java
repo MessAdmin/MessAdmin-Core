@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
@@ -30,6 +31,7 @@ public class MessAdminResponseWrapper extends HttpServletResponseWrapper {
 	private static final boolean DEBUG = false;
 	private static Method getStatus = null;
 	private static Method getHeaders = null;
+	private static Method setContentLengthLong = null;
 
 	private static String[] SCRIPT_BEGIN = new String[] {"<script language='JavaScript' type='text/javascript'>",
 		"<!--",
@@ -131,13 +133,19 @@ public class MessAdminResponseWrapper extends HttpServletResponseWrapper {
 		} catch (SecurityException e) {
 		} catch (NoSuchMethodException e) {
 		}
+		// @since 3.1
+		try {
+			setContentLengthLong = ServletResponse.class.getMethod("setContentLengthLong", Long.class);//$NON-NLS-1$
+		} catch (SecurityException e) {
+		} catch (NoSuchMethodException e) {
+		}
 	}
 
 	protected String injectedMessageHTML = null;
 	protected boolean shouldInject = false;
 	protected boolean messageInjected = false;
 	private final HttpServletResponse httpResponse;
-	private int contentLength = -1;
+	private long contentLength = -1;
 	private String contentType = null;
 	private PrintWriter writer = null;
 	private ServletOutputStream stream = null;
@@ -155,8 +163,11 @@ public class MessAdminResponseWrapper extends HttpServletResponseWrapper {
 		setShouldInject();
 	}
 
+	/**
+	 * @see ServletRequest#getContentLength()
+	 */
 	public int getContentLength() {
-		return contentLength;
+		return (int)contentLength;
 	}
 	/** {@inheritDoc} */
 	@Override
@@ -166,6 +177,24 @@ public class MessAdminResponseWrapper extends HttpServletResponseWrapper {
 			realLength += JS_SCRIPT_SIZE + injectedMessageHTML.length();//FIXME: depends on encoding!
 		}
 		super.setContentLength(realLength);
+		contentLength = realLength;
+	}
+	/** {@inheritDoc} */
+//	@Override
+	public void setContentLengthLong(long len) {
+		long realLength = len;
+		if (shouldInject) {
+			realLength += JS_SCRIPT_SIZE + injectedMessageHTML.length();//FIXME: depends on encoding!
+		}
+//		super.setContentLengthLong(realLength);
+		if (setContentLengthLong != null) {
+			try {
+				setContentLengthLong.invoke(httpResponse, realLength);
+			} catch (IllegalArgumentException iae) {
+			} catch (IllegalAccessException iae) {
+			} catch (InvocationTargetException ite) {
+			}
+		}
 		contentLength = realLength;
 	}
 
