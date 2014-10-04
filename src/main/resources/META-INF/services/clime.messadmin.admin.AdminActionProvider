@@ -17,6 +17,7 @@ clime.messadmin.admin.actions.SessionDetail
 clime.messadmin.admin.actions.RemoveSessionAttribute
 clime.messadmin.admin.actions.SetSessionMaxInactiveInterval
 # Miscellaneous
+clime.messadmin.admin.actions.Echo
 clime.messadmin.providers.userdata.resourcebrowser.ResourceBrowser
 clime.messadmin.providers.userdata.resourcebrowser.JNDIBrowser
 clime.messadmin.admin.actions.ReloadServerDataProvider
