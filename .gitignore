@@ -5,6 +5,10 @@
 *.jar
 *.war
 *.ear
+# Eclipse #
+.project
+.classpath
+.settings/
 # miscellaneous #
 *~
 .DS_Store
