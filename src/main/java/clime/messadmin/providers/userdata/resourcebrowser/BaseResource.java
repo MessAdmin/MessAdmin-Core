@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Collection;
@@ -314,9 +315,9 @@ public abstract class BaseResource {
 				URLConnection connection = getURLConnection(context);
 				if (connection != null) {
 					contentType = connection.getContentType();
-//					if (connection instanceof HttpURLConnection) {
-//						((HttpURLConnection)connection).disconnect();
-//					}
+					if (connection instanceof HttpURLConnection) {
+						((HttpURLConnection)connection).disconnect();
+					}
 				}
 			}
 		}
