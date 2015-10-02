@@ -3,3 +3,4 @@ clime.messadmin.providers.lifecycle.KnownThreadLocalsCleaner
 clime.messadmin.providers.user.AcegiUserName
 clime.messadmin.providers.user.SpringSecurity2UserName
 clime.messadmin.providers.user.SpringSecurity3UserName
+clime.messadmin.providers.user.ShiroUserName
