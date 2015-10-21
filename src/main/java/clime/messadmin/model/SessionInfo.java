@@ -151,27 +151,27 @@ public class SessionInfo implements ISessionInfo {
 
 	/**{@inheritDoc} */
 	public String getLastRequestURL() {
-		return lastRequestInfo.getURL();
+		return lastRequestInfo != null ? lastRequestInfo.getURL() : null;
 	}
 
 	/**{@inheritDoc} */
 	public String getRemoteAddr() {
-		return lastRequestInfo.getRemoteAddr();
+		return lastRequestInfo != null ? lastRequestInfo.getRemoteAddr() : null;
 	}
 
 	/**{@inheritDoc} */
 	public String getRemoteHost() {
-		return lastRequestInfo.getRemoteHost();
+		return lastRequestInfo != null ? lastRequestInfo.getRemoteHost() : null;
 	}
 
 	/**{@inheritDoc} */
 	public Principal getUserPrincipal() {
-		return lastRequestInfo.getUserPrincipal();
+		return lastRequestInfo != null ? lastRequestInfo.getUserPrincipal() : null;
 	}
 
 	/**{@inheritDoc} */
 	public String getRemoteUser() {
-		return lastRequestInfo.getRemoteUser();
+		return lastRequestInfo != null ? lastRequestInfo.getRemoteUser() : null;
 	}
 	public void setRemoteUser(String remoteUser) {
 		lastRequestInfo.setRemoteUser(remoteUser);
@@ -274,22 +274,22 @@ public class SessionInfo implements ISessionInfo {
 
 	/**{@inheritDoc} */
 	public boolean isSecure() {
-		return lastRequestInfo.isSecure();
+		return lastRequestInfo != null ? lastRequestInfo.isSecure() : false;
 	}
 
 	/**{@inheritDoc} */
 	public String getUserAgent() {
-		return lastRequestInfo.getUserAgent();
+		return lastRequestInfo != null ? lastRequestInfo.getUserAgent() : null;
 	}
 
 	/**{@inheritDoc} */
 	public String getAuthType() {
-		return lastRequestInfo.getAuthType();
+		return lastRequestInfo != null ? lastRequestInfo.getAuthType() : null;
 	}
 
 	/**{@inheritDoc} */
 	public String getReferer() {
-		return lastRequestInfo.getReferer();
+		return lastRequestInfo != null ? lastRequestInfo.getReferer() : null;
 	}
 
 	/**{@inheritDoc} */
@@ -391,17 +391,17 @@ public class SessionInfo implements ISessionInfo {
 
 	/**{@inheritDoc} */
 	public String getSslCipherSuite() {
-		return lastRequestInfo.getSslCipherSuite();
+		return lastRequestInfo != null ? lastRequestInfo.getSslCipherSuite() : null;
 	}
 
 	/**{@inheritDoc} */
 	public Integer getSslAlgorithmSize() {
-		return lastRequestInfo.getSslAlgorithmSize();
+		return lastRequestInfo != null ? lastRequestInfo.getSslAlgorithmSize() : null;
 	}
 
 //	/**{@inheritDoc} */
 //	public X509Certificate[] getSslCertificates() {
-//		return lastRequestInfo.getSslCertificates();
+//		return lastRequestInfo != null ? lastRequestInfo.getSslCertificates() : null;
 //	}
 
 	/*********************************************************************/

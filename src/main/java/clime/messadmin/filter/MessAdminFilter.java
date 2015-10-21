@@ -30,7 +30,7 @@ import clime.messadmin.providers.spi.RequestLifeCycleProvider;
  */
 public class MessAdminFilter implements Filter {
 	private static boolean DEBUG = false;
-	private static final String NULL_SESSION_REQUEST_KEY = "messadmin.requestInitialized.session.null";//$NON-NLS-1$
+	private static final String SESSION_ID_REQUEST_KEY = "messadmin.requestInitialized.session.id";//$NON-NLS-1$
 	public static final String WRAPPED_REQUEST_KEY = "messadmin.request.wrapped";//$NON-NLS-1$
 	public static final String WRAPPED_RESPONSE_KEY = "messadmin.response.wrapped";//$NON-NLS-1$
 
@@ -110,10 +110,17 @@ public class MessAdminFilter implements Filter {
 		final HttpServletRequest httpRequest = (HttpServletRequest) request;
 		final HttpSession session = httpRequest.getSession(false);
 		final ServletContext servletContext = config.getServletContext();
-		final MessAdminRequestWrapper wrappedRequest = new MessAdminRequestWrapper(httpRequest);
-		final MessAdminResponseWrapper wrappedResponse = new MessAdminResponseWrapper((HttpServletResponse) response);
-		httpRequest.setAttribute(WRAPPED_REQUEST_KEY, wrappedRequest);
-		httpRequest.setAttribute(WRAPPED_RESPONSE_KEY, wrappedResponse);
+		MessAdminRequestWrapper wrappedRequest = (MessAdminRequestWrapper) httpRequest.getAttribute(WRAPPED_REQUEST_KEY);
+		MessAdminResponseWrapper wrappedResponse = (MessAdminResponseWrapper) httpRequest.getAttribute(WRAPPED_RESPONSE_KEY);
+		boolean inRecursiveHttpCall = (wrappedRequest != null);
+		if (wrappedRequest == null) {
+			wrappedRequest = new MessAdminRequestWrapper(httpRequest);
+			httpRequest.setAttribute(WRAPPED_REQUEST_KEY, wrappedRequest);
+		}
+		if (wrappedResponse == null) {
+			wrappedResponse = new MessAdminResponseWrapper((HttpServletResponse) response);
+			httpRequest.setAttribute(WRAPPED_RESPONSE_KEY, wrappedResponse);
+		}
 
 		//assert session == null || session.getServletContext() == config.getServletContext();
 
@@ -187,8 +194,8 @@ public class MessAdminFilter implements Filter {
 		// Sniff request infos for future usage
 		Server.getInstance().requestInitialized(httpRequest, servletContext);
 		final HttpSession session = httpRequest.getSession(false);
-		if (session == null) {
-			httpRequest.setAttribute(NULL_SESSION_REQUEST_KEY, Boolean.TRUE);
+		if (session != null) {
+			httpRequest.setAttribute(SESSION_ID_REQUEST_KEY, session.getId());
 		}
 		// pre-request plugin
 		List<RequestLifeCycleProvider> requestProviders = ProviderUtils.getProviders(RequestLifeCycleProvider.class);
@@ -214,8 +221,11 @@ public class MessAdminFilter implements Filter {
 			httpResponse = (HttpServletResponse) httpRequest.getAttribute(WRAPPED_RESPONSE_KEY);
 		}
 		HttpSession sessionAfter = httpRequest.getSession(false);
-		if (httpRequest.getAttribute(NULL_SESSION_REQUEST_KEY) != null && sessionAfter != null) {
-			// Session was created
+		String previousSessionId = (String) httpRequest.getAttribute(SESSION_ID_REQUEST_KEY);
+		String sessionAfterId = (sessionAfter != null) ? sessionAfter.getId() : null;
+		boolean sameSessionId = (previousSessionId == sessionAfterId) || (previousSessionId != null && previousSessionId.equals(sessionAfterId));
+		if ( ! sameSessionId) {
+			// Session was created or changed during this request
 			Server.getInstance().requestInitialized(httpRequest, servletContext);
 		}
 		MessAdminThreadLocal.stop();

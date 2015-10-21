@@ -113,9 +113,18 @@ public class HttpServletRequestInfo implements Serializable {
 
 		// get user name from providers
 		if (this.remoteUser == null && this.hasHttpSession) {
-			Object user = UserNameProvider.Util.guessUserFromSession(request.getSession(false), null);
-			if (user != null) {
-				this.remoteUser = user.toString();
+			// Be careful here as we are in a constructor, and all structures may not be initialized yet
+			// e.g. NPE with HttpRequestRemoteUser (session.getSessionInfo().getRemoteUser()) on 1st http request to an application where a HttpSession was previously created,
+			//   picked up by our HttpSessionListener, but with no associated SessionInfo.lastRequestInfo (HttpServletRequestInfo) yet (no 1st hit)
+			//   (also seen in some Hybris setup)
+			//   Note that this use-case (switching HttpSession within a single HTTP request) is now taken care of elsewhere, and should not pose problems any more.
+			try {
+				Object user = UserNameProvider.Util.guessUserFromSession(request.getSession(false), null);
+				if (user != null) {
+					this.remoteUser = user.toString();
+				}
+			} catch (Exception e) {
+				// swallow
 			}
 		}
 	}

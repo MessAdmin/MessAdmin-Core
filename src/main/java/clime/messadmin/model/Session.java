@@ -131,6 +131,9 @@ public class Session implements HttpSessionActivationListener, IRequestListener 
 			return;
 		} // else
 		try {
+			if (sessionInfo.lastRequestInfo == null) {
+				sessionInfo.lastRequestInfo = MessAdminThreadLocal.getCurrentRequestInfo();
+			}
 			// request not already counted
 			cumulativeRequests.requestDestroyed(sessionInfo.cumulativeRequestStats, request, response, servletContext);
 		} catch (IllegalStateException ise) {
