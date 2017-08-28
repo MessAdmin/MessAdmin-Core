@@ -76,7 +76,7 @@ public final class StackIntrospector {
 	 * May return null if caller not found on execution stack.
 	 *
 	 * @param clazz the Class to search for on stack to find caller of
-	 * @return the Class of object that called parrameter class
+	 * @return the Class of object that called parameter class
 	 */
 	public static Class getCallerClass(final Class clazz) throws SecurityException {
 		// return getCallerClass(clazz, 0); // can't do that, as this adds a stack frame...
